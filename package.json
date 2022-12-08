@@ -1,0 +1,76 @@
+{
+    "name": "package-skeleton",
+    "version": "1.0.0",
+    "description": "{{package.description}}",
+    "author": "{{package.author.name}} <{{package.author.email}}>",
+    "license": "MIT",
+    "keywords": [
+        "nodejs",
+        "typescript"
+    ],
+    "homepage": "https://github.com/{{vendor.github}}/{{package.name}}",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/{{vendor.github}}/{{package.name}}.git"
+    },
+    "bugs": {
+        "url": "https://github.com/{{vendor.github}}/{{package.name}}/issues"
+    },
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "lint-staged": {
+        "*.{js,ts}": [
+            "rome check --apply-suggested",
+            "prettier --config prettier.config.js --write",
+            "eslint --fix"
+        ],
+        "*.{css,gql,graphql,html,json,less,md,mdx,sass,scss}": [
+            "prettier --config prettier.config.js --write"
+        ],
+        "*.{yaml,yml}": [
+            "prettier --config prettier.config.js --tab-width 2 --write"
+        ]
+    },
+    "scripts": {
+        "analyze:deps:circular": "madge --extensions js,ts --circular --ts-config tsconfig.json src/**",
+        "analyze:deps:list": "madge --extensions js,ts --ts-config tsconfig.json src/**",
+        "analyze:deps:graph": "madge --extensions js,ts --image graph.svg --layout dot --ts-config tsconfig.json src/**",
+        "test": "jest tests --verbose",
+        "test:coverage": "jest tests --coverage",
+        "fmt": "rome --apply-suggested . && prettier --config prettier.config.js --write .",
+        "lint": "eslint --ext ts,js src/",
+        "lint:fix": "eslint --ext ts,js --fix src/",
+        "lint:staged": "lint-staged",
+        "fix": "npm run fmt && npm run lint:fix",
+        "build:dev": "node scripts/build.js",
+        "build:prod": "node scripts/build.js --production",
+        "build:binaries": "node scripts/build.js --binaries",
+        "build:dts": "dts-bundle-generator -o dist/index.d.ts src/index.ts",
+        "build": "npm run build:dev && npm run build:dts",
+        "dev": "npm run build:dev && node dist/index.js",
+        "prepare": "husky install"
+    },
+    "devDependencies": {
+        "@types/jest": "^29.2.4",
+        "@types/node": "^18.11.11",
+        "@typescript-eslint/eslint-plugin": "^5.45.1",
+        "@typescript-eslint/parser": "^5.45.1",
+        "dts-bundle-generator": "^7.1.0",
+        "esbuild": "^0.15.18",
+        "eslint": "^8.29.0",
+        "eslint-plugin-jest": "^27.1.6",
+        "eslint-plugin-node": "^11.1.0",
+        "husky": "^8.0.2",
+        "jest": "^29.3.1",
+        "lint-staged": "^13.1.0",
+        "madge": "^5.0.1",
+        "prettier": "^2.8.0",
+        "rome": "^11.0.0",
+        "ts-jest": "^29.0.3",
+        "typescript": "^4.9"
+    },
+    "bin": "bin/{{package.name}}",
+    "engines": {
+        "node": ">=14.0.0"
+    }
+}
