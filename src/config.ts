@@ -5,7 +5,7 @@ const ConfBaseConfig = {
     cwd: __dirname,
     deserialize: (text: string) => yaml.load(text),
     serialize: value => yaml.dump(value, { indent: 2 }),
-    fileExtension: 'yml',
+    fileExtension: 'yaml',
 };
 
 export function createConf(name: string, options: Record<string, any> = {}): Conf {

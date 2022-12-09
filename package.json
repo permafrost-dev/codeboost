@@ -51,8 +51,19 @@
         "prepare": "husky install"
     },
     "dependencies": {
+        "@octokit/core": "^4.1.0",
+        "commander": "^9.4.1",
         "conf": "^10.2.0",
-        "js-yaml": "^4.1.0"
+        "dayjs": "^1.11.7",
+        "dotenv": "^16.0.3",
+        "edge.js": "^5.5.0",
+        "js-yaml": "^4.1.0",
+        "nanoid": "^4.0.0",
+        "semver": "^7.3.8",
+        "simple-git": "^3.15.1",
+        "ts-mixer": "^6.0.2",
+        "winston": "^3.8.2",
+        "winston-transport": "^4.5.0"
     },
     "devDependencies": {
         "@types/jest": "^29.2.4",
