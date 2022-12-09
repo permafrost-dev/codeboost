@@ -1,5 +1,6 @@
 import { APP_VERSION } from '@/lib/consts';
 import { Octokit } from '@octokit/core';
+import { throttling } from '@octokit/plugin-throttling';
 
 let AppOctokitDefaults: typeof Octokit;
 
@@ -9,8 +10,28 @@ export function initOctokit(token: string) {
         log: console,
         userAgent: `codeboost/v${APP_VERSION}`,
     });
+
+    AppOctokitDefaults.plugin(throttling);
 }
 
 export function createOctokit(): Octokit {
-    return new AppOctokitDefaults();
+    const result = new AppOctokitDefaults({
+        throttle: {
+            onRateLimit: (retryAfter, options, octokit, retryCount) => {
+                result.log.warn(`Request quota exhausted for request ${options.method} ${options.url}`);
+
+                if (retryCount < 1) {
+                    // only retries once
+                    result.log.info(`Retrying after ${retryAfter} seconds!`);
+                    return true;
+                }
+            },
+            onSecondaryRateLimit: (retryAfter, options, octokit) => {
+                // does not retry, only logs a warning
+                result.log.warn(`SecondaryRateLimit detected for request ${options.method} ${options.url}`);
+            },
+        },
+    });
+
+    return result;
 }

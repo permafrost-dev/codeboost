@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`sets properties correctly on create 1`] = `
+Repository {
+  "gitInstance": undefined,
+  "name": "name",
+  "owner": "owner",
+  "path": "path/owner/name",
+}
+`;

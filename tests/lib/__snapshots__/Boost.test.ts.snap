@@ -1,0 +1,79 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`loads a boost from a path 1`] = `
+Boost {
+  "actions": [],
+  "config": {
+    "actions": [],
+    "id": "test-one",
+    "pull_request": {
+      "body": "This PR is a test",
+      "branch": "add-test-one",
+      "title": "Add Test One",
+    },
+    "repository_limits": {
+      "max_runs_per_version": 1,
+      "minutes_between_runs": 60,
+    },
+    "scripts": {
+      "files": [
+        "first.js",
+      ],
+      "parallel": true,
+    },
+    "version": "1.0.0",
+  },
+  "id": "test-one",
+  "path": "./../fixtures/test-boost-1/1.0.0",
+  "pullRequest": {
+    "body": "This PR is a test",
+    "branch": "add-test-one",
+    "title": "Add Test One",
+  },
+  "repositoryLimits": {
+    "maxRunsPerVersion": 1,
+    "minutesBetweenRuns": 60,
+  },
+  "scripts": [
+    [Function],
+  ],
+  "version": "1.0.0",
+}
+`;
+
+exports[`sets the correct properties on create 1`] = `
+Boost {
+  "actions": [],
+  "config": {
+    "actions": [],
+    "id": "test-one",
+    "pull_request": {
+      "body": "This PR is a test",
+      "branch": "add-test-one",
+      "title": "Add Test One",
+    },
+    "repository_limits": {
+      "max_runs_per_version": 1,
+      "minutes_between_runs": 60,
+    },
+    "scripts": {
+      "files": [],
+      "parallel": true,
+    },
+    "version": "1.0.0",
+  },
+  "id": "test-one",
+  "path": "path/1.0.0",
+  "pullRequest": {
+    "body": "This PR is a test",
+    "branch": "add-test-one",
+    "title": "Add Test One",
+  },
+  "repositoryLimits": {
+    "maxRunsPerVersion": 1,
+    "minutesBetweenRuns": 60,
+  },
+  "scripts": [],
+  "version": "1.0.0",
+}
+`;

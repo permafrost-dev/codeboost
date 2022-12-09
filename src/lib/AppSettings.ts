@@ -1,9 +1,13 @@
+/* It initializes a git instance */
 export interface AppSettings {
     github_token: string;
+    repository_storage_path: string;
+    use_forks: boolean;
+    use_pull_requests: boolean;
 }
 
 export function loadSettings(filename: string): AppSettings {
-    const settings = require(filename);
+    const settings = require(filename).default;
 
     return transformSettings(settings);
 }
