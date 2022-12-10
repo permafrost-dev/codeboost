@@ -82,4 +82,26 @@ export class Github {
 
         return result.data;
     }
+
+    // create a pull request
+    static async createPullRequest(repository: Repository, branchName: string, title: string, body: string, octokit: Octokit | null = null) {
+        octokit = octokit ?? createOctokit();
+
+        const currentUsername = (await Github.currentUser(octokit)).login;
+
+        const result = await octokit.request(`POST /repos/${currentUsername}/${repository.name}/pulls`, {
+            owner: currentUsername,
+            repo: repository.name,
+            title,
+            body,
+            head: `${currentUsername}:${branchName}`,
+            base: await repository.defaultBranch(),
+        });
+
+        if (result.status !== 201) {
+            throw new Error(`Failed to create pull request for ${currentUsername}/${repository.name}`);
+        }
+
+        return result.data;
+    }
 }

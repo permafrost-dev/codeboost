@@ -85,4 +85,8 @@ export class Repository {
             console.error(e);
         }
     }
+
+    async pushToFork(branchName: string) {
+        await this.git.push('fork', branchName);
+    }
 }

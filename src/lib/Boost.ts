@@ -1,11 +1,14 @@
 import { Repository } from '@/lib/Repository';
 import { Tools } from '@/lib/Tools';
 import { BoostConfiguration } from '@/types/BoostConfiguration';
-import { existsSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { SimpleGit } from 'simple-git';
 import semver from 'semver';
 import { AppSettings } from '@/lib/AppSettings';
 import { versionToShortVersion } from '@/lib/helpers';
+import { Github } from '@/lib/github';
+import { Octokit } from '@octokit/core';
+import edge from 'edge.js';
 
 export interface BoostScriptHandlerParameters {
     /** arguments passed in from the user */
@@ -57,14 +60,21 @@ export class Boost {
             maxRunsPerVersion: config.repository_limits.max_runs_per_version,
             minutesBetweenRuns: config.repository_limits.minutes_between_runs,
         };
-        this.pullRequest = config.pull_request;
-        this.pullRequest.branch += `-v${versionToShortVersion(this.version)}`;
 
+        this.pullRequest = this.loadPullRequest(config.pull_request);
         this.scripts = this.loadScripts(config.scripts.files);
         this.actions = config.actions;
 
         this.config = Object.assign({}, config);
         this.appSettings = appSettings;
+    }
+
+    public loadPullRequest(pullRequest: Record<string, any>) {
+        return {
+            title: pullRequest.title,
+            body: pullRequest.body,
+            branch: `${pullRequest.branch}-v${versionToShortVersion(this.version)}`,
+        };
     }
 
     public loadScripts(scripts: string[]) {
@@ -111,5 +121,27 @@ export class Boost {
         }
 
         await Promise.allSettled(this.scripts.map(script => script(params)));
+
+        try {
+            await repository.pushToFork(this.pullRequest.branch);
+        } catch (e) {
+            console.log(e);
+        }
+
+        try {
+            const loadStringOrFile = (value: string) => {
+                if (existsSync(this.path + '/' + value)) {
+                    return readFileSync(this.path + '/' + value, { encoding: 'utf8' });
+                }
+                return value;
+            };
+
+            const title = loadStringOrFile(this.pullRequest.title);
+            const body = await edge.renderRaw(loadStringOrFile(this.pullRequest.body), { boost: this, state: () => this.state });
+
+            await Github.createPullRequest(repository, this.pullRequest.branch, title.trim(), body.trim());
+        } catch (e) {
+            console.log(e);
+        }
     }
 }
