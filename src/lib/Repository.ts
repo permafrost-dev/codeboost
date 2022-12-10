@@ -63,7 +63,7 @@ export class Repository {
     }
 
     public async defaultBranch() {
-        const result = await this.git.revparse('--abbrev-ref', ['origin/HEAD']);
+        const result = await this.git.revparse('--abbrev-ref', [ 'origin/HEAD' ]);
         return result.replace(/^.+\//, '');
     }
 
@@ -88,5 +88,9 @@ export class Repository {
 
     async pushToFork(branchName: string) {
         await this.git.push('fork', branchName);
+    }
+
+    fullRepositoryName() {
+        return `${this.owner}/${this.name}`;
     }
 }

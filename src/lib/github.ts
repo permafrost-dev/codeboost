@@ -21,8 +21,8 @@ export function createOctokit(): Octokit {
             onRateLimit: (retryAfter, options, octokit, retryCount) => {
                 result.log.warn(`Request quota exhausted for request ${options.method} ${options.url}`);
 
-                if (retryCount < 1) {
-                    // only retries once
+                // retries twice
+                if (retryCount < 2) {
                     result.log.info(`Retrying after ${retryAfter} seconds!`);
                     return true;
                 }
@@ -37,6 +37,9 @@ export function createOctokit(): Octokit {
     return result;
 }
 
+/**
+ * A class for interacting with the Github API
+ */
 export class Github {
     protected static cache = {};
 
@@ -53,6 +56,12 @@ export class Github {
         return user.data;
     }
 
+    /**
+     * Attempts to fork a repository into the currently authenticated user's account.
+     * Throws an error if the fork already exists.
+     * @param {Repository} repository
+     * @param {Octokit|null} octokit
+     */
     static async forkRepository(repository: Repository, octokit: Octokit | null = null) {
         octokit = octokit ?? createOctokit();
 
@@ -89,7 +98,7 @@ export class Github {
 
         const currentUsername = (await Github.currentUser(octokit)).login;
 
-        const result = await octokit.request(`POST /repos/${currentUsername}/${repository.name}/pulls`, {
+        const result = await octokit.request(`POST /repos/${repository.owner}/${repository.name}/pulls`, {
             owner: currentUsername,
             repo: repository.name,
             title,

@@ -8,7 +8,7 @@ export class Application {
     public codeboost!: CodeBoost;
     public repositoryName!: string;
 
-    async init() {
+    async init(boostId: string) {
         this.settings = loadSettings(`${__dirname}/settings.js`);
         initOctokit(this.settings.github_token);
         const repo = new Repository(this.repositoryName, this.settings.repository_storage_path);
@@ -20,14 +20,11 @@ export class Application {
         }
 
         this.codeboost = new CodeBoost();
-        await this.codeboost.init(repo, this.settings);
+        await this.codeboost.init(boostId, [ '8.2' ], repo, this.settings);
     }
 
     async execute(repoName: string, boostName: string) {
         this.repositoryName = repoName;
-        await this.init();
-
-        console.log('execute', repoName, boostName);
-        console.log('settings:', this.settings);
+        await this.init(boostName);
     }
 }

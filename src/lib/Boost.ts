@@ -9,6 +9,8 @@ import { versionToShortVersion } from '@/lib/helpers';
 import { Github } from '@/lib/github';
 import { Octokit } from '@octokit/core';
 import edge from 'edge.js';
+import { CodeBoost } from '@/lib/CodeBoost';
+import dayjs from 'dayjs';
 
 export interface BoostScriptHandlerParameters {
     /** arguments passed in from the user */
@@ -32,8 +34,10 @@ export interface BoostScriptHandlerParameters {
 export type BoostScriptHandler = (params: BoostScriptHandlerParameters) => any;
 
 export class Boost {
+    protected codeBoost!: CodeBoost;
     protected config!: BoostConfiguration;
     protected appSettings!: AppSettings;
+    protected repository: Repository | null = null;
 
     public path!: string;
     public id!: string;
@@ -52,7 +56,8 @@ export class Boost {
     public state: Record<string, any> = {};
     public changedFiles: string[] = [];
 
-    constructor(path: string, config: BoostConfiguration, appSettings: AppSettings) {
+    constructor(codeBoost: CodeBoost, path: string, config: BoostConfiguration, appSettings: AppSettings) {
+        this.codeBoost = codeBoost;
         this.path = `${path}/${config.version}`;
         this.id = config.id;
         this.version = config.version;
@@ -67,6 +72,10 @@ export class Boost {
 
         this.config = Object.assign({}, config);
         this.appSettings = appSettings;
+    }
+
+    public log(message) {
+        this.codeBoost.log(message, [{ boost: this.id, repository: this.repository?.fullRepositoryName() }]);
     }
 
     public loadPullRequest(pullRequest: Record<string, any>) {
@@ -94,6 +103,7 @@ export class Boost {
     }
 
     public async run(repository: Repository, args: any[] = []) {
+        this.repository = repository;
         const params: BoostScriptHandlerParameters = {
             args,
             boost: this,
@@ -122,26 +132,30 @@ export class Boost {
 
         await Promise.allSettled(this.scripts.map(script => script(params)));
 
-        try {
-            await repository.pushToFork(this.pullRequest.branch);
-        } catch (e) {
-            console.log(e);
+        if (this.changedFiles.length > 0) {
+            try {
+                await repository.pushToFork(this.pullRequest.branch);
+            } catch (e) {
+                this.log(e);
+            }
+
+            try {
+                const loadStringOrFile = (value: string) => {
+                    if (existsSync(this.path + '/' + value)) {
+                        return readFileSync(this.path + '/' + value, { encoding: 'utf8' });
+                    }
+                    return value;
+                };
+
+                const title = await edge.renderRaw(loadStringOrFile(this.pullRequest.title), { boost: this, state: () => this.state });
+                const body = await edge.renderRaw(loadStringOrFile(this.pullRequest.body), { boost: this, state: () => this.state });
+
+                await Github.createPullRequest(repository, this.pullRequest.branch, title.trim(), body.trim());
+            } catch (e: any) {
+                this.log(e.message);
+            }
         }
 
-        try {
-            const loadStringOrFile = (value: string) => {
-                if (existsSync(this.path + '/' + value)) {
-                    return readFileSync(this.path + '/' + value, { encoding: 'utf8' });
-                }
-                return value;
-            };
-
-            const title = loadStringOrFile(this.pullRequest.title);
-            const body = await edge.renderRaw(loadStringOrFile(this.pullRequest.body), { boost: this, state: () => this.state });
-
-            await Github.createPullRequest(repository, this.pullRequest.branch, title.trim(), body.trim());
-        } catch (e) {
-            console.log(e);
-        }
+        this.log('Done.');
     }
 }

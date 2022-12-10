@@ -2,17 +2,24 @@ import { AppSettings } from '@/lib/AppSettings';
 import { Boost } from '@/lib/Boost';
 import { createOctokit } from '@/lib/github';
 import { Repository } from '@/lib/Repository';
+import { HasLogger } from '@/traits/HasLogger';
 import { BoostConfiguration } from '@/types/BoostConfiguration';
 import { Octokit } from '@octokit/core';
 import { existsSync } from 'fs';
 import simpleGit, { SimpleGit, SimpleGitOptions } from 'simple-git';
+import { Mixin } from 'ts-mixer';
 
-export class CodeBoost {
+export class CodeBoost extends Mixin(HasLogger) {
     protected repository!: Repository;
     protected repositoryDir: string = '';
     protected gitInstance!: SimpleGit;
     public octokit!: Octokit;
     public appSettings!: AppSettings;
+
+    constructor() {
+        super();
+        this.createLogger({});
+    }
 
     public get git() {
         if (!this.gitInstance) {
@@ -49,18 +56,16 @@ export class CodeBoost {
         this.gitInstance = simpleGit(createSimpleGitOptions());
     }
 
-    public async init(repository: Repository, appSettings: AppSettings) {
+    public async init(id: string, args: string[], repository: Repository, appSettings: AppSettings) {
         this.appSettings = appSettings;
         this.repository = repository;
         this.repositoryPath = repository.path;
         this.octokit = createOctokit();
 
-        const bc = this.loadBoostConfiguration('php-support');
-        const boost = new Boost(`${__dirname}/boosts/${bc.id}`, bc, appSettings);
+        const bc = this.loadBoostConfiguration(id);
+        const boost = new Boost(this, `${__dirname}/boosts/${bc.id}`, bc, appSettings);
 
-        console.log({ bc, boost });
-
-        await boost.run(repository, ['8.2']);
+        await boost.run(repository, args);
     }
 
     public loadBoostConfiguration(id: string) {
