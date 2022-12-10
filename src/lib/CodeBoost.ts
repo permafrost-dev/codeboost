@@ -60,7 +60,7 @@ export class CodeBoost {
 
         console.log({ bc, boost });
 
-        await boost.run(repository, [ '8.2' ]);
+        await boost.run(repository, ['8.2']);
     }
 
     public loadBoostConfiguration(id: string) {
