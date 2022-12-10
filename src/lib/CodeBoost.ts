@@ -1,3 +1,4 @@
+import { AppSettings } from '@/lib/AppSettings';
 import { Boost } from '@/lib/Boost';
 import { createOctokit } from '@/lib/github';
 import { Repository } from '@/lib/Repository';
@@ -11,6 +12,7 @@ export class CodeBoost {
     protected repositoryDir: string = '';
     protected gitInstance!: SimpleGit;
     public octokit!: Octokit;
+    public appSettings!: AppSettings;
 
     public get git() {
         if (!this.gitInstance) {
@@ -47,17 +49,18 @@ export class CodeBoost {
         this.gitInstance = simpleGit(createSimpleGitOptions());
     }
 
-    public async init(repository: Repository) {
+    public async init(repository: Repository, appSettings: AppSettings) {
+        this.appSettings = appSettings;
         this.repository = repository;
         this.repositoryPath = repository.path;
         this.octokit = createOctokit();
 
-        const bc = this.loadBoostConfiguration('test-one');
-        const boost = new Boost(`${__dirname}/boosts/${bc.id}`, bc);
+        const bc = this.loadBoostConfiguration('php-support');
+        const boost = new Boost(`${__dirname}/boosts/${bc.id}`, bc, appSettings);
 
         console.log({ bc, boost });
 
-        await boost.run(repository);
+        await boost.run(repository, [ '8.2' ]);
     }
 
     public loadBoostConfiguration(id: string) {

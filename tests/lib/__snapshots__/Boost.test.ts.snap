@@ -3,6 +3,7 @@
 exports[`loads a boost from a path 1`] = `
 Boost {
   "actions": [],
+  "changedFiles": [],
   "config": {
     "actions": [],
     "id": "test-one",
@@ -37,6 +38,7 @@ Boost {
   "scripts": [
     [Function],
   ],
+  "state": {},
   "version": "1.0.0",
 }
 `;
@@ -44,6 +46,7 @@ Boost {
 exports[`sets the correct properties on create 1`] = `
 Boost {
   "actions": [],
+  "changedFiles": [],
   "config": {
     "actions": [],
     "id": "test-one",
@@ -74,6 +77,7 @@ Boost {
     "minutesBetweenRuns": 60,
   },
   "scripts": [],
+  "state": {},
   "version": "1.0.0",
 }
 `;

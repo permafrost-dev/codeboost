@@ -15,8 +15,12 @@ export class Application {
 
         await repo.clone();
 
+        if (this.settings.use_forks) {
+            await repo.createFork();
+        }
+
         this.codeboost = new CodeBoost();
-        await this.codeboost.init(repo);
+        await this.codeboost.init(repo, this.settings);
     }
 
     async execute(repoName: string, boostName: string) {

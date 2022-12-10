@@ -1,3 +1,4 @@
+import { createOctokit, Github } from '@/lib/github';
 import { parseFullRepositoryName } from '@/lib/stringHelpers';
 import { execSync } from 'child_process';
 import { existsSync, mkdirSync } from 'fs';
@@ -45,5 +46,43 @@ export class Repository {
 
     public async init() {
         //
+    }
+
+    public async currentBranch() {
+        return (await this.git.branchLocal()).current;
+    }
+
+    public async onBranch(branchName: string) {
+        return (await this.currentBranch()) === branchName;
+    }
+
+    public async checkout(branchName: string) {
+        if (!(await this.onBranch(branchName))) {
+            await this.git.checkoutLocalBranch(branchName);
+        }
+    }
+
+    public async defaultBranch() {
+        const result = await this.git.revparse('--abbrev-ref', [ 'origin/HEAD' ]);
+        return result.replace(/^.+\//, '');
+    }
+
+    public async createFork() {
+        const octokit = createOctokit();
+
+        try {
+            const result = await Github.forkRepository(this, octokit);
+            this.git.addRemote('fork', result.ssh_url);
+            return;
+        } catch (e) {
+            console.error(e);
+        }
+
+        try {
+            const result = await Github.getRepository(this, octokit);
+            this.git.addRemote('fork', result.ssh_url);
+        } catch (e) {
+            console.error(e);
+        }
     }
 }
