@@ -12,7 +12,7 @@ module.exports.default = {
     },
     scripts: {
         parallel: true,
-        files: [ 'first.js' ],
+        files: ['first.js'],
     },
     actions: [],
 };
