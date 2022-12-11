@@ -1,14 +1,14 @@
+!/dist/boosts
 !/dist/config.yaml
 !dist/boosts/**/*
-!/dist/boosts
 /.idea
 /.vscode
 /build
 /coverage
-dist/index.js
-dist/storage
 /node_modules
 /tempdir
+dist/index.js
+dist/storage
 package-lock.json
 yarn.lock
 .env
