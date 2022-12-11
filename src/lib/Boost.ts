@@ -123,6 +123,10 @@ export class Boost {
 
         await repository.checkout(this.pullRequest.branch);
 
+        const initFn = require(`${this.path}/init.js`).handler;
+
+        await initFn(params);
+
         if (!this.config.scripts.parallel) {
             for (const script of this.scripts) {
                 await script(params);
@@ -134,7 +138,7 @@ export class Boost {
 
         if (this.changedFiles.length > 0) {
             try {
-                await repository.pushToFork(this.pullRequest.branch);
+                //await repository.pushToFork(this.pullRequest.branch);
             } catch (e) {
                 this.log(e);
             }
@@ -150,7 +154,9 @@ export class Boost {
                 const title = await edge.renderRaw(loadStringOrFile(this.pullRequest.title), { boost: this, state: () => this.state });
                 const body = await edge.renderRaw(loadStringOrFile(this.pullRequest.body), { boost: this, state: () => this.state });
 
-                await Github.createPullRequest(repository, this.pullRequest.branch, title.trim(), body.trim());
+                //const pr = await Github.createPullRequest(repository, this.pullRequest.branch, title.trim(), body.trim());
+                //this.log(`created pull request #${pr.number}`);
+                this.log('skipping pr creation');
             } catch (e: any) {
                 this.log(e.message);
             }

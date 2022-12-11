@@ -6,10 +6,12 @@
 assets/*
 build/*
 coverage/*
-dist/*
+dist/storyage/*
+dist/*.js
 node_modules/*
 public/*
 storage/*
 vendor/*
 package-lock.json
 yarn.lock
+

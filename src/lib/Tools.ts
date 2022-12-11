@@ -2,8 +2,9 @@ import { Boost } from '@/lib/Boost';
 import { Repository } from '@/lib/Repository';
 import { execSync } from 'child_process';
 import { createHash } from 'crypto';
-import { copyFileSync, existsSync, readFileSync, writeFileSync } from 'fs';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import yaml from 'js-yaml';
+import { dirname } from 'path';
 
 export class Tools {
     constructor(protected boost: Boost, protected repository: Repository) {
@@ -52,6 +53,10 @@ export class Tools {
      * @param {string} dest
      */
     public copyfile(src: string, dest: string) {
+        if (!existsSync(dirname(dest))) {
+            mkdirSync(dirname(dest), { recursive: true });
+        }
+
         copyFileSync(`${this.boost.path}/${src}`, `${this.repository.path}/${dest}`);
     }
 
@@ -61,7 +66,22 @@ export class Tools {
      * @returns {string} The sha-256 hash of the file.
      */
     public hashfile(path: string) {
-        return createHash('sha256').update(this.readfile(path)).digest('hex').toLowerCase();
+        return createHash('sha256').update(this.readfile(path))
+            .digest('hex')
+            .toLowerCase();
+    }
+
+    /**
+     * This function returns true if the two files have the exact same contents
+     * @param {string}
+     * @param {string}.
+     */
+    public filesAreEqual(file1: string, file2: string) {
+        if (!this.fileexists(file1) || !this.fileexists(file2)) {
+            return false;
+        }
+
+        return this.hashfile(file1) === this.hashfile(file2);
     }
 
     /**

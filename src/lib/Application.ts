@@ -11,6 +11,7 @@ export class Application {
     async init(boostId: string) {
         this.settings = loadSettings(`${__dirname}/settings.js`);
         initOctokit(this.settings.github_token);
+
         const repo = new Repository(this.repositoryName, this.settings.repository_storage_path);
 
         await repo.clone();
