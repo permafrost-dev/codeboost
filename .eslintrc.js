@@ -57,5 +57,5 @@ module.exports = {
         'object-curly-newline': [ 'warn', { ObjectExpression: { multiline: true, minProperties: 4 }, ObjectPattern: { multiline: true, minProperties: 4 }, ImportDeclaration: 'never' },],
         'sort-keys': [ 'warn', 'asc', { caseSensitive: false, minKeys: 5, natural: true }],
     },
-    ignorePatterns: [ 'dist/*', 'configure-package.js' ],
+    ignorePatterns: [ 'dist/index.js', 'configure-package.js' ],
 };

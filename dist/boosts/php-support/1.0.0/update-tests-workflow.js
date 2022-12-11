@@ -1,5 +1,7 @@
 /** @type {import('@/lib/Boost').BoostScriptHandler} */
-module.exports.handler = async function ({ args, boost, repository, git, libs, tools }) {
+module.exports.handler = async function ({
+    args, boost, repository, git, libs, tools 
+}) {
     boost.state.updatedWorkflow = false;
 
     const phpVersionToAdd = args[0];
@@ -25,7 +27,7 @@ module.exports.handler = async function ({ args, boost, repository, git, libs, t
 
     matrix.php.push(phpVersionToAdd);
     matrix.php.sort().reverse();
-    matrix.php = [...new Set(matrix.php)];
+    matrix.php = [ ...new Set(matrix.php) ];
 
     boost.log(`Added PHP ${phpVersionToAdd} to workflow matrix`);
 
