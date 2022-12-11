@@ -54,7 +54,7 @@ Inside the `boosts/my-boost` directory, create a file named `scripts/init.js`. T
     id: string;
 
     /**
-     * the version of the boost, whicgh should be a semver version number like `1.0.0`.
+     * the version of the boost, which should be a semver version number like `1.0.0`.
      */
     version: string;
     repository_limits: {

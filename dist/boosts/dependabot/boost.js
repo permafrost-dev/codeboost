@@ -13,7 +13,7 @@ module.exports.default = {
     },
     scripts: {
         parallel: true,
-        files: ['copy-files-to-repo.js'],
+        files: [ 'copy-files-to-repo.js' ],
     },
     actions: [],
 };

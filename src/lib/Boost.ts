@@ -61,6 +61,7 @@ export class Boost {
         this.path = `${path}/${config.version}`;
         this.id = config.id;
         this.version = config.version;
+
         this.repositoryLimits = {
             maxRunsPerVersion: config.repository_limits.max_runs_per_version,
             minutesBetweenRuns: config.repository_limits.minutes_between_runs,
