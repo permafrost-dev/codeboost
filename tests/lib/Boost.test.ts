@@ -1,6 +1,7 @@
 /* eslint-disable sort-keys */
 
 import { Boost } from '@/lib/Boost';
+import { CodeBoost } from '@/lib/CodeBoost';
 import { BoostConfiguration } from '@/types/BoostConfiguration';
 
 it('sets the correct properties on create', async () => {
@@ -23,18 +24,18 @@ it('sets the correct properties on create', async () => {
         actions: [],
     };
 
-    const boost = new Boost('path', boostConfig, {} as any);
+    const boost = new Boost(new CodeBoost(), 'path', boostConfig, {} as any);
 
-    expect(boost).toMatchSnapshot();
+    expect(Object.keys(boost)).toMatchSnapshot();
 });
 
 it('loads a boost from a path', async () => {
     const boostConfig = require(`${__dirname}/../fixtures/test-boost-1/boost.js`).default;
-    const boost = new Boost(`${__dirname}/../fixtures/test-boost-1`, boostConfig, {} as any);
+    const boost = new Boost(new CodeBoost(), `${__dirname}/../fixtures/test-boost-1`, boostConfig, {} as any);
     boost.path = boost.path.replace(__dirname, '.');
 
     expect(boost.scripts[0]).toBeInstanceOf(Function);
-    expect(boost).toMatchSnapshot();
+    expect(Object.keys(boost)).toMatchSnapshot();
 });
 
 // it(`runs a boost's scripts in parallel`, async () => {
