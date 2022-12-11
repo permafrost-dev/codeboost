@@ -2,9 +2,11 @@ import { Boost } from '@/lib/Boost';
 import { Repository } from '@/lib/Repository';
 import { execSync } from 'child_process';
 import { createHash } from 'crypto';
-import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs';
 import yaml from 'js-yaml';
 import { dirname } from 'path';
+
+export type OnFileCopiedCallback = (src: string, dest: string) => void;
 
 export class Tools {
     constructor(protected boost: Boost, protected repository: Repository) {
@@ -128,5 +130,57 @@ export class Tools {
      */
     public exec(command: string, silent = true) {
         return execSync(command, { stdio: silent ? 'pipe' : 'inherit' }).toString();
+    }
+
+    /**
+     * A function that recursively copies a files from one directory to another. Files that already exist
+     * at the destination are overwritten, and directories that do not exist are created.
+     *
+     * Returns a list of filenames that were copied.
+     *
+     * @param {string} src - The source directory.
+     * @param {string} dest - The destination directory.
+     * @param {function|null} onCopiedCallback - A callback function that is called after each file is copied.
+     * @returns {string[]}
+     */
+    public recursiveDirectoryCopy(src, dest, onCopiedCallback: OnFileCopiedCallback | null = null) {
+        const destFiles: string[] = [];
+        const handler = (src, dest) => {
+            const files = readdirSync(src);
+
+            files
+                .filter(file => file !== '.' && file !== '..')
+                .forEach(file => {
+                    const srcFn = src + '/' + file;
+                    const destFn = dest + '/' + file;
+
+                    const stats = lstatSync(srcFn, { throwIfNoEntry: false }) || null;
+
+                    if (stats === null) {
+                        return;
+                    }
+
+                    if (stats?.isFile()) {
+                        if (!this.filesAreEqual(srcFn, destFn)) {
+                            this.copyfile(srcFn, destFn);
+                            destFiles.push(destFn);
+
+                            if (onCopiedCallback) {
+                                onCopiedCallback(srcFn, destFn);
+                            }
+                        }
+                    }
+
+                    if (stats?.isDirectory()) {
+                        if (!this.fileexists(destFn)) {
+                            mkdirSync(destFn);
+                        }
+                        handler(srcFn, destFn);
+                    }
+                });
+            return destFiles;
+        };
+
+        return handler(src, dest);
     }
 }

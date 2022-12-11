@@ -1,7 +1,8 @@
 /** @type {import('@/lib/Boost').BoostScriptHandler} */
-module.exports.handler = async function ({ boost, git, libs, repository, tools }) {
+module.exports.handler = async function ({
+    boost, git, libs, repository, tools 
+}) {
     boost.log('checking composer.json for dependency: nesbot/carbon');
-    boost.state.updatedComposerJson = false;
 
     const filename = repository.path + '/composer.json';
     const data = tools.readJson(filename);
