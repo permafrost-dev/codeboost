@@ -1,16 +1,13 @@
+import { AppSettings } from '@/lib/AppSettings';
+import { CodeBoost } from '@/lib/CodeBoost';
+import { versionToShortVersion } from '@/lib/helpers';
 import { Repository } from '@/lib/Repository';
 import { Tools } from '@/lib/Tools';
 import { BoostConfiguration } from '@/types/BoostConfiguration';
-import { existsSync, readFileSync } from 'fs';
-import { SimpleGit } from 'simple-git';
-import semver from 'semver';
-import { AppSettings } from '@/lib/AppSettings';
-import { versionToShortVersion } from '@/lib/helpers';
-import { Github } from '@/lib/github';
-import { Octokit } from '@octokit/core';
 import edge from 'edge.js';
-import { CodeBoost } from '@/lib/CodeBoost';
-import dayjs from 'dayjs';
+import { existsSync, readFileSync } from 'fs';
+import semver from 'semver';
+import { SimpleGit } from 'simple-git';
 
 export interface BoostScriptHandlerParameters {
     /** arguments passed in from the user */
