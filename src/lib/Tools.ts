@@ -66,9 +66,7 @@ export class Tools {
      * @returns {string} The sha-256 hash of the file.
      */
     public hashfile(path: string) {
-        return createHash('sha256').update(this.readfile(path))
-            .digest('hex')
-            .toLowerCase();
+        return createHash('sha256').update(this.readfile(path)).digest('hex').toLowerCase();
     }
 
     /**
