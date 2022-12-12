@@ -48,8 +48,12 @@ export class Repository {
      * Checks out the default branch and pulls down the latest changes
      */
     public async prepare() {
-        await this.checkout(await this.defaultBranch());
-        await this.git.pull('origin');
+        try {
+            await this.checkout(await this.defaultBranch());
+            await this.git.pull('origin');
+        } catch (e) {
+            console.log('Error preparing repository: ', e);
+        }
     }
 
     public async currentBranch() {
@@ -61,9 +65,18 @@ export class Repository {
     }
 
     public async checkout(branchName: string) {
-        if (!(await this.onBranch(branchName))) {
-            await this.git.checkoutLocalBranch(branchName);
+        const branchList = await this.git.branchLocal();
+
+        if (branchList.current === branchName) {
+            return;
         }
+
+        if (branchList.all.includes(branchName)) {
+            await this.git.checkout(branchName);
+            return;
+        }
+
+        await this.git.checkoutLocalBranch(branchName);
     }
 
     public async defaultBranch() {

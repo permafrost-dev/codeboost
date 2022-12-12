@@ -112,6 +112,7 @@ export class Boost {
 
     public async run(repository: Repository, args: any[] = []) {
         this.repository = repository;
+        this.updatePullRequestBranch();
 
         // changes to historyItem properties will be reflected in the saved history automatically
         // as createEntry returns a proxy object
@@ -206,6 +207,31 @@ export class Boost {
         historyItem.pull_request = pr;
 
         this.log('Done.');
+    }
+
+    public async updatePullRequestBranch() {
+        if (!this.repository) {
+            return;
+        }
+
+        const branches = await this.repository.git.branchLocal();
+
+        console.log({ branches: branches.all });
+
+        if (branches.all.includes(this.pullRequest.branch)) {
+            let counter = 1;
+            let newBranchName = this.pullRequest.branch;
+
+            while (branches.all.includes(newBranchName)) {
+                counter++;
+                newBranchName = `${this.pullRequest.branch}-${counter}`;
+                console.log({ newBranchName });
+            }
+
+            this.pullRequest.branch = newBranchName;
+
+            await this.repository.checkout(newBranchName);
+        }
     }
 
     public async runScripts(params: BoostScriptHandlerParameters) {
