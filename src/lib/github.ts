@@ -41,10 +41,20 @@ export function createOctokit(): Octokit {
  * A class for interacting with the Github API
  */
 export class Github {
-    protected static cache = {};
+    protected static cache = {currentUser: null as { login: string } | null,};
+
+    static async initCache(octokit: Octokit | null = null) {
+        octokit = octokit ?? createOctokit();
+
+        await Github.currentUser(octokit);
+    }
 
     static async currentUser(octokit: Octokit | null = null) {
         octokit = octokit ?? createOctokit();
+
+        if (Github.cache.currentUser) {
+            return Github.cache.currentUser;
+        }
 
         // get currently authenticated user
         const user = await octokit.request('GET /user');
@@ -52,6 +62,8 @@ export class Github {
         if (user.status !== 200) {
             throw new Error('Failed to get currently authenticated user');
         }
+
+        Github.cache.currentUser = { login: user.data.login };
 
         return user.data;
     }
