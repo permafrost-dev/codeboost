@@ -10,13 +10,14 @@ import { existsSync, readFileSync } from 'fs';
 import semver from 'semver';
 import { SimpleGit } from 'simple-git';
 import dayjs from 'dayjs';
-import { customAlphabet, nanoid, urlAlphabet } from 'nanoid';
 
 export interface BoostScriptHandlerParameters {
     /** arguments passed in from the user */
     args: any[];
     /** the boost instance */
     boost: Boost;
+    /** information about the current boost run */
+    currentRun: BoostHistoryItem;
     /** a simpleGit instance for the repository */
     git: SimpleGit;
     /** a collection of commonly-used libraries available to the boost scripts */
@@ -82,7 +83,7 @@ export class Boost {
     }
 
     public log(message) {
-        this.codeBoost.log(message, [{ boost: this.id, repository: this.repository?.fullRepositoryName() }]);
+        this.codeBoost.log(message, [{ boost: this.id, run_id: this.runId, repository: this.repository?.fullRepositoryName() }]);
     }
 
     public loadPullRequest(pullRequest: Record<string, any>) {
@@ -137,6 +138,7 @@ export class Boost {
         const params: BoostScriptHandlerParameters = {
             args,
             boost: this,
+            currentRun: Object.freeze(Object.assign({}, historyItem)),
             git: repository.git,
             libs: {
                 fs: require('fs'),
@@ -228,8 +230,6 @@ export class Boost {
         for (const item of runs) {
             const runDate = dayjs(item.started_at);
             const diffInMinutes = dayjs().diff(runDate, 'minute');
-
-            console.log({ diffInMinutes });
 
             // the minimum time between runs has not passed, so don't run again
             if (diffInMinutes < this.repositoryLimits.minutesBetweenRuns) {
