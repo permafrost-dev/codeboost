@@ -31,7 +31,7 @@ export class Application {
 
         try {
             await this.codeboost.prepareRepository();
-            await this.codeboost.runBoost(boostName, [ '8.2' ]);
+            await this.codeboost.runBoost(boostName, ['8.2']);
         } catch (e) {
             console.error(e);
         }

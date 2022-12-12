@@ -27,7 +27,7 @@ export class HasLogger {
             return;
         }
 
-        this.logger.info(message, ...[ merge.all([{ _ts: dayjs().unix() }, ...meta ]) ]);
+        this.logger.info(message, ...[merge.all([{ _ts: dayjs().unix() }, ...meta])]);
     }
 
     public error(message: string, meta: any[] = []) {
@@ -35,6 +35,6 @@ export class HasLogger {
             return;
         }
 
-        this.logger.error(message, ...[ merge.all([{ _ts: dayjs().unix() }, ...meta ]) ]);
+        this.logger.error(message, ...[merge.all([{ _ts: dayjs().unix() }, ...meta])]);
     }
 }
