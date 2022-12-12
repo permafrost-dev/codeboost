@@ -9,9 +9,13 @@ const tsConfigPaths = {
 module.exports = {
     preset: 'ts-jest/presets/js-with-ts',
     testEnvironment: 'node',
+
     transform: { '^.+\\.tsx?$': 'ts-jest' },
+    transformIgnorePatterns: [ 'node_modules/(?!(nanoid)/)' ],
+
     testRegex: '(/__test__/.*|/tests/.*|(\\.|/)(test|spec))\\.[tj]sx?$',
     testPathIgnorePatterns: [ '/node_modules/', '/dist/', '/tests/fixtures/' ],
+
     moduleFileExtensions: [
         'ts',
         'tsx',
@@ -20,7 +24,6 @@ module.exports = {
         'json'
     ],
     moduleNameMapper: pathsToModuleNameMapper(tsConfigPaths, { prefix: `${__dirname}/` }),
-    transformIgnorePatterns: [ 'node_modules/(?!(nanoid)/)' ],
 
     coverageDirectory: './coverage',
     coverageReporters: [ 'html', 'text' ],
