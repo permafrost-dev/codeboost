@@ -186,6 +186,7 @@ it('runs on a repository and creates a skipped history item if limits apply', as
     const canRunOnRepositoryMock = createBoostMock('canRunOnRepository').mockImplementation(async () => false);
 
     const codeboost = new CodeBoost(new FakeHistoryManager());
+    codeboost.appSettings = { use_pull_requests: true } as any;
 
     const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, {}, codeboost.historyManager, codeboost);
     const repo = new Repository('owner1/name1', `${__dirname}/../fixtures/repos`);
