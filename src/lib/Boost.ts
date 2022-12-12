@@ -9,6 +9,7 @@ import edge from 'edge.js';
 import { existsSync, readFileSync } from 'fs';
 import semver from 'semver';
 import { SimpleGit } from 'simple-git';
+import dayjs from 'dayjs';
 
 export interface BoostScriptHandlerParameters {
     /** arguments passed in from the user */
@@ -106,6 +107,16 @@ export class Boost {
     }
 
     public async run(repository: Repository, args: any[] = []) {
+        this.repository = repository;
+
+        if (!this.canRunOnRepository(repository)) {
+            this.log(`Cannot run on ${repository.fullRepositoryName()}`);
+            this.log('Done.');
+            return false;
+        }
+
+        // any changes to historyItem properties will be reflected in the saved history automatically
+        // as createEntry returns a proxy object
         const historyItem: BoostHistoryItem = this.codeBoost.historyManager.createEntry({
             boost: this.id,
             version: this.version,
@@ -115,19 +126,6 @@ export class Boost {
             state: BoostHistoryItemState.RUNNING,
             pull_request: null,
         });
-
-        this.repository = repository;
-
-        if (!this.canRunOnRepository(repository)) {
-            this.log(`Cannot run on ${repository.fullRepositoryName()}`);
-
-            historyItem.state = BoostHistoryItemState.SKIPPED;
-            historyItem.finished_at = new Date().toISOString();
-
-            this.log('Done.');
-
-            return false;
-        }
 
         const params: BoostScriptHandlerParameters = {
             args,
@@ -212,20 +210,20 @@ export class Boost {
             })
             .filter(run => run.state !== BoostHistoryItemState.SKIPPED);
 
-        // boost has run too many times.
-        // use > instead of >= because the current boost run is already included in the runs
-        if (runs.length > this.repositoryLimits.maxRunsPerVersion) {
+        // boost has run too many times
+        if (runs.length >= this.repositoryLimits.maxRunsPerVersion) {
             return false;
         }
 
         // check the time between runs
         for (const item of runs) {
-            const runDate = new Date(item.date);
-            const now = new Date();
-            const diff = (now.getTime() - runDate.getTime()) / 1000 / 60;
+            const runDate = dayjs(item.started_at);
+            const diffInMinutes = dayjs().diff(runDate, 'minute');
+
+            console.log({ diffInMinutes });
 
             // the minimum time between runs has not passed, so don't run again
-            if (diff < this.repositoryLimits.minutesBetweenRuns) {
+            if (diffInMinutes < this.repositoryLimits.minutesBetweenRuns) {
                 return false;
             }
         }
