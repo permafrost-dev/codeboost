@@ -20,12 +20,6 @@ export class Application {
 
         const repo = new Repository(this.repositoryName, this.settings.repository_storage_path);
 
-        await repo.clone();
-
-        if (this.settings.use_forks) {
-            await repo.createFork();
-        }
-
         this.codeboost = new CodeBoost(this.historyManager);
         await this.codeboost.init(repo, this.settings);
     }
@@ -36,6 +30,7 @@ export class Application {
         await this.init();
 
         try {
+            await this.codeboost.prepareRepository();
             await this.codeboost.runBoost(boostName, [ '8.2' ]);
         } catch (e) {
             console.error(e);

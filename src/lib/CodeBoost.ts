@@ -17,6 +17,7 @@ export class CodeBoost extends Mixin(HasLogger) {
     public octokit!: Octokit;
     public appSettings!: AppSettings;
     public historyManager!: HistoryManager;
+    public repositoryPrepared = false;
 
     constructor(historyManager: HistoryManager) {
         super();
@@ -64,6 +65,20 @@ export class CodeBoost extends Mixin(HasLogger) {
         this.repository = repository;
         this.repositoryPath = repository.path;
         this.octokit = createOctokit();
+    }
+
+    public async prepareRepository() {
+        if (this.repositoryPrepared) {
+            return;
+        }
+
+        await this.repository?.clone();
+
+        if (this.appSettings.use_forks) {
+            await this.repository?.createFork();
+        }
+
+        this.repositoryPrepared = true;
     }
 
     public loadBoostConfiguration(id: string) {
