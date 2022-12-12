@@ -79,7 +79,7 @@ export class Boost {
     }
 
     public get history(): BoostHistory {
-        return this.codeBoost.historyManager.for(this.config.id);
+        return this.codeBoost.historyManager.for(this.id);
     }
 
     public log(message) {
@@ -154,6 +154,7 @@ export class Boost {
         }
 
         let pr: any = null;
+        let hasError = false;
 
         await repository.checkout(this.pullRequest.branch);
 
@@ -175,10 +176,11 @@ export class Boost {
                 await Promise.allSettled(this.scripts.map(script => script(params)));
             }
         } catch (e) {
+            hasError = true;
             this.log(e);
         }
 
-        if (this.changedFiles.length > 0) {
+        if (!hasError && this.changedFiles.length > 0) {
             try {
                 //await repository.pushToFork(this.pullRequest.branch);
             } catch (e) {
@@ -200,12 +202,13 @@ export class Boost {
                 //this.log(`created pull request #${pr.number}`);
                 this.log('skipping pr creation');
             } catch (e: any) {
+                hasError = true;
                 this.log(e.message);
             }
         }
 
         historyItem.finished_at = new Date().toISOString();
-        historyItem.state = BoostHistoryItemState.SUCCEEDED;
+        historyItem.state = hasError ? BoostHistoryItemState.FAILED : BoostHistoryItemState.SUCCEEDED;
         historyItem.pull_request = pr;
 
         this.log('Done.');
