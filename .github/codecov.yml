@@ -38,3 +38,4 @@ ignore:
   - '.eslintrc.js'
   - 'jest.config.js'
   - 'prettier.config.js'
+  - 'src/index.ts'
