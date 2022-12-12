@@ -59,21 +59,23 @@ export class CodeBoost extends Mixin(HasLogger) {
         this.gitInstance = simpleGit(createSimpleGitOptions());
     }
 
-    public async init(id: string, args: string[], repository: Repository, appSettings: AppSettings) {
+    public async init(repository: Repository, appSettings: AppSettings) {
         this.appSettings = appSettings;
         this.repository = repository;
         this.repositoryPath = repository.path;
         this.octokit = createOctokit();
-
-        const bc = this.loadBoostConfiguration(id);
-        const boost = new Boost(this, `${__dirname}/boosts/${bc.id}`, bc, appSettings);
-
-        await boost.run(repository, args);
     }
 
     public loadBoostConfiguration(id: string) {
         const config = require(`${__dirname}/boosts/${id}/boost.js`).default;
 
         return <BoostConfiguration>config;
+    }
+
+    public async runBoost(id: string, args: string[]) {
+        const config = this.loadBoostConfiguration(id);
+        const boost = new Boost(this, `${__dirname}/boosts/${config.id}`, config, this.appSettings);
+
+        await boost.run(this.repository, args);
     }
 }

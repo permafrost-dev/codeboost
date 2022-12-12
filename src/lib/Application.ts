@@ -14,7 +14,7 @@ export class Application {
         this.historyManager = new HistoryManager(`${__dirname}/history.json`);
     }
 
-    async init(boostId: string) {
+    async init() {
         this.settings = loadSettings(`${__dirname}/settings.js`);
         initOctokit(this.settings.github_token);
 
@@ -27,12 +27,20 @@ export class Application {
         }
 
         this.codeboost = new CodeBoost(this.historyManager);
-        await this.codeboost.init(boostId, ['8.2'], repo, this.settings);
+        await this.codeboost.init(repo, this.settings);
     }
 
     async execute(repoName: string, boostName: string) {
         this.repositoryName = repoName;
-        await this.init(boostName);
+
+        await this.init();
+
+        try {
+            await this.codeboost.runBoost(boostName, [ '8.2' ]);
+        } catch (e) {
+            console.error(e);
+        }
+
         this.historyManager.save();
     }
 }
