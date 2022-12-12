@@ -1,0 +1,22 @@
+[
+    {
+        "run_id": "run-1",
+        "boost": "dependabot",
+        "version": "1.0.0",
+        "repository": "spatie/url",
+        "started_at": "2022-12-12T09:26:55.754Z",
+        "finished_at": "2022-12-12T09:26:55.770Z",
+        "state": "succeeded",
+        "pull_request": null
+    },
+    {
+        "run_id": "run-2",
+        "boost": "dependabot",
+        "version": "1.0.0",
+        "repository": "spatie/url",
+        "started_at": "2022-12-12T09:32:53.335Z",
+        "finished_at": "2022-12-12T09:32:53.336Z",
+        "state": "skipped",
+        "pull_request": null
+    }
+]
