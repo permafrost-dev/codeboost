@@ -74,7 +74,7 @@ export class CodeBoost extends Mixin(HasLogger) {
 
     public async runBoost(id: string, args: string[]) {
         const config = this.loadBoostConfiguration(id);
-        const boost = new Boost(this, `${__dirname}/boosts/${config.id}`, config, this.appSettings);
+        const boost = new Boost(this, `${__dirname}/boosts/${config.id}`, config);
 
         await boost.run(this.repository, args);
     }

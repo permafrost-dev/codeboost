@@ -25,7 +25,7 @@ it('sets the correct properties on create', async () => {
         actions: [],
     };
 
-    const boost = new Boost(new CodeBoost(new HistoryManager('')), 'path', boostConfig, {} as any);
+    const boost = new Boost(new CodeBoost(new HistoryManager('')), 'path', boostConfig);
 
     const keys = Object.keys(boost);
     keys.sort();
@@ -35,7 +35,7 @@ it('sets the correct properties on create', async () => {
 
 it('loads a boost from a path', async () => {
     const boostConfig = require(`${__dirname}/../fixtures/test-boost-1/boost.js`).default;
-    const boost = new Boost(new CodeBoost(new HistoryManager('')), `${__dirname}/../fixtures/test-boost-1`, boostConfig, {} as any);
+    const boost = new Boost(new CodeBoost(new HistoryManager('')), `${__dirname}/../fixtures/test-boost-1`, boostConfig);
     boost.path = boost.path.replace(__dirname, '.');
 
     expect(boost.scripts[0]).toBeInstanceOf(Function);

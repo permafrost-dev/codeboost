@@ -58,7 +58,7 @@ export class Boost {
     public changedFiles: string[] = [];
     public runId: string;
 
-    constructor(codeBoost: CodeBoost, path: string, config: BoostConfiguration, appSettings: AppSettings) {
+    constructor(codeBoost: CodeBoost, path: string, config: BoostConfiguration) {
         this.runId = generateRunId();
         this.codeBoost = codeBoost;
         this.path = `${path}/${config.version}`;
@@ -75,7 +75,7 @@ export class Boost {
         this.actions = config.actions;
 
         this.config = Object.assign({}, config);
-        this.appSettings = appSettings;
+        this.appSettings = codeBoost.appSettings;
     }
 
     public get history(): BoostHistory {
