@@ -216,8 +216,6 @@ export class Boost {
 
         const branches = await this.repository.git.branchLocal();
 
-        console.log({ branches: branches.all });
-
         if (branches.all.includes(this.pullRequest.branch)) {
             let counter = 1;
             let newBranchName = this.pullRequest.branch;
