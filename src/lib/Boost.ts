@@ -112,15 +112,10 @@ export class Boost {
     public async run(repository: Repository, args: any[] = []) {
         this.repository = repository;
 
-        if (!this.canRunOnRepository(repository)) {
-            this.log(`Cannot run on ${repository.fullRepositoryName()}`);
-            this.log('Done.');
-            return false;
-        }
-
-        // any changes to historyItem properties will be reflected in the saved history automatically
+        // changes to historyItem properties will be reflected in the saved history automatically
         // as createEntry returns a proxy object
         const historyItem: BoostHistoryItem = this.codeBoost.historyManager.createEntry({
+            run_id: this.runId,
             boost: this.id,
             version: this.version,
             repository: repository.fullRepositoryName(),
@@ -129,6 +124,15 @@ export class Boost {
             state: BoostHistoryItemState.RUNNING,
             pull_request: null,
         });
+
+        if (!this.canRunOnRepository(repository)) {
+            historyItem.state = BoostHistoryItemState.SKIPPED;
+            historyItem.finished_at = new Date().toISOString();
+
+            this.log(`Cannot run on ${repository.fullRepositoryName()}`);
+            this.log('Done.');
+            return false;
+        }
 
         const params: BoostScriptHandlerParameters = {
             args,
@@ -206,12 +210,13 @@ export class Boost {
 
     public canRunOnRepository(repo: Repository) {
         // get runs for this boost version and for the current repository,
-        // but don't include skipped runs
+        // but don't include skipped runs or the current run
         const runs = this.history
             .filter((item: any) => {
                 return item.boost === this.id && item.version === this.version && item.repository === repo.fullRepositoryName();
             })
-            .filter(run => run.state !== BoostHistoryItemState.SKIPPED);
+            .filter(run => run.state !== BoostHistoryItemState.SKIPPED)
+            .filter(run => run.run_id !== this.runId);
 
         // boost has run too many times
         if (runs.length >= this.repositoryLimits.maxRunsPerVersion) {

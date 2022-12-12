@@ -9,6 +9,7 @@ export enum BoostHistoryItemState {
 }
 
 export interface BoostHistoryItem {
+    run_id: string;
     boost: string;
     version: string;
     repository: string;
