@@ -41,7 +41,7 @@ export function createOctokit(): Octokit {
  * A class for interacting with the Github API
  */
 export class Github {
-    protected static cache = {currentUser: null as { login: string } | null,};
+    protected static cache = { currentUser: null as { login: string } | null };
 
     static async initCache(octokit: Octokit | null = null) {
         octokit = octokit ?? createOctokit();
