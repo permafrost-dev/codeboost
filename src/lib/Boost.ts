@@ -1,7 +1,7 @@
 import { AppSettings } from '@/lib/AppSettings';
 import { BoostHistory, BoostHistoryItem, BoostHistoryItemState } from '@/types/BoostHistory';
 import { CodeBoost } from '@/lib/CodeBoost';
-import { versionToShortVersion } from '@/lib/helpers';
+import { generateRunId, versionToShortVersion } from '@/lib/helpers';
 import { Repository } from '@/lib/Repository';
 import { Tools } from '@/lib/Tools';
 import { BoostConfiguration } from '@/types/BoostConfiguration';
@@ -10,6 +10,7 @@ import { existsSync, readFileSync } from 'fs';
 import semver from 'semver';
 import { SimpleGit } from 'simple-git';
 import dayjs from 'dayjs';
+import { customAlphabet, nanoid, urlAlphabet } from 'nanoid';
 
 export interface BoostScriptHandlerParameters {
     /** arguments passed in from the user */
@@ -54,8 +55,10 @@ export class Boost {
     public actions!: any[];
     public state: Record<string, any> = {};
     public changedFiles: string[] = [];
+    public runId: string;
 
     constructor(codeBoost: CodeBoost, path: string, config: BoostConfiguration, appSettings: AppSettings) {
+        this.runId = generateRunId();
         this.codeBoost = codeBoost;
         this.path = `${path}/${config.version}`;
         this.id = config.id;

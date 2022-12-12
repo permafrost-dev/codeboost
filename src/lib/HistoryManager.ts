@@ -19,10 +19,18 @@ export class HistoryManager {
     }
 
     public save() {
+        if (this.filename.length === 0) {
+            return;
+        }
+
         writeFileSync(this.filename, JSON.stringify(this.data), { encoding: 'utf8' });
     }
 
     public load() {
+        if (this.filename.length === 0) {
+            return;
+        }
+
         if (!existsSync(this.filename)) {
             this.save();
         }
