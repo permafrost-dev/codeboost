@@ -2,38 +2,38 @@
 
 exports[`loads a boost from a path 1`] = `
 [
+  "actions",
+  "appSettings",
+  "changedFiles",
   "codeBoost",
   "config",
-  "appSettings",
-  "repository",
-  "path",
   "id",
-  "version",
-  "repositoryLimits",
+  "path",
   "pullRequest",
-  "scripts",
-  "actions",
-  "state",
-  "changedFiles",
+  "repository",
+  "repositoryLimits",
   "runId",
+  "scripts",
+  "state",
+  "version",
 ]
 `;
 
 exports[`sets the correct properties on create 1`] = `
 [
+  "actions",
+  "appSettings",
+  "changedFiles",
   "codeBoost",
   "config",
-  "appSettings",
-  "repository",
-  "path",
   "id",
-  "version",
-  "repositoryLimits",
+  "path",
   "pullRequest",
-  "scripts",
-  "actions",
-  "state",
-  "changedFiles",
+  "repository",
+  "repositoryLimits",
   "runId",
+  "scripts",
+  "state",
+  "version",
 ]
 `;

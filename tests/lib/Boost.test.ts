@@ -27,7 +27,10 @@ it('sets the correct properties on create', async () => {
 
     const boost = new Boost(new CodeBoost(new HistoryManager('')), 'path', boostConfig, {} as any);
 
-    expect(Object.keys(boost)).toMatchSnapshot();
+    const keys = Object.keys(boost);
+    keys.sort();
+
+    expect(keys).toMatchSnapshot();
 });
 
 it('loads a boost from a path', async () => {
@@ -36,7 +39,11 @@ it('loads a boost from a path', async () => {
     boost.path = boost.path.replace(__dirname, '.');
 
     expect(boost.scripts[0]).toBeInstanceOf(Function);
-    expect(Object.keys(boost)).toMatchSnapshot();
+
+    const keys = Object.keys(boost);
+    keys.sort();
+
+    expect(keys).toMatchSnapshot();
 });
 
 // it(`runs a boost's scripts in parallel`, async () => {
