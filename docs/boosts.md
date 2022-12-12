@@ -12,10 +12,7 @@ Boosts can be used to automate:
 
 To create a boost, create a directory in the root of your repository named `boosts`. Inside this directory, create a directory named after your boost. For example, if you wanted to create a boost named `my-boost`, you would create a directory named `boosts/my-boost`.
 
-required files:
-
--   `scripts/init.js`
--   `boost.js`
+The only requirement for a boost is that it contains a valid `boost.js` configuration file.
 
 ## boost configuration
 
@@ -106,3 +103,40 @@ When a boost is run, it will first clone/fork the repository, then check out the
 Scripts are run in parallel by default, but can be run synchronously by setting the `parallel` property to `false` in the `boost.js` configuration file.
 
 Once finished, the boost will push the changes to the forked repository (boost scripts are responsbile for staging and committing the changes they make), then attempts to create a pull request.
+
+## boost scripts
+
+All boost scripts should exist under the `scripts` directory. The `scripts` directory can contain any number of files and subdirectories, and all scripts must be written - in NodeJS.
+
+Boost scripts must export a function named `handler` that takes a single argument - an object with the following shape:
+
+```typescript
+export interface BoostScriptHandlerParameters {
+    /** arguments passed in from the user */
+    args: any[];
+    /** the boost instance */
+    boost: Boost;
+    /** read-only object with information about the current boost run */
+    currentRun: BoostHistoryItem;
+    /** a simpleGit instance for the repository */
+    git: SimpleGit;
+    /** a collection of commonly-used libraries available to the boost scripts */
+    libs: {
+        fs: typeof import('fs');
+        path: typeof import('path');
+        semver: typeof import('semver');
+    };
+    /** the repository instance */
+    repository: Repository;
+    /** a collection of utility functions available to the boost scripts */
+    tools: Tools;
+}
+```
+
+You may access any or all of these properties via object destructuring:
+
+```javascript
+module.exports.handler = async function ({ boost, git, libs, repository, tools }) {
+    // do something
+};
+```
