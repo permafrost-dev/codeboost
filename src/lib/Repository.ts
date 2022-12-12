@@ -44,8 +44,12 @@ export class Repository {
         }
     }
 
-    public async init() {
-        //
+    /**
+     * Checks out the default branch and pulls down the latest changes
+     */
+    public async prepare() {
+        await this.checkout(await this.defaultBranch());
+        await this.git.pull('origin');
     }
 
     public async currentBranch() {
@@ -63,7 +67,7 @@ export class Repository {
     }
 
     public async defaultBranch() {
-        const result = await this.git.revparse('--abbrev-ref', ['origin/HEAD']);
+        const result = await this.git.revparse('--abbrev-ref', [ 'origin/HEAD' ]);
         return result.replace(/^.+\//, '');
     }
 

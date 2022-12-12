@@ -73,6 +73,7 @@ export class CodeBoost extends Mixin(HasLogger) {
         }
 
         await this.repository?.clone();
+        await this.repository?.prepare();
 
         if (this.appSettings.use_forks) {
             await this.repository?.createFork();
