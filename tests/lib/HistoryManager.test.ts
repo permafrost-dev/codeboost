@@ -15,6 +15,6 @@ it('saves to a new file if it does not exist', () => {
 
     const historyManager = new HistoryManager(filename);
 
-    expect(historyManager).toHaveLength(0);
+    expect(historyManager.data).toHaveLength(0);
     expect(existsSync(filename)).toBeTruthy();
 });

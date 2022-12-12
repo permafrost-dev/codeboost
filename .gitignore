@@ -14,3 +14,4 @@ yarn.lock
 .env
 *.log
 dist/*.json
+tests/fixtures/temp/history.json

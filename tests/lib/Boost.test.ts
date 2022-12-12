@@ -2,6 +2,7 @@
 
 import { Boost } from '@/lib/Boost';
 import { CodeBoost } from '@/lib/CodeBoost';
+import { HistoryManager } from '@/lib/HistoryManager';
 import { Repository } from '@/lib/Repository';
 import { BoostConfiguration } from '@/types/BoostConfiguration';
 import { FakeHistoryManager } from '@tests/fakes/FakeHistoryManager';
@@ -183,19 +184,16 @@ it('runs on a repository and creates a history item', async () => {
 });
 
 it('runs on a repository and creates a skipped history item if limits apply', async () => {
-    const canRunOnRepositoryMock = createBoostMock('canRunOnRepository').mockImplementation(async () => false);
-
     const codeboost = new CodeBoost(new FakeHistoryManager());
     codeboost.appSettings = { use_pull_requests: true } as any;
-
-    const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, {}, codeboost.historyManager, codeboost);
+    const config = { repository_limits: { max_runs_per_version: 1, minutes_between_runs: 60 } };
+    const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, config, codeboost.historyManager, codeboost);
     const repo = new Repository('owner1/name1', `${__dirname}/../fixtures/repos`);
+
+    (codeboost.historyManager as FakeHistoryManager).addSucceededItem(boost.id, boost.version, repo.fullRepositoryName(), 3);
 
     await boost.run(repo, []);
 
-    expect(codeboost.historyManager.data).toHaveLength(1);
-    expect(codeboost.historyManager.data[0].state).toBe('skipped');
-    expect(codeboost.historyManager.data[0].finished_at).not.toBeNull();
-
-    canRunOnRepositoryMock.mockRestore();
+    expect(codeboost.historyManager.data).toHaveLength(2);
+    expect(codeboost.historyManager.data[1].state).toBe('skipped');
 });
