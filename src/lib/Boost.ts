@@ -224,6 +224,9 @@ export class Boost {
         await this.repository?.checkout(this.pullRequest.branch);
     }
 
+    /**
+     * update to a unique branch name if the branch already exists
+     */
     public async updatePullRequestBranchName() {
         if (!this.repository) {
             return;
