@@ -120,7 +120,7 @@ it('mocks a class method', () => {
 
 it(`runs all of a boost's scripts synchronously`, async () => {
     const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, { scripts: { parallel: false, files: [] } });
-    boost.scripts = [jest.fn(), jest.fn()];
+    boost.scripts = [ jest.fn(), jest.fn() ];
 
     await boost.runScripts(<any>{});
 
@@ -129,7 +129,7 @@ it(`runs all of a boost's scripts synchronously`, async () => {
 
 it(`runs all of a boost's scripts asynchronously`, async () => {
     const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, { scripts: { parallel: true, files: [] } });
-    boost.scripts = [jest.fn(), jest.fn()];
+    boost.scripts = [ jest.fn(), jest.fn() ];
 
     await boost.runScripts(<any>{});
 
@@ -141,7 +141,7 @@ it('runs on a repository', async () => {
     const createScriptHandlerParametersMock = createBoostMock('createScriptHandlerParameters').mockImplementation(() => {
         return <any>{};
     });
-    const mocks = [checkoutPullBranchMock, createScriptHandlerParametersMock];
+    const mocks = [ checkoutPullBranchMock, createScriptHandlerParametersMock ];
 
     const codeboost = new CodeBoost(new FakeHistoryManager());
     codeboost.appSettings = { use_pull_requests: true } as any;
@@ -163,7 +163,7 @@ it('runs on a repository and creates a history item', async () => {
     const createScriptHandlerParametersMock = createBoostMock('createScriptHandlerParameters').mockImplementation(() => {
         return <any>{};
     });
-    const mocks = [checkoutPullBranchMock, createScriptHandlerParametersMock];
+    const mocks = [ checkoutPullBranchMock, createScriptHandlerParametersMock ];
 
     const codeboost = new CodeBoost(new FakeHistoryManager());
     codeboost.appSettings = { use_pull_requests: true } as any;
@@ -180,4 +180,21 @@ it('runs on a repository and creates a history item', async () => {
     expect(codeboost.historyManager.data[0].finished_at).not.toBeNull();
 
     mocks.forEach(m => m.mockRestore());
+});
+
+it('runs on a repository and creates a skipped history item if limits apply', async () => {
+    const canRunOnRepositoryMock = createBoostMock('canRunOnRepository').mockImplementation(async () => false);
+
+    const codeboost = new CodeBoost(new FakeHistoryManager());
+
+    const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, {}, codeboost.historyManager, codeboost);
+    const repo = new Repository('owner1/name1', `${__dirname}/../fixtures/repos`);
+
+    await boost.run(repo, []);
+
+    expect(codeboost.historyManager.data).toHaveLength(1);
+    expect(codeboost.historyManager.data[0].state).toBe('skipped');
+    expect(codeboost.historyManager.data[0].finished_at).not.toBeNull();
+
+    canRunOnRepositoryMock.mockRestore();
 });
