@@ -168,13 +168,7 @@ export class Boost {
         }
 
         try {
-            if (!this.config.scripts.parallel) {
-                for (const script of this.scripts) {
-                    await script(params);
-                }
-            } else {
-                await Promise.allSettled(this.scripts.map(script => script(params)));
-            }
+            await this.runScripts(params);
         } catch (e) {
             hasError = true;
             this.log(e);
@@ -212,6 +206,17 @@ export class Boost {
         historyItem.pull_request = pr;
 
         this.log('Done.');
+    }
+
+    public async runScripts(params: BoostScriptHandlerParameters) {
+        if (this.config.scripts.parallel) {
+            await Promise.allSettled(this.scripts.map(script => script(params)));
+            return;
+        }
+
+        for (const script of this.scripts) {
+            await script(params);
+        }
     }
 
     public canRunOnRepository(repo: Repository | string) {

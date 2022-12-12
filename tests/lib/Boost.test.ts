@@ -4,7 +4,17 @@ import { Boost } from '@/lib/Boost';
 import { CodeBoost } from '@/lib/CodeBoost';
 import { BoostConfiguration } from '@/types/BoostConfiguration';
 import { FakeHistoryManager } from '@tests/fakes/FakeHistoryManager';
-import dayjs from 'dayjs';
+
+const createBoost = (path, config = {}, historyMgr: any = null, codeboost: any = null) => {
+    historyMgr = historyMgr ?? new FakeHistoryManager();
+    codeboost = codeboost ?? new CodeBoost(historyMgr);
+
+    const boostConfig = Object.assign({}, require(`${path}/boost.js`).default, config);
+    const result = new Boost(codeboost, path, boostConfig);
+    result.path = result.path.replace(__dirname, '.');
+
+    return result;
+};
 
 it('sets the correct properties on create', async () => {
     const boostConfig: BoostConfiguration = {
@@ -35,9 +45,8 @@ it('sets the correct properties on create', async () => {
 });
 
 it('loads a boost from a path', async () => {
-    const boostConfig = require(`${__dirname}/../fixtures/test-boost-1/boost.js`).default;
-    const boost = new Boost(new CodeBoost(new FakeHistoryManager()), `${__dirname}/../fixtures/test-boost-1`, boostConfig);
-    boost.path = boost.path.replace(__dirname, '.');
+    const config = { repository_limits: { max_runs_per_version: 1, minutes_between_runs: 5 } };
+    const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, config, new FakeHistoryManager());
 
     expect(boost.scripts[0]).toBeInstanceOf(Function);
 
@@ -48,13 +57,9 @@ it('loads a boost from a path', async () => {
 });
 
 it('respects the max runs per version limit', async () => {
+    const config = { repository_limits: { max_runs_per_version: 1, minutes_between_runs: 5 } };
     const historyMgr = new FakeHistoryManager();
-    const codeboost = new CodeBoost(historyMgr);
-    const boostConfig: BoostConfiguration = require(`${__dirname}/../fixtures/test-boost-1/boost.js`).default;
-    boostConfig.repository_limits.max_runs_per_version = 1;
-
-    const boost = new Boost(codeboost, `${__dirname}/../fixtures/test-boost-1`, boostConfig);
-    boost.path = boost.path.replace(__dirname, '.');
+    const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, config, historyMgr);
 
     expect(boost.canRunOnRepository('owner1/name1')).toBeTruthy();
     historyMgr.addSucceededItem(boost.id, '0.0.0', 'owner1/name1');
@@ -64,14 +69,9 @@ it('respects the max runs per version limit', async () => {
 });
 
 it('respects the min minutes between runs limit', async () => {
+    const config = { repository_limits: { max_runs_per_version: 999, minutes_between_runs: 5 } };
     const historyMgr = new FakeHistoryManager();
-    const codeboost = new CodeBoost(historyMgr);
-    const boostConfig: BoostConfiguration = require(`${__dirname}/../fixtures/test-boost-1/boost.js`).default;
-    boostConfig.repository_limits.max_runs_per_version = 999;
-    boostConfig.repository_limits.minutes_between_runs = 5;
-
-    const boost = new Boost(codeboost, `${__dirname}/../fixtures/test-boost-1`, boostConfig);
-    boost.path = boost.path.replace(__dirname, '.');
+    const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, config, historyMgr);
 
     expect(boost.canRunOnRepository('owner1/name1')).toBeTruthy();
     historyMgr.addSucceededItem(boost.id, boost.version, 'owner1/name1', 10);
@@ -80,30 +80,55 @@ it('respects the min minutes between runs limit', async () => {
     expect(boost.canRunOnRepository('owner1/name1')).toBeFalsy();
 });
 
-// it(`runs a boost's scripts in parallel`, async () => {
-//     const boostConfig = require(`${__dirname}/../fixtures/test-boost-1/boost.js`).default;
-//     const boost = new Boost(`${__dirname}/../fixtures/test-boost-1`, boostConfig);
+it('does not consider skipped runs when determining if limits apply', async () => {
+    const config = { repository_limits: { max_runs_per_version: 1, minutes_between_runs: 5 } };
+    const historyMgr = new FakeHistoryManager();
+    const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, config, historyMgr);
 
-//     const mocked = jest.spyOn(boost.scripts[0], 'call');
-//     mocked.mockReset();
+    expect(boost.canRunOnRepository('owner1/name1')).toBeTruthy();
+    historyMgr.addSkippedItem(boost.id, boost.version, 'owner1/name1', 3);
+    expect(boost.canRunOnRepository('owner1/name1')).toBeTruthy();
+    historyMgr.addSucceededItem(boost.id, boost.version, 'owner1/name1', 3);
+    expect(boost.canRunOnRepository('owner1/name1')).toBeFalsy();
+});
 
-//     const repository = new Repository('owner1/name1', `${__dirname}/../fixtures/repos`);
-//     await boost.run(repository);
+it('does not consider runs for other repositories when determining if limits apply', async () => {
+    const config = { repository_limits: { max_runs_per_version: 1, minutes_between_runs: 5 } };
+    const historyMgr = new FakeHistoryManager();
+    const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, config, historyMgr);
 
-//     expect(mocked).toHaveBeenCalledTimes(1);
-// });
+    expect(boost.canRunOnRepository('owner1/name1')).toBeTruthy();
+    historyMgr.addSucceededItem(boost.id, boost.version, 'owner2/name2', 3);
+    expect(boost.canRunOnRepository('owner1/name1')).toBeTruthy();
+    historyMgr.addSucceededItem(boost.id, boost.version, 'owner1/name1', 3);
+    expect(boost.canRunOnRepository('owner1/name1')).toBeFalsy();
+});
 
-// it(`runs a boost's scripts synchronously`, async () => {
-//     const boostConfig: BoostConfiguration = require(`${__dirname}/../fixtures/test-boost-1/boost.js`).default;
-//     boostConfig.scripts.parallel = false;
+it('mocks a class method', () => {
+    const runScriptsMock = jest.spyOn(Boost.prototype, 'runScripts').mockImplementation(async () => {});
 
-//     const boost = new Boost(`${__dirname}/../fixtures/test-boost-1`, boostConfig);
+    const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`);
+    boost.runScripts(<any>{});
 
-//     const mocked = jest.spyOn(boost.scripts[0], 'call');
-//     mocked.mockReset();
+    expect(runScriptsMock).toHaveBeenCalledTimes(1);
 
-//     const repository = new Repository('owner1/name1', `${__dirname}/../fixtures/repos`);
-//     await boost.run(repository);
+    runScriptsMock.mockRestore();
+});
 
-//     expect(mocked).toHaveBeenCalledTimes(1);
-// });
+it(`runs all of a boost's scripts synchronously`, async () => {
+    const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, { scripts: { parallel: false, files: [] } });
+    boost.scripts = [ jest.fn(), jest.fn() ];
+
+    await boost.runScripts(<any>{});
+
+    boost.scripts.forEach(script => expect(script).toHaveBeenCalledTimes(1));
+});
+
+it(`runs all of a boost's scripts asynchronously`, async () => {
+    const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, { scripts: { parallel: true, files: [] } });
+    boost.scripts = [ jest.fn(), jest.fn() ];
+
+    await boost.runScripts(<any>{});
+
+    boost.scripts.forEach(script => expect(script).toHaveBeenCalledTimes(1));
+});
