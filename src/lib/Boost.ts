@@ -1,4 +1,5 @@
 import { AppSettings } from '@/lib/AppSettings';
+import { BoostHistory, BoostHistoryItem, BoostHistoryItemState } from '@/types/BoostHistory';
 import { CodeBoost } from '@/lib/CodeBoost';
 import { versionToShortVersion } from '@/lib/helpers';
 import { Repository } from '@/lib/Repository';
@@ -72,6 +73,10 @@ export class Boost {
         this.appSettings = appSettings;
     }
 
+    public get history(): BoostHistory {
+        return this.codeBoost.historyManager.for(this.config.id);
+    }
+
     public log(message) {
         this.codeBoost.log(message, [{ boost: this.id, repository: this.repository?.fullRepositoryName() }]);
     }
@@ -101,7 +106,29 @@ export class Boost {
     }
 
     public async run(repository: Repository, args: any[] = []) {
+        const historyItem: BoostHistoryItem = this.codeBoost.historyManager.createEntry({
+            boost: this.id,
+            version: this.version,
+            repository: repository.fullRepositoryName(),
+            started_at: new Date().toISOString(),
+            finished_at: null,
+            state: BoostHistoryItemState.RUNNING,
+            pull_request: null,
+        });
+
         this.repository = repository;
+
+        if (!this.canRunOnRepository(repository)) {
+            this.log(`Cannot run on ${repository.fullRepositoryName()}`);
+
+            historyItem.state = BoostHistoryItemState.SKIPPED;
+            historyItem.finished_at = new Date().toISOString();
+
+            this.log('Done.');
+
+            return false;
+        }
+
         const params: BoostScriptHandlerParameters = {
             args,
             boost: this,
@@ -119,20 +146,29 @@ export class Boost {
             this.pullRequest.branch = await repository.defaultBranch();
         }
 
+        let pr: any = null;
+
         await repository.checkout(this.pullRequest.branch);
 
-        const initFn = require(`${this.path}/init.js`).handler;
+        try {
+            const initFn = require(`${this.path}/init.js`).handler;
 
-        await initFn(params);
-
-        if (!this.config.scripts.parallel) {
-            for (const script of this.scripts) {
-                await script(params);
-            }
-            return;
+            await initFn(params);
+        } catch (e) {
+            this.log(e);
         }
 
-        await Promise.allSettled(this.scripts.map(script => script(params)));
+        try {
+            if (!this.config.scripts.parallel) {
+                for (const script of this.scripts) {
+                    await script(params);
+                }
+            } else {
+                await Promise.allSettled(this.scripts.map(script => script(params)));
+            }
+        } catch (e) {
+            this.log(e);
+        }
 
         if (this.changedFiles.length > 0) {
             try {
@@ -152,7 +188,7 @@ export class Boost {
                 const title = await edge.renderRaw(loadStringOrFile(this.pullRequest.title), { boost: this, state: () => this.state });
                 const body = await edge.renderRaw(loadStringOrFile(this.pullRequest.body), { boost: this, state: () => this.state });
 
-                //const pr = await Github.createPullRequest(repository, this.pullRequest.branch, title.trim(), body.trim());
+                pr = null; //await Github.createPullRequest(repository, this.pullRequest.branch, title.trim(), body.trim());
                 //this.log(`created pull request #${pr.number}`);
                 this.log('skipping pr creation');
             } catch (e: any) {
@@ -160,6 +196,45 @@ export class Boost {
             }
         }
 
+        historyItem.finished_at = new Date().toISOString();
+        historyItem.state = BoostHistoryItemState.SUCCEEDED;
+        historyItem.pull_request = pr;
+
         this.log('Done.');
+    }
+
+    public canRunOnRepository(repo: Repository) {
+        // get runs for this boost version and for the current repository,
+        // but don't include skipped runs
+        const runs = this.history
+            .filter((item: any) => {
+                return item.boost === this.id && item.version === this.version && item.repository === repo.fullRepositoryName();
+            })
+            .filter(run => run.state !== BoostHistoryItemState.SKIPPED);
+
+        // boost has run too many times.
+        // use > instead of >= because the current boost run is already included in the runs
+        if (runs.length > this.repositoryLimits.maxRunsPerVersion) {
+            return false;
+        }
+
+        // check the time between runs
+        for (const item of runs) {
+            const runDate = new Date(item.date);
+            const now = new Date();
+            const diff = (now.getTime() - runDate.getTime()) / 1000 / 60;
+
+            // the minimum time between runs has not passed, so don't run again
+            if (diff < this.repositoryLimits.minutesBetweenRuns) {
+                return false;
+            }
+        }
+
+        // check for any open pull requests
+        if (runs.filter(item => item.pull_request !== null).length) {
+            //
+        }
+
+        return true;
     }
 }

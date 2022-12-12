@@ -1,6 +1,7 @@
 import { AppSettings } from '@/lib/AppSettings';
 import { Boost } from '@/lib/Boost';
 import { createOctokit } from '@/lib/github';
+import { HistoryManager } from '@/lib/HistoryManager';
 import { Repository } from '@/lib/Repository';
 import { HasLogger } from '@/traits/HasLogger';
 import { BoostConfiguration } from '@/types/BoostConfiguration';
@@ -15,10 +16,12 @@ export class CodeBoost extends Mixin(HasLogger) {
     protected gitInstance!: SimpleGit;
     public octokit!: Octokit;
     public appSettings!: AppSettings;
+    public historyManager!: HistoryManager;
 
-    constructor() {
+    constructor(historyManager: HistoryManager) {
         super();
         this.createLogger({});
+        this.historyManager = historyManager;
     }
 
     public get git() {
