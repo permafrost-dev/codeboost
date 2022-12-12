@@ -58,10 +58,10 @@ export class Boost {
     public changedFiles: string[] = [];
     public runId: string;
 
-    constructor(codeBoost: CodeBoost, path: string, config: BoostConfiguration) {
+    constructor(codeBoost: CodeBoost, boostPath: string, config: BoostConfiguration) {
         this.runId = generateRunId();
         this.codeBoost = codeBoost;
-        this.path = `${path}/${config.version}`;
+        this.path = `${boostPath}/${config.version}`;
         this.id = config.id;
         this.version = config.version;
 
@@ -214,15 +214,15 @@ export class Boost {
         this.log('Done.');
     }
 
-    public canRunOnRepository(repo: Repository) {
+    public canRunOnRepository(repo: Repository | string) {
+        const repoName = typeof repo === 'string' ? repo : repo.fullRepositoryName();
+
         // get runs for this boost version and for the current repository,
         // but don't include skipped runs or the current run
         const runs = this.history
-            .filter((item: any) => {
-                return item.boost === this.id && item.version === this.version && item.repository === repo.fullRepositoryName();
-            })
-            .filter(run => run.state !== BoostHistoryItemState.SKIPPED)
-            .filter(run => run.run_id !== this.runId);
+            .filter(run => run.repository === repoName)
+            .filter(run => run.version === this.version && run.run_id !== this.runId)
+            .filter(run => run.state !== BoostHistoryItemState.SKIPPED);
 
         // boost has run too many times
         if (runs.length >= this.repositoryLimits.maxRunsPerVersion) {

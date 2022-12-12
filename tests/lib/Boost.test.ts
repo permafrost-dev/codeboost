@@ -2,8 +2,9 @@
 
 import { Boost } from '@/lib/Boost';
 import { CodeBoost } from '@/lib/CodeBoost';
-import { HistoryManager } from '@/lib/HistoryManager';
 import { BoostConfiguration } from '@/types/BoostConfiguration';
+import { FakeHistoryManager } from '@tests/fakes/FakeHistoryManager';
+import dayjs from 'dayjs';
 
 it('sets the correct properties on create', async () => {
     const boostConfig: BoostConfiguration = {
@@ -25,7 +26,7 @@ it('sets the correct properties on create', async () => {
         actions: [],
     };
 
-    const boost = new Boost(new CodeBoost(new HistoryManager('')), 'path', boostConfig);
+    const boost = new Boost(new CodeBoost(new FakeHistoryManager()), 'path', boostConfig);
 
     const keys = Object.keys(boost);
     keys.sort();
@@ -35,7 +36,7 @@ it('sets the correct properties on create', async () => {
 
 it('loads a boost from a path', async () => {
     const boostConfig = require(`${__dirname}/../fixtures/test-boost-1/boost.js`).default;
-    const boost = new Boost(new CodeBoost(new HistoryManager('')), `${__dirname}/../fixtures/test-boost-1`, boostConfig);
+    const boost = new Boost(new CodeBoost(new FakeHistoryManager()), `${__dirname}/../fixtures/test-boost-1`, boostConfig);
     boost.path = boost.path.replace(__dirname, '.');
 
     expect(boost.scripts[0]).toBeInstanceOf(Function);
@@ -44,6 +45,39 @@ it('loads a boost from a path', async () => {
     keys.sort();
 
     expect(keys).toMatchSnapshot();
+});
+
+it('respects the max runs per version limit', async () => {
+    const historyMgr = new FakeHistoryManager();
+    const codeboost = new CodeBoost(historyMgr);
+    const boostConfig: BoostConfiguration = require(`${__dirname}/../fixtures/test-boost-1/boost.js`).default;
+    boostConfig.repository_limits.max_runs_per_version = 1;
+
+    const boost = new Boost(codeboost, `${__dirname}/../fixtures/test-boost-1`, boostConfig);
+    boost.path = boost.path.replace(__dirname, '.');
+
+    expect(boost.canRunOnRepository('owner1/name1')).toBeTruthy();
+    historyMgr.addSucceededItem(boost.id, '0.0.0', 'owner1/name1');
+    expect(boost.canRunOnRepository('owner1/name1')).toBeTruthy();
+    historyMgr.addSucceededItem(boost.id, boost.version, 'owner1/name1');
+    expect(boost.canRunOnRepository('owner1/name1')).toBeFalsy();
+});
+
+it('respects the min minutes between runs limit', async () => {
+    const historyMgr = new FakeHistoryManager();
+    const codeboost = new CodeBoost(historyMgr);
+    const boostConfig: BoostConfiguration = require(`${__dirname}/../fixtures/test-boost-1/boost.js`).default;
+    boostConfig.repository_limits.max_runs_per_version = 999;
+    boostConfig.repository_limits.minutes_between_runs = 5;
+
+    const boost = new Boost(codeboost, `${__dirname}/../fixtures/test-boost-1`, boostConfig);
+    boost.path = boost.path.replace(__dirname, '.');
+
+    expect(boost.canRunOnRepository('owner1/name1')).toBeTruthy();
+    historyMgr.addSucceededItem(boost.id, boost.version, 'owner1/name1', 10);
+    expect(boost.canRunOnRepository('owner1/name1')).toBeTruthy();
+    historyMgr.addSucceededItem(boost.id, boost.version, 'owner1/name1', 3);
+    expect(boost.canRunOnRepository('owner1/name1')).toBeFalsy();
 });
 
 // it(`runs a boost's scripts in parallel`, async () => {
