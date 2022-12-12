@@ -27,7 +27,7 @@ export class Application {
         }
 
         this.codeboost = new CodeBoost(this.historyManager);
-        await this.codeboost.init(boostId, [ '8.2' ], repo, this.settings);
+        await this.codeboost.init(boostId, ['8.2'], repo, this.settings);
     }
 
     async execute(repoName: string, boostName: string) {
