@@ -37,7 +37,6 @@ export type BoostScriptHandler = (params: BoostScriptHandlerParameters) => any;
 export class Boost {
     protected codeBoost!: CodeBoost;
     protected config!: BoostConfiguration;
-    protected appSettings!: AppSettings;
     protected repository: Repository | null = null;
 
     public path!: string;
@@ -75,7 +74,10 @@ export class Boost {
         this.actions = config.actions;
 
         this.config = Object.assign({}, config);
-        this.appSettings = codeBoost.appSettings;
+    }
+
+    public get appSettings(): AppSettings {
+        return this.codeBoost.appSettings;
     }
 
     public get history(): BoostHistory {
@@ -112,7 +114,6 @@ export class Boost {
 
     public async run(repository: Repository, args: any[] = []) {
         this.repository = repository;
-        this.updatePullRequestBranch();
 
         // changes to historyItem properties will be reflected in the saved history automatically
         // as createEntry returns a proxy object
@@ -136,19 +137,7 @@ export class Boost {
             return false;
         }
 
-        const params: BoostScriptHandlerParameters = {
-            args,
-            boost: this,
-            currentRun: Object.freeze(Object.assign({}, historyItem)),
-            git: repository.git,
-            libs: {
-                fs: require('fs'),
-                path: require('path'),
-                semver,
-            },
-            repository,
-            tools: new Tools(this, repository),
-        };
+        const params = this.createScriptHandlerParameters(args, historyItem);
 
         if (!this.appSettings.use_pull_requests) {
             this.pullRequest.branch = await repository.defaultBranch();
@@ -157,14 +146,13 @@ export class Boost {
         let pr: any = null;
         let hasError = false;
 
-        await repository.checkout(this.pullRequest.branch);
+        await this.updatePullRequestBranchName();
+        await this.checkoutPullRequestBranch();
 
         try {
-            if (existsSync(`${this.path}/init.js`)) {
-                const initFn = require(`${this.path}/init.js`).handler;
-                await initFn(params);
-            }
+            await this.runInitializationScript(params);
         } catch (e) {
+            hasError = true;
             this.log(e);
         }
 
@@ -209,12 +197,39 @@ export class Boost {
         this.log('Done.');
     }
 
-    public async updatePullRequestBranch() {
+    public createScriptHandlerParameters(args: any[], historyItem: BoostHistoryItem): BoostScriptHandlerParameters {
+        return <BoostScriptHandlerParameters>{
+            args,
+            boost: this,
+            currentRun: Object.freeze(Object.assign({}, historyItem)),
+            git: this.repository?.git,
+            libs: {
+                fs: require('fs'),
+                path: require('path'),
+                semver,
+            },
+            repository: this.repository,
+            tools: new Tools(this, <Repository>this.repository),
+        };
+    }
+
+    public async runInitializationScript(params: BoostScriptHandlerParameters) {
+        if (existsSync(`${this.path}/init.js`)) {
+            const initFn = require(`${this.path}/init.js`).handler;
+            await initFn(params);
+        }
+    }
+
+    public async checkoutPullRequestBranch() {
+        await this.repository?.checkout(this.pullRequest.branch);
+    }
+
+    public async updatePullRequestBranchName() {
         if (!this.repository) {
             return;
         }
 
-        const branches = await this.repository.git.branchLocal();
+        const branches = await this.repository.localBranches();
 
         if (branches.all.includes(this.pullRequest.branch)) {
             let counter = 1;
@@ -223,12 +238,9 @@ export class Boost {
             while (branches.all.includes(newBranchName)) {
                 counter++;
                 newBranchName = `${this.pullRequest.branch}-${counter}`;
-                console.log({ newBranchName });
             }
 
             this.pullRequest.branch = newBranchName;
-
-            await this.repository.checkout(newBranchName);
         }
     }
 

@@ -56,8 +56,14 @@ export class Repository {
         }
     }
 
+    public async localBranches() {
+        const result = await this.git.branchLocal();
+
+        return result;
+    }
+
     public async currentBranch() {
-        return (await this.git.branchLocal()).current;
+        return (await this.localBranches()).current;
     }
 
     public async onBranch(branchName: string) {
@@ -65,7 +71,7 @@ export class Repository {
     }
 
     public async checkout(branchName: string) {
-        const branchList = await this.git.branchLocal();
+        const branchList = await this.localBranches();
 
         if (branchList.current === branchName) {
             return;
@@ -80,7 +86,7 @@ export class Repository {
     }
 
     public async defaultBranch() {
-        const result = await this.git.revparse('--abbrev-ref', ['origin/HEAD']);
+        const result = await this.git.revparse('--abbrev-ref', [ 'origin/HEAD' ]);
         return result.replace(/^.+\//, '');
     }
 

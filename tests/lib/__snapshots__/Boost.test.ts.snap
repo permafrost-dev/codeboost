@@ -3,7 +3,6 @@
 exports[`loads a boost from a path 1`] = `
 [
   "actions",
-  "appSettings",
   "changedFiles",
   "codeBoost",
   "config",
@@ -22,7 +21,6 @@ exports[`loads a boost from a path 1`] = `
 exports[`sets the correct properties on create 1`] = `
 [
   "actions",
-  "appSettings",
   "changedFiles",
   "codeBoost",
   "config",

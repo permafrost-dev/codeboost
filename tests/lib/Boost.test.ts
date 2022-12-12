@@ -2,6 +2,7 @@
 
 import { Boost } from '@/lib/Boost';
 import { CodeBoost } from '@/lib/CodeBoost';
+import { Repository } from '@/lib/Repository';
 import { BoostConfiguration } from '@/types/BoostConfiguration';
 import { FakeHistoryManager } from '@tests/fakes/FakeHistoryManager';
 
@@ -15,6 +16,8 @@ const createBoost = (path, config = {}, historyMgr: any = null, codeboost: any =
 
     return result;
 };
+
+const createBoostMock = methodName => jest.spyOn(Boost.prototype, methodName);
 
 it('sets the correct properties on create', async () => {
     const boostConfig: BoostConfiguration = {
@@ -117,7 +120,7 @@ it('mocks a class method', () => {
 
 it(`runs all of a boost's scripts synchronously`, async () => {
     const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, { scripts: { parallel: false, files: [] } });
-    boost.scripts = [jest.fn(), jest.fn()];
+    boost.scripts = [ jest.fn(), jest.fn() ];
 
     await boost.runScripts(<any>{});
 
@@ -126,9 +129,69 @@ it(`runs all of a boost's scripts synchronously`, async () => {
 
 it(`runs all of a boost's scripts asynchronously`, async () => {
     const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, { scripts: { parallel: true, files: [] } });
-    boost.scripts = [jest.fn(), jest.fn()];
+    boost.scripts = [ jest.fn(), jest.fn() ];
 
     await boost.runScripts(<any>{});
 
     boost.scripts.forEach(script => expect(script).toHaveBeenCalledTimes(1));
+});
+
+it('runs on a repository', async () => {
+    const runScriptsMock = createBoostMock('runScripts').mockImplementation(async () => {
+        boost.changedFiles = [];
+    });
+    const checkoutPullBranchMock = createBoostMock('checkoutPullRequestBranch').mockImplementation(async () => {});
+    const canRunOnRepositoryMock = createBoostMock('canRunOnRepository').mockImplementation(async () => true);
+    const createScriptHandlerParametersMock = createBoostMock('createScriptHandlerParameters').mockImplementation(() => {
+        return <any>{};
+    });
+    const mocks = [
+        runScriptsMock,
+        checkoutPullBranchMock,
+        canRunOnRepositoryMock,
+        createScriptHandlerParametersMock
+    ];
+
+    const codeboost = new CodeBoost(new FakeHistoryManager());
+    codeboost.appSettings = { use_pull_requests: true } as any;
+
+    const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, {}, codeboost.historyManager, codeboost);
+    const repo = new Repository('owner1/name1', `${__dirname}/../fixtures/repos`);
+
+    await boost.run(repo, []);
+
+    mocks.forEach(mock => expect(mock).toHaveBeenCalledTimes(1));
+
+    mocks.forEach(mock => mock.mockRestore());
+});
+
+it('runs on a repository and creates a history item', async () => {
+    const runScriptsMock = createBoostMock('runScripts').mockImplementation(async () => {
+        boost.changedFiles = [];
+    });
+    const checkoutPullBranchMock = createBoostMock('checkoutPullRequestBranch').mockImplementation(async () => {});
+    const canRunOnRepositoryMock = createBoostMock('canRunOnRepository').mockImplementation(async () => true);
+    const createScriptHandlerParametersMock = createBoostMock('createScriptHandlerParameters').mockImplementation(() => {
+        return <any>{};
+    });
+    const mocks = [
+        runScriptsMock,
+        checkoutPullBranchMock,
+        canRunOnRepositoryMock,
+        createScriptHandlerParametersMock
+    ];
+
+    const codeboost = new CodeBoost(new FakeHistoryManager());
+    codeboost.appSettings = { use_pull_requests: true } as any;
+
+    const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, {}, codeboost.historyManager, codeboost);
+    const repo = new Repository('owner1/name1', `${__dirname}/../fixtures/repos`);
+
+    await boost.run(repo, []);
+
+    expect(codeboost.historyManager.data).toHaveLength(1);
+    expect(codeboost.historyManager.data[0].state).not.toBe('running');
+    expect(codeboost.historyManager.data[0].finished_at).not.toBeNull();
+
+    mocks.forEach(m => m.mockRestore());
 });
