@@ -229,7 +229,7 @@ export class Boost {
      */
     public async updatePullRequestBranchName() {
         if (!this.repository) {
-            return;
+            return false;
         }
 
         const branches = await this.repository.localBranches();
@@ -245,6 +245,8 @@ export class Boost {
 
             this.pullRequest.branch = newBranchName;
         }
+
+        return true;
     }
 
     public async runScripts(params: BoostScriptHandlerParameters) {
