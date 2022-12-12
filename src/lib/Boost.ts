@@ -156,9 +156,10 @@ export class Boost {
         await repository.checkout(this.pullRequest.branch);
 
         try {
-            const initFn = require(`${this.path}/init.js`).handler;
-
-            await initFn(params);
+            if (existsSync(`${this.path}/init.js`)) {
+                const initFn = require(`${this.path}/init.js`).handler;
+                await initFn(params);
+            }
         } catch (e) {
             this.log(e);
         }
