@@ -13,8 +13,10 @@ export class Application {
     public repositoryName!: string;
     public historyManager!: HistoryManager;
 
-    constructor(public configFilename?: string) {
-        this.historyManager = new HistoryManager(`${__dirname}/history.json`);
+    constructor(public configFilename?: string, public specifiedConfigFilename = false) {
+        if (!configFilename) {
+            this.configFilename = 'codeboost.config.js';
+        }
     }
 
     async init() {
@@ -36,29 +38,38 @@ export class Application {
     }
 
     getConfigFilename() {
+        if (this.specifiedConfigFilename) {
+            return this.configFilename;
+        }
+
         const files = [
-            process.cwd() + '/' + this.configFilename,
-            process.cwd() + '/codeboost.config.js',
             userInfo({ encoding: 'utf8' }).homedir + '/codeboost.config.js',
+            process.cwd() + '/codeboost.config.js',
+            process.cwd() + '/' + this.configFilename,
         ];
+
+        let result = this.configFilename;
 
         for (const file of files) {
             if (existsSync(file) && file.endsWith('.js')) {
-                return file;
+                result = file;
             }
         }
 
-        return null;
+        return result;
     }
 
     async execute(repoName: string, boostName: string) {
+        const homePath = userInfo({ encoding: 'utf8' }).homedir;
+        this.historyManager = new HistoryManager(`${homePath}/.codeboost/history.json`);
+
         this.repositoryName = repoName;
 
         await this.init();
 
         try {
             await this.codeboost.prepareRepository();
-            await this.codeboost.runBoost(boostName, ['8.2']);
+            await this.codeboost.runBoost(boostName, [ '8.2' ]);
         } catch (e: any) {
             console.log(`${chalk.redBright('✗')} error: ${e.message}`);
         }

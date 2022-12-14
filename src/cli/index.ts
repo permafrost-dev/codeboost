@@ -12,9 +12,9 @@ program
     .description('Run the specified boost against a repository.')
     .argument('[name]', 'boost name', null)
     .option('-r,--repo <repoName>', 'repository to run against')
-    .option('-c,--config <configFile>', 'config file to use', 'codeboost.config.js')
+    .option('-c,--config <configFile>', 'config file to use', '')
     .action(async (name, options) => {
-        const app = new Application(options.config);
+        const app = new Application(options.config, options.config.length > 0);
         await app.execute(options.repo, name);
     });
 
