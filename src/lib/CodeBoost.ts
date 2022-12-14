@@ -3,7 +3,7 @@ import { Boost } from '@/lib/Boost';
 import { createOctokit } from '@/lib/github';
 import { HistoryManager } from '@/lib/HistoryManager';
 import { Repository } from '@/lib/Repository';
-import { HasLogger } from '@/traits/HasLogger';
+import { HasLogger, LogTarget } from '@/traits/HasLogger';
 import { BoostConfiguration } from '@/types/BoostConfiguration';
 import { Octokit } from '@octokit/core';
 import { existsSync } from 'fs';
@@ -21,7 +21,7 @@ export class CodeBoost extends Mixin(HasLogger) {
 
     constructor(historyManager: HistoryManager) {
         super();
-        this.createLogger({});
+        this.createLogger(<LogTarget[]>this.appSettings.log_target, {});
         this.historyManager = historyManager;
     }
 

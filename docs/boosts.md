@@ -20,31 +20,6 @@ Inside this directory, create a file named `boost.js`. This is the main configur
 
 ```typescript
 interface BoostConfiguration {
-    id: string;
-    version: string;
-    repository_limits: {
-        max_runs_per_version: number;
-        minutes_between_runs: number;
-    };
-    pull_request: {
-        title: string;
-        body: string;
-        branch: string;
-    };
-    scripts: {
-        parallel: boolean;
-        files: string[];
-    };
-    actions: any[];
-}
-```
-
-## boost initialization
-
-Inside the `boosts/my-boost` directory, create a file named `scripts/init.js`. This file is used to initialize your boost. It should export a function named `handler` that takes a single argument, an object with the following properties:
-
-```typescript
-{
     /**
      * the id of the boost, which is the name of the directory that contains the boost.
      */
@@ -61,12 +36,14 @@ Inside the `boosts/my-boost` directory, create a file named `scripts/init.js`. T
     pull_request: {
         /**
          * the title of the pull request, which can be a file path or a string.
-         * the contents of the file or string are processed as a template using * * edge.js.
+         * the contents of the file or string are processed as a template using
+         * edge.js.
          */
         title: string;
         /**
          * the body of the pull request, which can be a file path or a string.
-         * the contents of the file or string are processed as a template using * * edge.js.
+         * the contents of the file or string are processed as a template using
+         * edge.js.
          */
         body: string;
         branch: string;
@@ -76,6 +53,33 @@ Inside the `boosts/my-boost` directory, create a file named `scripts/init.js`. T
         files: string[];
     };
     actions: any[];
+}
+```
+
+## boost initialization
+
+Inside the `boosts/my-boost` directory, create a file named `scripts/init.js`. This file is used to initialize your boost. It should export a function named `handler` that takes a single argument, an object with the following properties:
+
+```typescript
+export interface BoostScriptHandlerParameters {
+    /** arguments passed in from the user */
+    args: any[];
+    /** the boost instance */
+    boost: Boost;
+    /** read-only object with information about the current boost run */
+    currentRun: BoostHistoryItem;
+    /** a simpleGit instance for the repository */
+    git: SimpleGit;
+    /** a collection of commonly-used libraries available to the boost scripts */
+    libs: {
+        fs: typeof import('fs');
+        path: typeof import('path');
+        semver: typeof import('semver');
+    };
+    /** the repository instance */
+    repository: Repository;
+    /** a collection of utility functions available to the boost scripts */
+    tools: Tools;
 }
 ```
 
