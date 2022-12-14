@@ -119,3 +119,18 @@ it('forks a repository', async () => {
 
     requestFn.mockRestore();
 });
+
+it('gets the current user', async () => {
+    initOctokit('test-token');
+    const octokit = createOctokit();
+
+    const requestFn = jest.fn().mockImplementation(() => {
+        return Promise.resolve({ status: 200, data: { login: 'test-user' } });
+    });
+
+    octokit.request = requestFn;
+
+    await expect(Github.currentUser(octokit)).resolves.toStrictEqual({ login: 'test-user' });
+
+    requestFn.mockRestore();
+});
