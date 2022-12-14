@@ -123,6 +123,7 @@ it('forks a repository', async () => {
 it('gets the current user', async () => {
     initOctokit('test-token');
     const octokit = createOctokit();
+    Github.setCache({ currentUser: null });
 
     const requestFn = jest.fn().mockImplementation(() => {
         return Promise.resolve({ status: 200, data: { login: 'test-user' } });
