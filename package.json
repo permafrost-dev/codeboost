@@ -1,12 +1,15 @@
 {
     "name": "codeboost",
     "version": "1.0.0",
-    "description": "update large numbers of repositories quickly",
+    "description": "Automate changes to repositories",
     "author": "Patrick Organ <patrick@permafrost.dev>",
     "license": "MIT",
     "keywords": [
         "nodejs",
-        "typescript"
+        "typescript",
+        "automation",
+        "git",
+        "repositories"
     ],
     "homepage": "https://github.com/permafrost-dev/codeboost",
     "repository": {
@@ -17,7 +20,7 @@
         "url": "https://github.com/permafrost-dev/codeboost/issues"
     },
     "main": "dist/index.js",
-    "typings": "dist/index.d.ts",
+    "typings": "dist/codeboost.d.ts",
     "lint-staged": {
         "*.{js,ts}": [
             "rome format --skip-errors --write",
@@ -34,7 +37,7 @@
     "scripts": {
         "analyze:deps:circular": "madge --extensions js,ts --circular --ts-config tsconfig.json src/**",
         "analyze:deps:list": "madge --extensions js,ts --ts-config tsconfig.json src/**",
-        "analyze:deps:graph": "madge --extensions js,ts --image graph.svg --layout dot --ts-config tsconfig.json src/**",
+        "analyze:deps:graph": "madge --extensions js,ts --image dependency-graph.svg --layout dot --ts-config tsconfig.json src/**",
         "test": "jest tests --verbose",
         "test:coverage": "jest tests --coverage",
         "fmt": "rome --apply-suggested . && prettier --config prettier.config.js --write .",
@@ -44,9 +47,10 @@
         "fix": "npm run fmt && npm run lint:fix",
         "build:dev": "node scripts/build.js",
         "build:prod": "node scripts/build.js --production",
+        "build:lib": "node scripts/build-library.js",
         "build:binaries": "node scripts/build.js --binaries",
-        "build:dts": "dts-bundle-generator -o dist/index.d.ts src/index.ts",
-        "build": "npm run build:dev && npm run build:dts",
+        "build:dts": "dts-bundle-generator -o dist/codeboost.d.ts src/lib/CodeBoost.ts",
+        "build": "npm run build:dev && npm run build:lib && npm run build:dts",
         "dev": "npm run build:dev && node dist/index.js",
         "prepare": "husky install"
     },
@@ -54,7 +58,6 @@
         "@octokit/core": "^4.1.0",
         "@octokit/plugin-throttling": "^4.3.2",
         "commander": "^9.4.1",
-        "conf": "^10.2.0",
         "dayjs": "^1.11.7",
         "deepmerge": "^4.2.2",
         "dotenv": "^16.0.3",
