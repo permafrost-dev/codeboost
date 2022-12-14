@@ -10,12 +10,13 @@ export class Application {
     public repositoryName!: string;
     public historyManager!: HistoryManager;
 
-    constructor() {
+    constructor(public configFilename?: string) {
         this.historyManager = new HistoryManager(`${__dirname}/history.json`);
     }
 
     async init() {
-        this.settings = loadSettings(`${__dirname}/settings.js`);
+        this.configFilename = process.cwd() + '/' + this.configFilename ?? `${__dirname}/settings.js`;
+        this.settings = loadSettings(this.configFilename);
         initOctokit(this.settings.github_token);
 
         const repo = new Repository(this.repositoryName, this.settings.repository_storage_path);
