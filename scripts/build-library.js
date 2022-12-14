@@ -10,10 +10,10 @@ const buildConfigs = [
         basePath: `${__dirname}/..`,
         bundle: true,
         constants: {},
-        entry: 'src/index.ts',
+        entry: 'src/library.ts',
         format: 'cjs',
         minify: false,
-        outfile: 'dist/index.cs.js',
+        outfile: 'dist/codeboost.cs.js',
         platform: {
             name: 'node',
             version: 14,
@@ -23,10 +23,10 @@ const buildConfigs = [
         basePath: `${__dirname}/..`,
         bundle: true,
         constants: {},
-        entry: 'src/index.ts',
+        entry: 'src/library.ts',
         format: 'esm',
         minify: false,
-        outfile: 'dist/index.es.mjs',
+        outfile: 'dist/codeboost.es.mjs',
         platform: {
             name: 'node',
             version: 14,
@@ -74,7 +74,7 @@ class Builder {
                 minify: buildConfig.minify || this.config.minify,
                 outfile: buildConfig.outfile,
                 platform: buildConfig.platform.name,
-                target: `es2015`,
+                target: `es2018`,
                 treeShaking: false,
             });
 
