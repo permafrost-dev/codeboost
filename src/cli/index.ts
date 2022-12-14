@@ -11,10 +11,10 @@ program
     .command('run')
     .description('Run the specified boost against a repository.')
     .argument('[name]', 'boost name', null)
-    .option('-r, --repo <repoName>', 'repository to run against')
+    .option('-r,--repo <repoName>', 'repository to run against')
     .action(async (name, options) => {
         const app = new Application();
-        await app.execute(options.repoName, name);
+        await app.execute(options.repo, name);
     });
 
 program.parse();

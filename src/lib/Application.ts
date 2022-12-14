@@ -27,12 +27,13 @@ export class Application {
     async execute(repoName: string, boostName: string) {
         this.repositoryName = repoName;
 
+        await this.init();
+
         try {
-            await this.init();
             await this.codeboost.prepareRepository();
-            await this.codeboost.runBoost(boostName, ['8.2']);
+            await this.codeboost.runBoost(boostName, [ '8.2' ]);
         } catch (e: any) {
-            this.codeboost.log(`error: ${e.message}`);
+            console.log(`error: ${e.message}`);
         }
 
         this.historyManager.save();

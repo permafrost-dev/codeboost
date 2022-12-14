@@ -66,6 +66,8 @@ class Builder {
             target: `es2018`, // ${buildConfig.platform.name}${buildConfig.platform.version}`,
         };
 
+        settings.external = settings.external.filter(dep => ![ 'nanoid' ].includes(dep));
+
         if (buildConfig.outfile) {
             settings.outfile = buildConfig.outfile;
             delete settings['outdir'];

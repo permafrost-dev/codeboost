@@ -21,9 +21,9 @@ export class HasLogger {
             new winston.transports.File({ filename: `${__dirname}/codeboost.log` });
         }
 
-        if (targets.includes('console')) {
-            this.logger.add(new winston.transports.Console({ format: winston.format.simple() }));
-        }
+        //if (targets.includes('console')) {
+        this.logger.add(new winston.transports.Console({ format: winston.format.simple() }));
+        //}
     }
 
     public log(message: string, meta: any[] = []) {
@@ -31,6 +31,6 @@ export class HasLogger {
             return;
         }
 
-        this.logger.info(message, ...[merge.all([{ _ts: dayjs().toISOString() }, ...meta])]);
+        this.logger.info(message, ...[ merge.all([{ _ts: dayjs().toISOString() }, ...meta ]) ]);
     }
 }
