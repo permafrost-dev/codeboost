@@ -15,5 +15,4 @@ module.exports.default = {
         parallel: true,
         files: [ 'copy-files-to-repo.js' ],
     },
-    actions: [],
 };

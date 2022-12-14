@@ -90,7 +90,7 @@ export function coerceState(state: IState): IState {
                 run.status = StateActionRunStatus.UNKNOWN;
 
                 if (run.success) {
-                    run.status = StateActionRunStatus.SUCCESS;
+                    run.status = StateActionRunStatus.SUCCEEDED;
                 }
 
                 if (run.skipped) {

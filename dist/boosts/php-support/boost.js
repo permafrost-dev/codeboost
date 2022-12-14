@@ -13,7 +13,6 @@ module.exports.default = {
     },
     scripts: {
         parallel: true,
-        files: ['update-composer-json.js', 'update-tests-workflow.js'],
+        files: [ 'update-composer-json.js', 'update-tests-workflow.js' ],
     },
-    actions: [],
 };
