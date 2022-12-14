@@ -36,9 +36,9 @@ export type BoostScriptHandler = (params: BoostScriptHandlerParameters) => any;
 
 export class Boost {
     protected codeBoost!: CodeBoost;
-    protected config!: BoostConfiguration;
     protected repository: Repository | null = null;
 
+    public config!: BoostConfiguration;
     public path!: string;
     public id!: string;
     public version!: string;
