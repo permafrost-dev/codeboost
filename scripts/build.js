@@ -10,10 +10,11 @@ const buildConfig = {
     basePath: `${__dirname}/..`,
     bundle: true,
     constants: {},
-    entry: 'src/index.ts',
+    entry: 'src/cli/index.ts',
     format: 'cjs',
     minify: false,
-    outdir: 'dist',
+    //outdir: 'dist',
+    outfile: 'dist/cli.js',
     platform: {
         name: 'node',
         version: 14,
@@ -38,7 +39,8 @@ class Builder {
     }
 
     async compile() {
-        const result = await esbuild.build({
+        /** @type {import('esbuild').BuildOptions} settings */
+        const settings = {
             absWorkingDir: buildConfig.basePath,
             allowOverwrite: true,
             bundle: buildConfig.bundle,
@@ -47,6 +49,19 @@ class Builder {
                 __COMPILED_AT__: `'${new Date().toUTCString()}'`,
                 ...buildConfig.constants,
             },
+            external: [
+                '@octokit/core',
+                '@octokit/plugin-throttling',
+                'commander',
+                'dayjs',
+                'dotenv',
+                'edge.js',
+                'js-yaml',
+                'semver',
+                'simple-git',
+                'winston',
+                'winston-transport',
+            ],
             entryPoints: [ buildConfig.entry ],
             format: buildConfig.format,
             logLevel: 'silent',
@@ -60,8 +75,15 @@ class Builder {
                 //     tsconfigPath: `${buildConfig.basePath}/tsconfig.json`,
                 // }),
             ],
-            target: `${buildConfig.platform.name}${buildConfig.platform.version}`,
-        });
+            target: `es2018`, // ${buildConfig.platform.name}${buildConfig.platform.version}`,
+        };
+
+        if (buildConfig.outfile) {
+            settings.outfile = buildConfig.outfile;
+            delete settings['outdir'];
+        }
+
+        const result = await esbuild.build(settings);
 
         return new Promise(resolve => resolve(result));
     }
@@ -97,7 +119,7 @@ class Builder {
             })
             .forEach(data => (this.config[data.name] = data.value));
 
-        console.log(this.config);
+        // console.log(this.config);
     }
 
     convertToProductionFile() {
