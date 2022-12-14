@@ -42,6 +42,7 @@ This file should export a configuration object with the following properties:
 export interface AppSettings {
     github_token: string;
     repository_storage_path: string;
+    boosts_path: string;
     use_forks: boolean;
     use_pull_requests: boolean;
     log_target: 'console' | 'file';
