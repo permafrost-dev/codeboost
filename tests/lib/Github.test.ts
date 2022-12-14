@@ -30,3 +30,10 @@ it('throws an error when getting the current user with an invalid token', async 
 
     await expect(Github.currentUser(octokit)).rejects.toThrow();
 });
+
+it('throws an error when merging a pull request that does not exist', async () => {
+    const octokit = createOctokit();
+    const repository = new Repository('permafrost-dev/node-ray', tempPath);
+
+    await expect(Github.mergePullRequest(repository, 999999, octokit)).rejects.toThrow();
+});
