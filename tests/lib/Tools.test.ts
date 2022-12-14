@@ -12,7 +12,7 @@ it('sleeps for 1 second', async () => {
     await tools.sleep(1000);
     const end = Date.now();
 
-    expect(end - start).toBeGreaterThanOrEqual(1000);
+    expect(end - start).toBeGreaterThanOrEqual(950);
 });
 
 it('checks if a file exists', () => {
@@ -49,6 +49,12 @@ it('hashes a file', () => {
     const path = `${__dirname}/../fixtures/test-boost-1/1.0.0/first.js`;
 
     expect(tools.hashfile(path)).toBe('ebfa68fa54781a061bc26dde44e10a82df2bc1ded4aff93df82a505f364eb553');
+});
+
+it('hashes a string', () => {
+    const str = 'test string';
+
+    expect(tools.hashstring(str)).toBe('d5579c46dfcc7f18207013e65b44e4cb4e2c2298f4ac457ba8f82743f31e930b');
 });
 
 it('compares two files', () => {

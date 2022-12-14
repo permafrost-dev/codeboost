@@ -66,7 +66,16 @@ export class Tools {
      * @returns {string} The sha-256 hash of the file.
      */
     public hashfile(path: string) {
-        return createHash('sha256').update(this.readfile(path))
+        return this.hashstring(this.readfile(path));
+    }
+
+    /**
+     * It takes a string and returns the sha-256 hash.
+     * @param {string} str - The string you want to hash.
+     * @returns {string} The sha-256 hash of the string.
+     */
+    public hashstring(str: string) {
+        return createHash('sha256').update(str)
             .digest('hex')
             .toLowerCase();
     }
@@ -141,7 +150,7 @@ export class Tools {
      * @param {function|null} onCopiedCallback - A callback function that is called after each file is copied.
      * @returns {string[]}
      */
-    public recursiveDirectoryCopy(src, dest, onCopiedCallback: OnFileCopiedCallback | null = null) {
+    public recursiveDirectoryCopy(src: string, dest: string, onCopiedCallback: OnFileCopiedCallback | null = null) {
         const destFiles: string[] = [];
         const handler = (src, dest) => {
             const files = readdirSync(src);
