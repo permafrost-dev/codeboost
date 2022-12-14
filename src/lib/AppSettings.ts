@@ -29,13 +29,13 @@ export function transformSettings(settings: AppSettings): AppSettings {
     }
 
     if (!Array.isArray(settings.log_target)) {
-        settings.log_target = [ settings.log_target ];
+        settings.log_target = [settings.log_target];
     }
 
     settings.log_target = settings.log_target
         .map(target => <LogTarget>target.toLowerCase())
         .filter((target: string) => {
-            return [ 'console', 'file' ].includes(target);
+            return ['console', 'file'].includes(target);
         });
 
     if (typeof settings.dry_run === 'undefined') {
