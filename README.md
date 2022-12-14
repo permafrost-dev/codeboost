@@ -6,7 +6,7 @@
 
 ---
 
-![Run Tests](https://github.com/permafrost-dev/codeboost/actions/workflows/run-tests.yml/badge.svg)] ![codecov](https://codecov.io/github/permafrost-dev/codeboost/branch/main/graph/badge.svg?token=qYptYEWlm7)
+![Run Tests](https://github.com/permafrost-dev/codeboost/actions/workflows/run-tests.yml/badge.svg) ![codecov](https://codecov.io/github/permafrost-dev/codeboost/branch/main/graph/badge.svg?token=qYptYEWlm7)
 
 Automate changes to repositories
 
