@@ -8,7 +8,7 @@ export class BatchManager {
     }
 
     public getBatch(boost: Boost, size: number) {
-        //
+        return this.getUsableDataset(boost).slice(0, size);
     }
 
     protected getUsableDataset(boost: Boost) {
