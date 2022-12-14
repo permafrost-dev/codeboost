@@ -62,7 +62,13 @@ export class Application {
 
     async executeRun(repoName: string, boostName: string) {
         const homePath = userInfo({ encoding: 'utf8' }).homedir;
-        this.historyManager = new HistoryManager(`${homePath}/.codeboost/history.json`);
+        let historyFn = `${homePath}/.codeboost/history.json`;
+
+        if (!existsSync(historyFn)) {
+            historyFn = '';
+        }
+
+        this.historyManager = new HistoryManager(historyFn);
 
         this.repositoryName = repoName;
 
@@ -70,7 +76,7 @@ export class Application {
 
         try {
             await this.codeboost.prepareRepository();
-            await this.codeboost.runBoost(boostName, ['8.2']);
+            await this.codeboost.runBoost(boostName, [ '8.2' ]);
         } catch (e: any) {
             console.log(`${chalk.redBright('✗')} error: ${e.message}`);
         }

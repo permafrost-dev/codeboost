@@ -136,4 +136,21 @@ export class Github {
 
         return result.data;
     }
+
+    static async mergePullRequest(repository: RepositoryInfo, pullRequestNumber: number, octokit: Octokit | null = null) {
+        octokit = octokit ?? createOctokit();
+
+        const result = await octokit.request(`PUT /repos/${repository.owner}/${repository.name}/pulls/${pullRequestNumber}/merge`, {
+            owner: repository.owner,
+            repo: repository.name,
+            pull_number: pullRequestNumber,
+            merge_method: 'merge',
+        });
+
+        if (result.status !== 200) {
+            throw new Error(`Failed to merge pull request for ${repository.owner}/${repository.name}`);
+        }
+
+        return result.data;
+    }
 }

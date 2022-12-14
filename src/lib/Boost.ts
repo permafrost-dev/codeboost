@@ -10,6 +10,7 @@ import { existsSync, readFileSync } from 'fs';
 import semver from 'semver';
 import { SimpleGit } from 'simple-git';
 import dayjs from 'dayjs';
+import { Github } from '@/lib/github';
 
 export interface BoostScriptHandlerParameters {
     /** arguments passed in from the user */
@@ -156,14 +157,25 @@ export class Boost {
             }
         };
 
+        const handleDryRun = async (callback: CallableFunction, dryRunMessage: string) => {
+            if (this.appSettings.dry_run) {
+                this.log(`[dry run] ${dryRunMessage}`);
+                return null;
+            }
+
+            return await callback();
+        };
+
+        let hasError = false;
+
         if (!this.appSettings.use_pull_requests) {
             this.pullRequest.branch = await repository.defaultBranch();
         }
 
-        let hasError = false;
-
-        await this.updatePullRequestBranchName();
-        await this.checkoutPullRequestBranch();
+        if (this.appSettings.use_pull_requests) {
+            await this.updatePullRequestBranchName();
+            await this.checkoutPullRequestBranch();
+        }
 
         catchErrors(async () => {
             await this.runInitializationScript(params);
@@ -175,25 +187,36 @@ export class Boost {
 
         if (!hasError && this.changedFiles.length > 0) {
             catchErrors(async () => {
-                //await repository.pushToFork(this.pullRequest.branch);
+                if (this.appSettings.use_forks) {
+                    handleDryRun(async () => await repository.pushToFork(this.pullRequest.branch), `push branch ${this.pullRequest.branch} to fork`);
+                } else {
+                    handleDryRun(
+                        async () => await await repository.git.push('origin', this.pullRequest.branch),
+                        `push branch ${this.pullRequest.branch} to origin`,
+                    );
+                }
             });
 
-            catchErrors(async () => {
-                const loadStringOrFile = (value: string) => {
-                    if (existsSync(this.path + '/' + value)) {
-                        return readFileSync(this.path + '/' + value, { encoding: 'utf8' });
-                    }
-                    return value;
-                };
+            if (this.appSettings.use_pull_requests) {
+                catchErrors(async () => {
+                    handleDryRun(async () => {
+                        const loadStringOrFile = (value: string) => {
+                            return existsSync(`${this.path}/${value}`) ? readFileSync(`${this.path}/${value}`, 'utf8') : value;
+                        };
 
-                const title = await edge.renderRaw(loadStringOrFile(this.pullRequest.title), { boost: this, state: () => this.state });
-                const body = await edge.renderRaw(loadStringOrFile(this.pullRequest.body), { boost: this, state: () => this.state });
+                        const title = await edge.renderRaw(loadStringOrFile(this.pullRequest.title), { boost: this, state: () => this.state });
+                        const body = await edge.renderRaw(loadStringOrFile(this.pullRequest.body), { boost: this, state: () => this.state });
 
-                const pr: any = null; //await Github.createPullRequest(repository, this.pullRequest.branch, await this.repository?.defaultBranch(), title.trim(), body.trim());
-                historyItem.pull_request = pr?.number;
-                //this.log(`created pull request #${pr.number}`);
-                this.log('skipping pr creation');
-            });
+                        const defaultBranch = (await this.repository?.defaultBranch()) ?? 'main';
+                        const pr: any = await Github.createPullRequest(repository, this.pullRequest.branch, defaultBranch, title.trim(), body.trim());
+                        historyItem.pull_request = pr?.number;
+
+                        if (pr) {
+                            this.log(`created pull request #${pr.number}`);
+                        }
+                    }, 'would create pull request now');
+                });
+            }
         }
 
         historyItem.finished_at = new Date().toISOString();
