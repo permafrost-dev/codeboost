@@ -79,7 +79,11 @@ export class Application {
 
     async executeInit() {
         const homePath = userInfo({ encoding: 'utf8' }).homedir;
-        const configFn = `${homePath}/codeboost.config.js`;
+        let configFn = `${homePath}/codeboost.config.js`;
+
+        if (this.specifiedConfigFilename) {
+            configFn = this.configFilename ?? '';
+        }
 
         if (!existsSync(`${homePath}/.codeboost`)) {
             mkdirSync(`${homePath}/.codeboost`);

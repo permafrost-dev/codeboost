@@ -21,8 +21,9 @@ program
 program
     .command('init')
     .description('Initialize codeboost.')
+    .option('-c,--config <configFile>', 'config file to use', '')
     .action(async options => {
-        const app = new Application(options.config);
+        const app = new Application(options.config, options.config.length > 0);
         await app.executeInit();
     });
 
