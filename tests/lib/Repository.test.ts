@@ -48,7 +48,7 @@ it('gets a list of local branches', async () => {
     const mainBranchName = 'main';
     const branches = await repository.localBranches();
 
-    expect(branches).toContain(mainBranchName);
+    expect(branches.all).toContain(mainBranchName);
 });
 
 it('checks if it is on a branch', async () => {
