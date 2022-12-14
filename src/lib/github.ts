@@ -93,12 +93,10 @@ export class Github {
     static async getRepository(repository: Repository, octokit: Octokit | null = null) {
         octokit = octokit ?? createOctokit();
 
-        const currentUsername = (await Github.currentUser(octokit)).login;
-
-        const result = await octokit.request(`GET /repos/${currentUsername}/${repository.name}`);
+        const result = await octokit.request(`GET /repos/${repository.owner}/${repository.name}`);
 
         if (result.status !== 200) {
-            throw new Error(`Failed to get repository ${currentUsername}/${repository.name}`);
+            throw new Error(`Failed to get repository ${repository.owner}/${repository.name}`);
         }
 
         return result.data;
