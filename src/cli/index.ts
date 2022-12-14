@@ -18,4 +18,12 @@ program
         await app.execute(options.repo, name);
     });
 
+program
+    .command('init')
+    .description('Initialize codeboost.')
+    .action(async options => {
+        const app = new Application(options.config);
+        await app.executeInit();
+    });
+
 program.parse();

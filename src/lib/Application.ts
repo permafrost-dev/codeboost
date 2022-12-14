@@ -3,8 +3,9 @@ import { CodeBoost } from '@/lib/CodeBoost';
 import { initOctokit } from '@/lib/github';
 import { HistoryManager } from '@/lib/HistoryManager';
 import { Repository } from '@/lib/Repository';
-import { existsSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { userInfo } from 'os';
+import chalk from 'chalk';
 
 export class Application {
     public settings!: AppSettings;
@@ -50,11 +51,41 @@ export class Application {
 
         try {
             await this.codeboost.prepareRepository();
-            await this.codeboost.runBoost(boostName, ['8.2']);
+            await this.codeboost.runBoost(boostName, [ '8.2' ]);
         } catch (e: any) {
             console.log(`error: ${e.message}`);
         }
 
         this.historyManager.save();
+    }
+
+    async executeInit() {
+        const homePath = userInfo({ encoding: 'utf8' }).homedir;
+        const configFn = `${homePath}/codeboost.config.js`;
+
+        if (!existsSync(`${homePath}/.codeboost`)) {
+            mkdirSync(`${homePath}/.codeboost`);
+            console.log(`${chalk.greenBright('✓')} config directory created`);
+        }
+
+        if (!existsSync(configFn)) {
+            writeFileSync(
+                configFn,
+                `
+            module.exports.default = {
+                github_token: '$GITHUB_TOKEN',
+                repository_storage_path: \`\${__dirname}/repositories\`,
+                boosts_path: \`\${__dirname}/boosts\`,
+                use_forks: true,
+                use_pull_requests: true,
+                log_target: 'console',
+            };`
+                    .replaceAll('            ', '')
+                    .trim(),
+            );
+            console.log(`${chalk.greenBright('✓')} global config file created`);
+        }
+
+        console.log(`${chalk.greenBright('✓')} codeboost initialized`);
     }
 }
