@@ -1,0 +1,20 @@
+import { createOctokit, Github } from '@/lib/github';
+import { Repository } from '@/lib/Repository';
+
+const tempPath = `${__dirname}/../fixtures/temp`;
+
+it('gets a repository', async () => {
+    const octokit = createOctokit();
+    const repository = new Repository('permafrost-dev/node-ray', tempPath);
+    const result = await Github.getRepository(repository, octokit);
+
+    expect(result).toBeDefined();
+    expect(result.full_name).toBe('permafrost-dev/node-ray');
+});
+
+it('throws an error when getting a repository that does not exist', async () => {
+    const octokit = createOctokit();
+    const repository = new Repository('permafrost-dev/does-not-exist', tempPath);
+
+    await expect(Github.getRepository(repository, octokit)).rejects.toThrow();
+});
