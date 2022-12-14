@@ -1,5 +1,3 @@
-import { Boost } from '@/lib/Boost';
-import { Repository } from '@/lib/Repository';
 import { execSync } from 'child_process';
 import { createHash } from 'crypto';
 import { copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs';
@@ -9,15 +7,15 @@ import { dirname } from 'path';
 export type OnFileCopiedCallback = (src: string, dest: string) => void;
 
 export class Tools {
-    constructor(protected boost: Boost, protected repository: Repository) {
-        //
-    }
-
-    // This function takes a number of milliseconds and returns a promise that
-    // resolves after that many milliseconds have passed.
-    //
-    // This function is used to create a delay in a program, which can be useful
-    // for debugging, or for building a user interface with an animation.
+    /**
+     * This function takes a number of milliseconds and returns a promise that
+     * resolves after that many milliseconds have passed.
+     *
+     * This function is used to create a delay in a program, which can be useful
+     * for debugging, or for building a user interface with an animation.
+     * @param {number} ms - The number of milliseconds to wait.
+     * @returns A promise that resolves after the given number of milliseconds.
+     */
     public async sleep(ms: number) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
@@ -50,7 +48,7 @@ export class Tools {
     }
 
     /**
-     * Copies a file from the boost directory to the repository directory. Both src and dest should be relative paths.
+     * Copies a file from `src` to `dest`. Both `src` and `dest` should be absolute paths.
      * @param {string} src
      * @param {string} dest
      */
@@ -59,7 +57,7 @@ export class Tools {
             mkdirSync(dirname(dest), { recursive: true });
         }
 
-        copyFileSync(`${this.boost.path}/${src}`, `${this.repository.path}/${dest}`);
+        copyFileSync(src, dest);
     }
 
     /**
@@ -68,7 +66,9 @@ export class Tools {
      * @returns {string} The sha-256 hash of the file.
      */
     public hashfile(path: string) {
-        return createHash('sha256').update(this.readfile(path)).digest('hex').toLowerCase();
+        return createHash('sha256').update(this.readfile(path))
+            .digest('hex')
+            .toLowerCase();
     }
 
     /**
@@ -158,14 +158,12 @@ export class Tools {
                         return;
                     }
 
-                    if (stats?.isFile()) {
-                        if (!this.filesAreEqual(srcFn, destFn)) {
-                            this.copyfile(srcFn, destFn);
-                            destFiles.push(destFn);
+                    if (stats?.isFile() && !this.filesAreEqual(srcFn, destFn)) {
+                        copyFileSync(srcFn, destFn);
+                        destFiles.push(destFn);
 
-                            if (onCopiedCallback) {
-                                onCopiedCallback(srcFn, destFn);
-                            }
+                        if (onCopiedCallback) {
+                            onCopiedCallback(srcFn, destFn);
                         }
                     }
 

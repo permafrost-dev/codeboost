@@ -139,6 +139,15 @@ export class Boost {
 
         const params = this.createScriptHandlerParameters(args, historyItem);
 
+        const catchErrors = async (callBack: CallableFunction) => {
+            try {
+                await callBack();
+            } catch (e) {
+                hasError = true;
+                this.log(e);
+            }
+        };
+
         if (!this.appSettings.use_pull_requests) {
             this.pullRequest.branch = await repository.defaultBranch();
         }
@@ -149,28 +158,20 @@ export class Boost {
         await this.updatePullRequestBranchName();
         await this.checkoutPullRequestBranch();
 
-        try {
+        catchErrors(async () => {
             await this.runInitializationScript(params);
-        } catch (e) {
-            hasError = true;
-            this.log(e);
-        }
+        });
 
-        try {
+        catchErrors(async () => {
             await this.runScripts(params);
-        } catch (e) {
-            hasError = true;
-            this.log(e);
-        }
+        });
 
         if (!hasError && this.changedFiles.length > 0) {
-            try {
+            catchErrors(async () => {
                 //await repository.pushToFork(this.pullRequest.branch);
-            } catch (e) {
-                this.log(e);
-            }
+            });
 
-            try {
+            catchErrors(async () => {
                 const loadStringOrFile = (value: string) => {
                     if (existsSync(this.path + '/' + value)) {
                         return readFileSync(this.path + '/' + value, { encoding: 'utf8' });
@@ -182,17 +183,14 @@ export class Boost {
                 const body = await edge.renderRaw(loadStringOrFile(this.pullRequest.body), { boost: this, state: () => this.state });
 
                 pr = null; //await Github.createPullRequest(repository, this.pullRequest.branch, title.trim(), body.trim());
+                historyItem.pull_request = pr?.number;
                 //this.log(`created pull request #${pr.number}`);
                 this.log('skipping pr creation');
-            } catch (e: any) {
-                hasError = true;
-                this.log(e.message);
-            }
+            });
         }
 
         historyItem.finished_at = new Date().toISOString();
         historyItem.state = hasError ? BoostHistoryItemState.FAILED : BoostHistoryItemState.SUCCEEDED;
-        historyItem.pull_request = pr;
 
         this.log('Done.');
     }
@@ -209,7 +207,7 @@ export class Boost {
                 semver,
             },
             repository: this.repository,
-            tools: new Tools(this, <Repository>this.repository),
+            tools: new Tools(),
         };
     }
 
