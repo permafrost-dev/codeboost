@@ -27,14 +27,6 @@ export class HasLogger {
             return;
         }
 
-        this.logger.info(message, ...[merge.all([{ _ts: dayjs().toISOString() }, ...meta])]);
-    }
-
-    public error(message: string, meta: any[] = []) {
-        if (!this.logger) {
-            return;
-        }
-
-        this.logger.error(message, ...[merge.all([{ _ts: dayjs().unix() }, ...meta])]);
+        this.logger.info(message, ...[ merge.all([{ _ts: dayjs().toISOString() }, ...meta ]) ]);
     }
 }
