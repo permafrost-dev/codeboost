@@ -43,6 +43,7 @@ export class Application {
         }
 
         const files = [
+            userInfo({ encoding: 'utf8' }).homedir + '/.codeboost/codeboost.config.js',
             userInfo({ encoding: 'utf8' }).homedir + '/codeboost.config.js',
             process.cwd() + '/codeboost.config.js',
             process.cwd() + '/' + this.configFilename,
@@ -59,7 +60,7 @@ export class Application {
         return result;
     }
 
-    async execute(repoName: string, boostName: string) {
+    async executeRun(repoName: string, boostName: string) {
         const homePath = userInfo({ encoding: 'utf8' }).homedir;
         this.historyManager = new HistoryManager(`${homePath}/.codeboost/history.json`);
 
@@ -79,7 +80,7 @@ export class Application {
 
     async executeInit() {
         const homePath = userInfo({ encoding: 'utf8' }).homedir;
-        let configFn = `${homePath}/codeboost.config.js`;
+        let configFn = `${homePath}/.codeboost/codeboost.config.js`;
 
         if (this.specifiedConfigFilename) {
             configFn = this.configFilename ?? '';

@@ -15,7 +15,7 @@ program
     .option('-c,--config <configFile>', 'config file to use', '')
     .action(async (name, options) => {
         const app = new Application(options.config, options.config.length > 0);
-        await app.execute(options.repo, name);
+        await app.executeRun(options.repo, name);
     });
 
 program
