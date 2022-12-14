@@ -11,7 +11,7 @@ it('initializes with the correct values', async () => {
 });
 
 it('prepares the repository once', async () => {
-    const cloneMock = jest.spyOn(Repository.prototype, 'clone').mockImplementation(async () => {});
+    const cloneMock = jest.spyOn(Repository.prototype, 'clone').mockImplementation(async () => true);
     const prepareMock = jest.spyOn(Repository.prototype, 'prepare').mockImplementation(async () => {});
     const createFork = jest.spyOn(Repository.prototype, 'createFork').mockImplementation(async () => {});
 
