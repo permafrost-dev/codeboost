@@ -46,29 +46,17 @@
 
 [HasLogger](HasLogger.md).[constructor](HasLogger.md#constructor)
 
-#### Defined in
-
-[lib/CodeBoost.ts:14](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/CodeBoost.ts#L14)
-
 ## Properties
 
 ### appSettings
 
 • **appSettings**: [`AppSettings`](../interfaces/AppSettings.md)
 
-#### Defined in
-
-[lib/CodeBoost.ts:10](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/CodeBoost.ts#L10)
-
 ---
 
 ### historyManager
 
 • **historyManager**: [`HistoryManager`](HistoryManager.md)
-
-#### Defined in
-
-[lib/CodeBoost.ts:11](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/CodeBoost.ts#L11)
 
 ---
 
@@ -80,19 +68,11 @@
 
 [HasLogger](HasLogger.md).[logger](HasLogger.md#logger)
 
-#### Defined in
-
-[traits/HasLogger.ts:10](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/traits/HasLogger.ts#L10)
-
 ---
 
 ### repositoryPrepared
 
 • **repositoryPrepared**: `boolean` = `false`
-
-#### Defined in
-
-[lib/CodeBoost.ts:12](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/CodeBoost.ts#L12)
 
 ## Methods
 
@@ -115,10 +95,6 @@
 
 [HasLogger](HasLogger.md).[createLogger](HasLogger.md#createlogger)
 
-#### Defined in
-
-[traits/HasLogger.ts:12](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/traits/HasLogger.ts#L12)
-
 ---
 
 ### init
@@ -135,10 +111,6 @@
 #### Returns
 
 `Promise`<`void`\>
-
-#### Defined in
-
-[lib/CodeBoost.ts:21](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/CodeBoost.ts#L21)
 
 ---
 
@@ -161,10 +133,6 @@
 
 [HasLogger](HasLogger.md).[log](HasLogger.md#log)
 
-#### Defined in
-
-[traits/HasLogger.ts:29](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/traits/HasLogger.ts#L29)
-
 ---
 
 ### prepareRepository
@@ -174,10 +142,6 @@
 #### Returns
 
 `Promise`<`void`\>
-
-#### Defined in
-
-[lib/CodeBoost.ts:26](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/CodeBoost.ts#L26)
 
 ---
 
@@ -195,7 +159,3 @@
 #### Returns
 
 `Promise`<[`Boost`](Boost.md)\>
-
-#### Defined in
-
-[lib/CodeBoost.ts:41](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/CodeBoost.ts#L41)

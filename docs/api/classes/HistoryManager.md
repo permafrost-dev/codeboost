@@ -32,29 +32,17 @@
 | :--------- | :------- |
 | `filename` | `string` |
 
-#### Defined in
-
-[lib/HistoryManager.ts:7](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/HistoryManager.ts#L7)
-
 ## Properties
 
 ### data
 
 • **data**: [`BoostHistory`](../modules.md#boosthistory) = `[]`
 
-#### Defined in
-
-[lib/HistoryManager.ts:5](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/HistoryManager.ts#L5)
-
 ---
 
 ### filename
 
 • **filename**: `string`
-
-#### Defined in
-
-[lib/HistoryManager.ts:7](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/HistoryManager.ts#L7)
 
 ## Methods
 
@@ -72,10 +60,6 @@
 
 [`BoostHistoryItem`](../interfaces/BoostHistoryItem.md)
 
-#### Defined in
-
-[lib/HistoryManager.ts:15](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/HistoryManager.ts#L15)
-
 ---
 
 ### for
@@ -92,10 +76,6 @@
 
 [`BoostHistory`](../modules.md#boosthistory)
 
-#### Defined in
-
-[lib/HistoryManager.ts:11](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/HistoryManager.ts#L11)
-
 ---
 
 ### load
@@ -106,10 +86,6 @@
 
 `void`
 
-#### Defined in
-
-[lib/HistoryManager.ts:29](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/HistoryManager.ts#L29)
-
 ---
 
 ### save
@@ -119,7 +95,3 @@
 #### Returns
 
 `void`
-
-#### Defined in
-
-[lib/HistoryManager.ts:21](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/HistoryManager.ts#L21)

@@ -46,10 +46,6 @@
 
 Ƭ **BoostHistory**: [`BoostHistoryItem`](interfaces/BoostHistoryItem.md)[]
 
-#### Defined in
-
-[types/BoostHistory.ts:1](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/types/BoostHistory.ts#L1)
-
 ---
 
 ### BoostScriptHandler
@@ -70,19 +66,11 @@
 
 `any`
 
-#### Defined in
-
-[lib/Boost.ts:35](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L35)
-
 ---
 
 ### LogTarget
 
 Ƭ **LogTarget**: `"console"` \| `"file"`
-
-#### Defined in
-
-[traits/HasLogger.ts:7](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/traits/HasLogger.ts#L7)
 
 ---
 
@@ -105,10 +93,6 @@
 
 `void`
 
-#### Defined in
-
-[lib/Tools.ts:7](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Tools.ts#L7)
-
 ## Functions
 
 ### createOctokit
@@ -118,10 +102,6 @@
 #### Returns
 
 `Octokit`
-
-#### Defined in
-
-[lib/github.ts:18](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/github.ts#L18)
 
 ---
 
@@ -139,10 +119,6 @@
 
 `void`
 
-#### Defined in
-
-[lib/github.ts:8](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/github.ts#L8)
-
 ---
 
 ### loadSettings
@@ -159,10 +135,6 @@
 
 [`AppSettings`](interfaces/AppSettings.md)
 
-#### Defined in
-
-[lib/AppSettings.ts:14](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/AppSettings.ts#L14)
-
 ---
 
 ### transformSettings
@@ -178,7 +150,3 @@
 #### Returns
 
 [`AppSettings`](interfaces/AppSettings.md)
-
-#### Defined in
-
-[lib/AppSettings.ts:20](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/AppSettings.ts#L20)

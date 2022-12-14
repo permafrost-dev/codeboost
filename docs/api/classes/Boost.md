@@ -55,19 +55,11 @@
 | `codeBoost` | [`CodeBoost`](CodeBoost.md) |
 | `boostPath` | `string`                    |
 
-#### Defined in
-
-[lib/Boost.ts:60](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L60)
-
 ## Properties
 
 ### actions
 
 • **actions**: `any`[]
-
-#### Defined in
-
-[lib/Boost.ts:55](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L55)
 
 ---
 
@@ -75,19 +67,11 @@
 
 • **changedFiles**: `string`[] = `[]`
 
-#### Defined in
-
-[lib/Boost.ts:57](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L57)
-
 ---
 
 ### config
 
 • **config**: [`BoostConfiguration`](../interfaces/BoostConfiguration.md)
-
-#### Defined in
-
-[lib/Boost.ts:41](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L41)
 
 ---
 
@@ -95,19 +79,11 @@
 
 • **id**: `string`
 
-#### Defined in
-
-[lib/Boost.ts:43](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L43)
-
 ---
 
 ### path
 
 • **path**: `string`
-
-#### Defined in
-
-[lib/Boost.ts:42](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L42)
 
 ---
 
@@ -123,10 +99,6 @@
 | `branch` | `string` |
 | `title`  | `string` |
 
-#### Defined in
-
-[lib/Boost.ts:49](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L49)
-
 ---
 
 ### repositoryLimits
@@ -140,19 +112,11 @@
 | `maxRunsPerVersion`  | `number` |
 | `minutesBetweenRuns` | `number` |
 
-#### Defined in
-
-[lib/Boost.ts:45](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L45)
-
 ---
 
 ### runId
 
 • **runId**: `string`
-
-#### Defined in
-
-[lib/Boost.ts:58](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L58)
 
 ---
 
@@ -160,29 +124,17 @@
 
 • **scripts**: `any`[]
 
-#### Defined in
-
-[lib/Boost.ts:54](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L54)
-
 ---
 
 ### state
 
 • **state**: `Record`<`string`, `any`\> = `{}`
 
-#### Defined in
-
-[lib/Boost.ts:56](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L56)
-
 ---
 
 ### version
 
 • **version**: `string`
-
-#### Defined in
-
-[lib/Boost.ts:44](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L44)
 
 ## Accessors
 
@@ -194,10 +146,6 @@
 
 [`AppSettings`](../interfaces/AppSettings.md)
 
-#### Defined in
-
-[lib/Boost.ts:81](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L81)
-
 ---
 
 ### history
@@ -207,10 +155,6 @@
 #### Returns
 
 [`BoostHistory`](../modules.md#boosthistory)
-
-#### Defined in
-
-[lib/Boost.ts:85](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L85)
 
 ## Methods
 
@@ -228,10 +172,6 @@
 
 `boolean`
 
-#### Defined in
-
-[lib/Boost.ts:268](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L268)
-
 ---
 
 ### checkoutPullRequestBranch
@@ -241,10 +181,6 @@
 #### Returns
 
 `Promise`<`void`\>
-
-#### Defined in
-
-[lib/Boost.ts:228](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L228)
 
 ---
 
@@ -263,10 +199,6 @@
 
 [`BoostScriptHandlerParameters`](../interfaces/BoostScriptHandlerParameters.md)
 
-#### Defined in
-
-[lib/Boost.ts:205](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L205)
-
 ---
 
 ### init
@@ -283,10 +215,6 @@
 
 `void`
 
-#### Defined in
-
-[lib/Boost.ts:67](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L67)
-
 ---
 
 ### loadConfiguration
@@ -302,10 +230,6 @@
 #### Returns
 
 [`BoostConfiguration`](../interfaces/BoostConfiguration.md)
-
-#### Defined in
-
-[lib/Boost.ts:93](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L93)
 
 ---
 
@@ -329,10 +253,6 @@
 | `branch` | `string` |
 | `title`  | `any`    |
 
-#### Defined in
-
-[lib/Boost.ts:99](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L99)
-
 ---
 
 ### loadScripts
@@ -349,10 +269,6 @@
 
 `any`[]
 
-#### Defined in
-
-[lib/Boost.ts:107](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L107)
-
 ---
 
 ### log
@@ -368,10 +284,6 @@
 #### Returns
 
 `void`
-
-#### Defined in
-
-[lib/Boost.ts:89](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L89)
 
 ---
 
@@ -390,10 +302,6 @@
 
 `Promise`<`undefined` \| `false`\>
 
-#### Defined in
-
-[lib/Boost.ts:123](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L123)
-
 ---
 
 ### runInitializationScript
@@ -409,10 +317,6 @@
 #### Returns
 
 `Promise`<`void`\>
-
-#### Defined in
-
-[lib/Boost.ts:221](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L221)
 
 ---
 
@@ -430,10 +334,6 @@
 
 `Promise`<`void`\>
 
-#### Defined in
-
-[lib/Boost.ts:257](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L257)
-
 ---
 
 ### updatePullRequestBranchName
@@ -445,7 +345,3 @@ update to a unique branch name if the branch already exists
 #### Returns
 
 `Promise`<`boolean`\>
-
-#### Defined in
-
-[lib/Boost.ts:235](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L235)

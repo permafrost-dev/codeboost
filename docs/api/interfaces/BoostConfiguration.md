@@ -18,10 +18,6 @@
 
 • **id**: `string`
 
-#### Defined in
-
-[types/BoostConfiguration.ts:2](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/types/BoostConfiguration.ts#L2)
-
 ---
 
 ### pull_request
@@ -36,10 +32,6 @@
 | `branch` | `string` |
 | `title`  | `string` |
 
-#### Defined in
-
-[types/BoostConfiguration.ts:8](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/types/BoostConfiguration.ts#L8)
-
 ---
 
 ### repository_limits
@@ -52,10 +44,6 @@
 | :--------------------- | :------- |
 | `max_runs_per_version` | `number` |
 | `minutes_between_runs` | `number` |
-
-#### Defined in
-
-[types/BoostConfiguration.ts:4](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/types/BoostConfiguration.ts#L4)
 
 ---
 
@@ -70,16 +58,8 @@
 | `files`    | `string`[] |
 | `parallel` | `boolean`  |
 
-#### Defined in
-
-[types/BoostConfiguration.ts:13](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/types/BoostConfiguration.ts#L13)
-
 ---
 
 ### version
 
 • **version**: `string`
-
-#### Defined in
-
-[types/BoostConfiguration.ts:3](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/types/BoostConfiguration.ts#L3)

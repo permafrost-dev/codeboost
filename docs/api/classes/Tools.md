@@ -50,10 +50,6 @@ Copies a file from `src` to `dest`. Both `src` and `dest` should be absolute pat
 
 `void`
 
-#### Defined in
-
-[lib/Tools.ts:55](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Tools.ts#L55)
-
 ---
 
 ### exec
@@ -75,10 +71,6 @@ It executes a command and returns the output as a string
 
 The output of the command.
 
-#### Defined in
-
-[lib/Tools.ts:136](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Tools.ts#L136)
-
 ---
 
 ### fileexists
@@ -99,10 +91,6 @@ This function returns true if the file exists, and false if it doesn't
 
 A boolean value.
 
-#### Defined in
-
-[lib/Tools.ts:28](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Tools.ts#L28)
-
 ---
 
 ### filesAreEqual
@@ -121,10 +109,6 @@ This function returns true if the two files have the exact same contents
 #### Returns
 
 `boolean`
-
-#### Defined in
-
-[lib/Tools.ts:86](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Tools.ts#L86)
 
 ---
 
@@ -146,10 +130,6 @@ It takes a file path and returns the sha-256 hash of the file contents.
 
 The sha-256 hash of the file.
 
-#### Defined in
-
-[lib/Tools.ts:68](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Tools.ts#L68)
-
 ---
 
 ### hashstring
@@ -170,10 +150,6 @@ It takes a string and returns the sha-256 hash.
 
 The sha-256 hash of the string.
 
-#### Defined in
-
-[lib/Tools.ts:77](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Tools.ts#L77)
-
 ---
 
 ### readJson
@@ -192,10 +168,6 @@ It reads a json file and returns the parsed contents as an object.
 
 `any`
 
-#### Defined in
-
-[lib/Tools.ts:117](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Tools.ts#L117)
-
 ---
 
 ### readYaml
@@ -213,10 +185,6 @@ It reads a yaml file and returns the contents as an object.
 #### Returns
 
 `any`
-
-#### Defined in
-
-[lib/Tools.ts:99](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Tools.ts#L99)
 
 ---
 
@@ -237,10 +205,6 @@ It reads a file and returns its contents
 `string`
 
 The contents of the file at the given path.
-
-#### Defined in
-
-[lib/Tools.ts:37](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Tools.ts#L37)
 
 ---
 
@@ -264,10 +228,6 @@ Returns a list of filenames that were copied.
 #### Returns
 
 `string`[]
-
-#### Defined in
-
-[lib/Tools.ts:151](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Tools.ts#L151)
 
 ---
 
@@ -293,10 +253,6 @@ for debugging, or for building a user interface with an animation.
 
 A promise that resolves after the given number of milliseconds.
 
-#### Defined in
-
-[lib/Tools.ts:19](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Tools.ts#L19)
-
 ---
 
 ### writeJson
@@ -315,10 +271,6 @@ It writes a JSON file to the specified path.
 #### Returns
 
 `void`
-
-#### Defined in
-
-[lib/Tools.ts:126](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Tools.ts#L126)
 
 ---
 
@@ -339,10 +291,6 @@ It dumps an object to yaml and saves it to the given path.
 
 `void`
 
-#### Defined in
-
-[lib/Tools.ts:108](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Tools.ts#L108)
-
 ---
 
 ### writefile
@@ -361,7 +309,3 @@ Write the given content to the given file path.
 #### Returns
 
 `void`
-
-#### Defined in
-
-[lib/Tools.ts:46](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Tools.ts#L46)

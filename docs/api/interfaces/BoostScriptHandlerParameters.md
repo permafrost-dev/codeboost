@@ -22,10 +22,6 @@
 
 arguments passed in from the user
 
-#### Defined in
-
-[lib/Boost.ts:16](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L16)
-
 ---
 
 ### boost
@@ -33,10 +29,6 @@ arguments passed in from the user
 • **boost**: [`Boost`](../classes/Boost.md)
 
 the boost instance
-
-#### Defined in
-
-[lib/Boost.ts:18](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L18)
 
 ---
 
@@ -46,10 +38,6 @@ the boost instance
 
 information about the current boost run
 
-#### Defined in
-
-[lib/Boost.ts:20](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L20)
-
 ---
 
 ### git
@@ -57,10 +45,6 @@ information about the current boost run
 • **git**: `SimpleGit`
 
 a simpleGit instance for the repository
-
-#### Defined in
-
-[lib/Boost.ts:22](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L22)
 
 ---
 
@@ -78,10 +62,6 @@ a collection of commonly-used libraries available to the boost scripts
 | `path`   | `PlatformPath` |
 | `semver` | `__module`     |
 
-#### Defined in
-
-[lib/Boost.ts:24](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L24)
-
 ---
 
 ### repository
@@ -90,10 +70,6 @@ a collection of commonly-used libraries available to the boost scripts
 
 the repository instance
 
-#### Defined in
-
-[lib/Boost.ts:30](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L30)
-
 ---
 
 ### tools
@@ -101,7 +77,3 @@ the repository instance
 • **tools**: [`Tools`](../classes/Tools.md)
 
 a collection of utility functions available to the boost scripts
-
-#### Defined in
-
-[lib/Boost.ts:32](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/Boost.ts#L32)

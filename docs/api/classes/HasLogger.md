@@ -35,10 +35,6 @@
 
 • **logger**: `Logger`
 
-#### Defined in
-
-[traits/HasLogger.ts:10](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/traits/HasLogger.ts#L10)
-
 ## Methods
 
 ### createLogger
@@ -56,10 +52,6 @@
 
 `void`
 
-#### Defined in
-
-[traits/HasLogger.ts:12](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/traits/HasLogger.ts#L12)
-
 ---
 
 ### log
@@ -76,7 +68,3 @@
 #### Returns
 
 `void`
-
-#### Defined in
-
-[traits/HasLogger.ts:29](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/traits/HasLogger.ts#L29)

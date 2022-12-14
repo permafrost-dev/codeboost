@@ -45,10 +45,6 @@ A class for interacting with the Github API
 
 `Promise`<`any`\>
 
-#### Defined in
-
-[lib/github.ts:112](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/github.ts#L112)
-
 ---
 
 ### currentUser
@@ -64,10 +60,6 @@ A class for interacting with the Github API
 #### Returns
 
 `Promise`<{ `login`: `string` }\>
-
-#### Defined in
-
-[lib/github.ts:52](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/github.ts#L52)
 
 ---
 
@@ -89,10 +81,6 @@ Throws an error if the fork already exists.
 
 `Promise`<`any`\>
 
-#### Defined in
-
-[lib/github.ts:77](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/github.ts#L77)
-
 ---
 
 ### getRepository
@@ -110,10 +98,6 @@ Throws an error if the fork already exists.
 
 `Promise`<`any`\>
 
-#### Defined in
-
-[lib/github.ts:99](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/github.ts#L99)
-
 ---
 
 ### initCache
@@ -129,7 +113,3 @@ Throws an error if the fork already exists.
 #### Returns
 
 `Promise`<`void`\>
-
-#### Defined in
-
-[lib/github.ts:46](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/lib/github.ts#L46)

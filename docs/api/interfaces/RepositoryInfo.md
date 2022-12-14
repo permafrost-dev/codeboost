@@ -15,16 +15,8 @@
 
 • **name**: `string`
 
-#### Defined in
-
-[types/RepositoryInfo.ts:3](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/types/RepositoryInfo.ts#L3)
-
 ---
 
 ### owner
 
 • **owner**: `string`
-
-#### Defined in
-
-[types/RepositoryInfo.ts:2](https://github.com/permafrost-dev/codeboost/blob/0b270dd/src/types/RepositoryInfo.ts#L2)
