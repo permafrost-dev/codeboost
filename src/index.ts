@@ -7,4 +7,3 @@ export * from '@/lib/Tools';
 export * from '@/lib/github';
 export * from '@/types/BoostConfiguration';
 export * from '@/types/BoostHistory';
-export * from '@/types/StateTypes';
