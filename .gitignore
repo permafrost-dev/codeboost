@@ -1,6 +1,7 @@
 !/dist/boosts
 !/dist/config.yaml
 !dist/boosts/**/*
+!tests/fixtures/temp/.gitkeep
 /.idea
 /.vscode
 /build
@@ -14,4 +15,4 @@ yarn.lock
 .env
 *.log
 dist/*.json
-tests/fixtures/temp/history.json
+tests/fixtures/temp/*
