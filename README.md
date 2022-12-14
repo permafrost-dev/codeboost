@@ -1,3 +1,7 @@
+<p align="center">
+    <img src="https://raw.githubusercontent.com/permafrost-dev/codeboost/main/docs/logo.svg" width="100" height="100" alt="codeboost logo"/>
+</p>
+
 # codeboost
 
 ---
