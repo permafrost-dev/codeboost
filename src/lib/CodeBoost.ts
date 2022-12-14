@@ -21,7 +21,7 @@ export class CodeBoost extends Mixin(HasLogger) {
 
     constructor(historyManager: HistoryManager) {
         super();
-        this.createLogger(<LogTarget[]>this.appSettings.log_target, {});
+        this.createLogger(<LogTarget[]>this.appSettings?.log_target ?? [], {});
         this.historyManager = historyManager;
     }
 
