@@ -38,16 +38,8 @@ export class CodeBoost extends Mixin(HasLogger) {
         this.repositoryPrepared = true;
     }
 
-    public loadBoostConfiguration(id: string) {
-        const config = require(`${__dirname}/boosts/${id}/boost.js`).default;
-
-        return <BoostConfiguration>config;
-    }
-
     public async runBoost(id: string, args: string[]) {
-        const config = this.loadBoostConfiguration(id);
-        const boost = new Boost(this, `${__dirname}/boosts/${config.id}`, config);
-
+        const boost = new Boost(this, `${__dirname}/boosts/${id}`);
         await boost.run(this.repository, args);
 
         return boost;

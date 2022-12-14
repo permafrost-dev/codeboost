@@ -57,23 +57,22 @@ export class Boost {
     public changedFiles: string[] = [];
     public runId: string;
 
-    constructor(codeBoost: CodeBoost, boostPath: string, config: BoostConfiguration) {
+    constructor(codeBoost: CodeBoost, boostPath: string) {
         this.runId = generateRunId();
+        this.config = this.loadConfiguration(boostPath);
         this.codeBoost = codeBoost;
-        this.path = `${boostPath}/${config.version}`;
-        this.id = config.id;
-        this.version = config.version;
+        this.path = `${boostPath}/${this.config.version}`;
+        this.id = this.config.id;
+        this.version = this.config.version;
 
         this.repositoryLimits = {
-            maxRunsPerVersion: config.repository_limits.max_runs_per_version,
-            minutesBetweenRuns: config.repository_limits.minutes_between_runs,
+            maxRunsPerVersion: this.config.repository_limits.max_runs_per_version,
+            minutesBetweenRuns: this.config.repository_limits.minutes_between_runs,
         };
 
-        this.pullRequest = this.loadPullRequest(config.pull_request);
-        this.scripts = this.loadScripts(config.scripts.files);
-        this.actions = config.actions;
-
-        this.config = Object.assign({}, config);
+        this.pullRequest = this.loadPullRequest(this.config.pull_request);
+        this.scripts = this.loadScripts(this.config.scripts.files);
+        this.actions = this.config.actions;
     }
 
     public get appSettings(): AppSettings {
@@ -86,6 +85,12 @@ export class Boost {
 
     public log(message) {
         this.codeBoost.log(message, [{ boost: this.id, run_id: this.runId, repository: this.repository?.fullRepositoryName() }]);
+    }
+
+    public loadConfiguration(boostPath: string) {
+        const config = require(`${boostPath}/boost.js`).default;
+
+        return <BoostConfiguration>config;
     }
 
     public loadPullRequest(pullRequest: Record<string, any>) {
