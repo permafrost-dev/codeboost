@@ -50,6 +50,8 @@ export class Repository {
         if (!existsSync(this.path)) {
             execSync(`git -C '${parentDir}' clone git@github.com:${this.owner}/${this.name}.git`, { stdio: 'pipe' });
         }
+
+        return true;
     }
 
     /**
@@ -94,7 +96,7 @@ export class Repository {
     }
 
     public async defaultBranch() {
-        const result = await this.git.revparse('--abbrev-ref', ['origin/HEAD']);
+        const result = await this.git.revparse('--abbrev-ref', [ 'origin/HEAD' ]);
         return result.replace(/^.+\//, '');
     }
 
