@@ -11,8 +11,8 @@ const createBoost = (path, config = {}, historyMgr: any = null, codeboost: any =
     codeboost = codeboost ?? new CodeBoost(historyMgr);
 
     const result = new Boost(codeboost, path);
-
     result.config = Object.assign({}, result.config, config);
+    result.init(path);
 
     result.path = result.path.replace(__dirname, '.');
 
@@ -41,7 +41,9 @@ it('sets the correct properties on create', async () => {
         actions: [],
     };
 
-    const boost = new Boost(new CodeBoost(new FakeHistoryManager()), 'path', boostConfig);
+    const boost = new Boost(new CodeBoost(new FakeHistoryManager()), 'path');
+    boost.config = boostConfig;
+    boost.init('path');
 
     const keys = Object.keys(boost);
     keys.sort();

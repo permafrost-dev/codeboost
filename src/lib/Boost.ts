@@ -61,6 +61,10 @@ export class Boost {
         this.runId = generateRunId();
         this.config = this.loadConfiguration(boostPath);
         this.codeBoost = codeBoost;
+        this.init(boostPath);
+    }
+
+    public init(boostPath: string) {
         this.path = `${boostPath}/${this.config.version}`;
         this.id = this.config.id;
         this.version = this.config.version;
