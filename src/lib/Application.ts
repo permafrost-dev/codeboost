@@ -3,6 +3,8 @@ import { CodeBoost } from '@/lib/CodeBoost';
 import { initOctokit } from '@/lib/github';
 import { HistoryManager } from '@/lib/HistoryManager';
 import { Repository } from '@/lib/Repository';
+import { existsSync } from 'fs';
+import { userInfo } from 'os';
 
 export class Application {
     public settings!: AppSettings;
@@ -15,7 +17,7 @@ export class Application {
     }
 
     async init() {
-        this.configFilename = process.cwd() + '/' + this.configFilename ?? `${__dirname}/settings.js`;
+        this.configFilename = this.getConfigFilename() ?? '';
         this.settings = loadSettings(this.configFilename);
         initOctokit(this.settings.github_token);
 
@@ -23,6 +25,22 @@ export class Application {
 
         this.codeboost = new CodeBoost(this.settings, this.historyManager);
         await this.codeboost.init(repo, this.settings);
+    }
+
+    getConfigFilename() {
+        const files = [
+            process.cwd() + '/' + this.configFilename,
+            process.cwd() + '/codeboost.config.js',
+            userInfo({ encoding: 'utf8' }).homedir + '/codeboost.config.js',
+        ];
+
+        for (const file of files) {
+            if (existsSync(file) && file.endsWith('.js')) {
+                return file;
+            }
+        }
+
+        return null;
     }
 
     async execute(repoName: string, boostName: string) {
