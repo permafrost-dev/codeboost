@@ -10,9 +10,19 @@ Automate changes to repositories
 
 ```bash
 npm install -g codeboost
+
+codeboost init
 ```
 
 ## Usage
+
+You must initialize `codeboost` before you can run any boosts. You only need to run this command once to initialize the global configuration file:
+
+```bash
+codeboost init
+```
+
+Run a boost:
 
 ```bash
 codeboost run -r <repository> <boost>
@@ -20,7 +30,7 @@ codeboost run -r <repository> <boost>
 
 ## Configuration
 
-To use the `codeboost` CLI, create a file named `boost.config.js` in the root of your repository.
+To use the `codeboost` CLI, create a file named `boost.config.js` in your current working directory or run `codeboost init` to create a default configuration file.
 
 This file should export a configuration object with the following properties:
 
@@ -34,7 +44,7 @@ export interface AppSettings {
 }
 ```
 
-## Setup
+## Development
 
 ```bash
 npm install
