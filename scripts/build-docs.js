@@ -15,6 +15,7 @@ async function main() {
         excludeProtected: true,
         excludePrivate: true,
         githubPages: false,
+        disableSources: true,
         out: './docs/api',
         plugin: [ 'typedoc-plugin-markdown' ],
         entryPoints: [ 'src/codeboost.ts' ],
