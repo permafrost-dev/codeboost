@@ -75,9 +75,7 @@ export class Tools {
      * @returns {string} The sha-256 hash of the string.
      */
     public hashstring(str: string) {
-        return createHash('sha256').update(str)
-            .digest('hex')
-            .toLowerCase();
+        return createHash('sha256').update(str).digest('hex').toLowerCase();
     }
 
     /**
