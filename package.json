@@ -53,7 +53,7 @@
         "build:cli": "node scripts/build.js",
         "build:lib": "node scripts/build-library.js",
         "build:dts": "dts-bundle-generator -o dist/codeboost.d.ts src/lib/CodeBoost.ts",
-        "build:api-docs": "typedoc --plugin typedoc-plugin-markdown --out docs/api src/index.ts",
+        "build:api-docs": "node scripts/build-docs.js",
         "build": "npm run build:cli && npm run build:lib && npm run build:dts && npm run build:api-docs",
         "dev": "npm run build:cli && node dist/cli.js",
         "prepare": "husky install"
