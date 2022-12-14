@@ -31,12 +31,47 @@ it('sets properties correctly on create', async () => {
 //     expect(existsSync(`${__dirname}/../fixtures/temp/laravel/framework/.git`)).toBeTruthy();
 // });
 
-it('gets the default and current branch names', async () => {
-    const repository = new Repository('laravel/framework', tempPath);
+it('gets the current branch names', async () => {
+    const repository = new Repository('permafrost-dev/codeboost', tempPath);
     repository.path = `${__dirname}/../..`;
 
-    const mainBranchName = await repository.defaultBranch();
+    const mainBranchName = 'main';
     const branch = await repository.currentBranch();
 
     expect(branch).toBe(mainBranchName);
 });
+
+it('gets a list of local branches', async () => {
+    const repository = new Repository('permafrost-dev/codeboost', tempPath);
+    repository.path = `${__dirname}/../..`;
+
+    const mainBranchName = 'main';
+    const branches = await repository.localBranches();
+
+    expect(branches).toContain(mainBranchName);
+});
+
+it('checks if it is on a branch', async () => {
+    const repository = new Repository('permafrost-dev/codeboost', tempPath);
+    repository.path = `${__dirname}/../..`;
+
+    const mainBranchName = 'main';
+    const isOnBranch = await repository.onBranch(mainBranchName);
+
+    expect(isOnBranch).toBeTruthy();
+});
+
+if (typeof process.env.CI !== 'undefined') {
+    it('checks out a new branch', async () => {
+        const repository = new Repository('permafrost-dev/codeboost', tempPath);
+        repository.path = `${__dirname}/../..`;
+
+        const randomInt = Math.floor(Math.random() * 10000) + 1;
+        const newBranchName = `test-branch-${randomInt}`;
+        await repository.checkout(newBranchName);
+
+        const isOnBranch = await repository.onBranch(newBranchName);
+
+        expect(isOnBranch).toBeTruthy();
+    });
+}
