@@ -1,10 +1,15 @@
-import { createOctokit, Github } from '@/lib/github';
+import { createOctokit, Github, initOctokit } from '@/lib/github';
 import { Repository } from '@/lib/Repository';
 
 const tempPath = `${__dirname}/../fixtures/temp`;
 
+beforeAll(() => {
+    initOctokit(process.env.GITHUB_TOKEN || '');
+});
+
 it('gets a repository', async () => {
     const octokit = createOctokit();
+
     const repository = new Repository('permafrost-dev/node-ray', tempPath);
     const result = await Github.getRepository(repository, octokit);
 

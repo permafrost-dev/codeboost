@@ -5,7 +5,7 @@ import { existsSync, mkdirSync, readFileSync } from 'fs';
 let tools: Tools;
 
 beforeAll(() => {
-    execSync(`rm -rf ${__dirname}/fixtures/temp/test*`);
+    execSync(`rm -rf ${__dirname}/../fixtures/temp/test*`);
 });
 
 beforeEach(() => {
