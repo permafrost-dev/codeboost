@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`reads a json file 1`] = `
+{
+  "one": 1,
+}
+`;
+
+exports[`reads a yaml file 1`] = `
+{
+  "one": 1,
+}
+`;
