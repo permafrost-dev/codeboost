@@ -148,7 +148,12 @@ You may access any or all of these properties via object destructuring:
 ```javascript
 /** @type {import('codeboost').BoostScriptHandler} */
 module.exports.handler = async function ({ boost, git, libs, repository, tools }) {
-    // do something
+    const fn = `${repository.path}/hello.json`;
+    tools.writeJson(fn, { msg: 'hello world' });
+
+    // boosts are responsible for committing the changes they make
+    await git.add(fn);
+    await git.commit('add hello file');
 };
 ```
 
