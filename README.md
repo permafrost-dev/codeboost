@@ -10,7 +10,7 @@
 
 `codeboost` is a CLI tool and library that allows you to run "boosts" on repositories. Boosts are small scripts that can be used to automate common tasks such as updating dependencies, fixing linting errors, or updating workflows to use a new version of a library.
 
-The goal of `codeboost` is to make it easy to run these tasks on multiple repositories at once, making maintenance of many codebases easier.
+`codeboost` makes it easy to run these tasks across multiple repositories at once, making maintenance of multiple repositories simple.
 
 ## Quick Start
 
