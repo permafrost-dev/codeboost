@@ -14,7 +14,7 @@ const createCodeBoost = (appSettings: AppSettings | null = null, historyMgr: any
         boosts_path: `${__dirname}/../fixtures`,
         use_forks: false,
         use_pull_requests: false,
-        log_target: [ 'console' ],
+        log_target: ['console'],
     };
     historyMgr = historyMgr ?? new FakeHistoryManager();
 
@@ -61,7 +61,7 @@ it('sets the correct properties on create', async () => {
         boosts_path: `${__dirname}/../fixtures`,
         use_forks: false,
         use_pull_requests: false,
-        log_target: [ 'console' ],
+        log_target: ['console'],
     };
 
     const boost = new Boost(new CodeBoost(appSettings, new FakeHistoryManager()), `${__dirname}/../fixtures/test-boost-1`);
@@ -147,7 +147,7 @@ it('mocks a class method', () => {
 
 it(`runs all of a boost's scripts synchronously`, async () => {
     const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, { scripts: { parallel: false, files: [] } });
-    boost.scripts = [ jest.fn(), jest.fn() ];
+    boost.scripts = [jest.fn(), jest.fn()];
 
     await boost.runScripts(<any>{});
 
@@ -156,7 +156,7 @@ it(`runs all of a boost's scripts synchronously`, async () => {
 
 it(`runs all of a boost's scripts asynchronously`, async () => {
     const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, { scripts: { parallel: true, files: [] } });
-    boost.scripts = [ jest.fn(), jest.fn() ];
+    boost.scripts = [jest.fn(), jest.fn()];
 
     await boost.runScripts(<any>{});
 
@@ -168,7 +168,7 @@ it('runs on a repository', async () => {
     const createScriptHandlerParametersMock = createBoostMock('createScriptHandlerParameters').mockImplementation(() => {
         return <any>{};
     });
-    const mocks = [ checkoutPullBranchMock, createScriptHandlerParametersMock ];
+    const mocks = [checkoutPullBranchMock, createScriptHandlerParametersMock];
 
     const codeboost = createCodeBoost(null, new FakeHistoryManager());
     codeboost.appSettings = { use_pull_requests: true } as any;
@@ -190,7 +190,7 @@ it('runs on a repository and creates a history item', async () => {
     const createScriptHandlerParametersMock = createBoostMock('createScriptHandlerParameters').mockImplementation(() => {
         return <any>{};
     });
-    const mocks = [ checkoutPullBranchMock, createScriptHandlerParametersMock ];
+    const mocks = [checkoutPullBranchMock, createScriptHandlerParametersMock];
 
     const codeboost = createCodeBoost(null, new FakeHistoryManager());
     codeboost.appSettings = { use_pull_requests: true } as any;

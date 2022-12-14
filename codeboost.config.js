@@ -4,5 +4,5 @@ module.exports.default = {
     boosts_path: `${__dirname}/dist/boosts`,
     use_forks: true,
     use_pull_requests: true,
-    log_target: [ 'console', 'file' ],
+    log_target: ['console', 'file'],
 };

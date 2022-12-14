@@ -5,7 +5,7 @@ const createSettings = (overrides: Partial<AppSettings> = {}): AppSettings => ({
     repository_storage_path: 'bar',
     use_forks: true,
     use_pull_requests: true,
-    log_target: [ 'console' ],
+    log_target: ['console'],
     boosts_path: 'baz',
     ...overrides,
 });

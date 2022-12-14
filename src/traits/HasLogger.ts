@@ -31,6 +31,6 @@ export class HasLogger {
             return;
         }
 
-        this.logger.info(message, ...[ merge.all([{ _ts: dayjs().toISOString() }, ...meta ]) ]);
+        this.logger.info(message, ...[merge.all([{ _ts: dayjs().toISOString() }, ...meta])]);
     }
 }
