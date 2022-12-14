@@ -1,6 +1,6 @@
 import { APP_VERSION } from '@/lib/consts';
 import { RepositoryInfo } from '@/types/RepositoryInfo';
-import { Octokit } from '@octokit/core';
+import { Octokit } from '@octokit/core/dist-node/index';
 import { throttling } from '@octokit/plugin-throttling';
 
 let AppOctokitDefaults: typeof Octokit;

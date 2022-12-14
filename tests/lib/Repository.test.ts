@@ -1,5 +1,6 @@
-import { Github } from '@/index';
+import { createOctokit, Github, initOctokit } from '@/index';
 import { Repository } from '@/lib/Repository';
+import { parseFullRepositoryName } from '@/lib/stringHelpers';
 import { execSync } from 'child_process';
 import { existsSync } from 'fs';
 
@@ -89,4 +90,11 @@ it('throws an error when forking a repository that does not exist', async () => 
     Github.setCache({ currentUser: { login: 'patinthehat' } });
 
     await expect(repository.createFork()).rejects.toThrow();
+});
+
+it('throws an error when pushing to a fork on a repository that does not exist', async () => {
+    const repository = new Repository('permafrost-dev/does-not-exist', tempPath);
+    Github.setCache({ currentUser: { login: 'patinthehat' } });
+
+    await expect(repository.pushToFork('missing-branch')).rejects.toThrow();
 });

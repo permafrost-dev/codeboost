@@ -1,5 +1,7 @@
+import nock from 'nock';
 import { createOctokit, Github, initOctokit } from '@/lib/github';
 import { Repository } from '@/lib/Repository';
+import { parseFullRepositoryName } from '@/lib/stringHelpers';
 
 const tempPath = `${__dirname}/../fixtures/temp`;
 
@@ -36,4 +38,69 @@ it('throws an error when merging a pull request that does not exist', async () =
     const repository = new Repository('permafrost-dev/node-ray', tempPath);
 
     await expect(Github.mergePullRequest(repository, 999999, octokit)).rejects.toThrow();
+});
+
+it('throws an error when creating a PR on a repository that does not exist', async () => {
+    const repository = new Repository('permafrost-dev/does-not-exist', tempPath);
+    Github.setCache({ currentUser: { login: 'patinthehat' } });
+
+    await expect(
+        Github.createPullRequest(parseFullRepositoryName(repository.fullRepositoryName()), 'missing-branch', 'main', 'test', 'test', null),
+    ).rejects.toThrow();
+});
+
+it('creates a pull request on a repository', async () => {
+    const repository = new Repository('permafrost-dev/does-not-exist', tempPath);
+    Github.setCache({ currentUser: { login: 'patinthehat' } });
+
+    initOctokit('test-token');
+    const octokit = createOctokit();
+
+    const requestFn = jest.fn().mockImplementation(() => {
+        return Promise.resolve({ status: 201, data: { test: 1 } });
+    });
+
+    octokit.request = requestFn;
+
+    await expect(
+        Github.createPullRequest(parseFullRepositoryName(repository.fullRepositoryName()), 'branch-name', 'main', 'test', 'test', octokit),
+    ).resolves.toStrictEqual({ test: 1 });
+
+    requestFn.mockRestore();
+});
+
+it('merges a pull request on a repository', async () => {
+    const repository = new Repository('permafrost-dev/does-not-exist', tempPath);
+    Github.setCache({ currentUser: { login: 'patinthehat' } });
+
+    initOctokit('test-token');
+    const octokit = createOctokit();
+
+    const requestFn = jest.fn().mockImplementation(() => {
+        return Promise.resolve({ status: 200, data: { test: 1 } });
+    });
+
+    octokit.request = requestFn;
+
+    await expect(Github.mergePullRequest(parseFullRepositoryName(repository.fullRepositoryName()), 123, octokit)).resolves.toStrictEqual({ test: 1 });
+
+    requestFn.mockRestore();
+});
+
+it('forks a repository', async () => {
+    const repository = new Repository('permafrost-dev/does-not-exist', tempPath);
+    Github.setCache({ currentUser: { login: 'patinthehat' } });
+
+    initOctokit('test-token');
+    const octokit = createOctokit();
+
+    const requestFn = jest.fn().mockImplementation(() => {
+        return Promise.resolve({ status: 202, data: { test: 1 } });
+    });
+
+    octokit.request = requestFn;
+
+    await expect(Github.forkRepository(parseFullRepositoryName(repository.fullRepositoryName()), octokit)).resolves.toStrictEqual({ test: 1 });
+
+    requestFn.mockRestore();
 });
