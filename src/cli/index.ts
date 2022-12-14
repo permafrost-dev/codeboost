@@ -1,8 +1,8 @@
+import packageJson from '@/../package.json';
 import { Application } from '@/lib/Application';
 import { APP_VERSION } from '@/lib/consts';
 import { Command } from 'commander';
 import updateNotifier from 'simple-update-notifier';
-import packageJson from '../../package.json';
 
 updateNotifier({ pkg: packageJson });
 
