@@ -23,3 +23,17 @@ it('throws an error when getting a repository that does not exist', async () => 
 
     await expect(Github.getRepository(repository, octokit)).rejects.toThrow();
 });
+
+it('gets the current user', async () => {
+    const octokit = createOctokit();
+    const user = await Github.currentUser(octokit);
+
+    expect(user).toBeDefined();
+});
+
+it('throws an error when getting the current user with an invalid token', async () => {
+    initOctokit('invalid-token');
+    const octokit = createOctokit();
+
+    await expect(Github.currentUser(octokit)).rejects.toThrow();
+});
