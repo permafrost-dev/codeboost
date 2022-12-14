@@ -36,7 +36,7 @@ it('writes a file', () => {
 
 it('copies a file', () => {
     const src = __filename;
-    const dest = `${__dirname}/../temp/test.ts`;
+    const dest = `${__dirname}/../fixtures/temp/test.ts`;
 
     expect(existsSync(dest)).toBeFalsy();
 
