@@ -19,8 +19,14 @@
     "bugs": {
         "url": "https://github.com/permafrost-dev/codeboost/issues"
     },
-    "main": "dist/index.js",
+    "main": "dist/codeboost.cs.js",
     "typings": "dist/codeboost.d.ts",
+    "exports": {
+        ".": {
+            "import": "./dist/codeboost.es.mjs",
+            "require": "./dist/codeboost.cs.js"
+        }
+    },
     "lint-staged": {
         "*.{js,ts}": [
             "rome format --skip-errors --write",

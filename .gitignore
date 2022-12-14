@@ -7,7 +7,7 @@
 /build
 /coverage
 /dist/*.json
-/dist/index.js
+/dist/cli.js
 /dist/storage
 /node_modules
 /tempdir
