@@ -58,7 +58,7 @@ export class Application {
 
         try {
             await this.codeboost.prepareRepository();
-            await this.codeboost.runBoost(boostName, ['8.2']);
+            await this.codeboost.runBoost(boostName, [ '8.2' ]);
         } catch (e: any) {
             console.log(`error: ${e.message}`);
         }
@@ -89,7 +89,9 @@ export class Application {
             };`
                     .replaceAll('            ', '')
                     .trim(),
+                { encoding: 'utf8' },
             );
+
             console.log(`${chalk.greenBright('✓')} global config file created`);
         }
 
