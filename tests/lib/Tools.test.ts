@@ -1,7 +1,12 @@
 import { Tools } from '@/lib/Tools';
-import { existsSync, readFileSync } from 'fs';
+import { execSync } from 'child_process';
+import { existsSync, mkdirSync, readFileSync } from 'fs';
 
 let tools: Tools;
+
+beforeAll(() => {
+    execSync(`rm -rf ${__dirname}/fixtures/temp/test*`);
+});
 
 beforeEach(() => {
     tools = new Tools();
@@ -74,4 +79,16 @@ it('reads a json file', () => {
     const path = `${__dirname}/../fixtures/files/test1.json`;
 
     expect(tools.readJson(path)).toMatchSnapshot();
+});
+
+it('copies a directory recursively', () => {
+    const src = `${__dirname}/../fixtures/test-boost-1`;
+    const dest = `${__dirname}/../fixtures/temp/test-boost-1`;
+
+    mkdirSync(dest, { recursive: true });
+
+    tools.recursiveDirectoryCopy(src, dest);
+
+    expect(existsSync(dest)).toBeTruthy();
+    expect(tools.filesAreEqual(`${src}/1.0.0/first.js`, `${dest}/1.0.0/first.js`)).toBeTruthy();
 });
