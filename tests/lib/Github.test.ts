@@ -49,6 +49,21 @@ it('throws an error when creating a PR on a repository that does not exist', asy
     ).rejects.toThrow();
 });
 
+it('throws an error when forking a PR onto itself exist', async () => {
+    const repository = new Repository('patinthehat/does-not-exist', tempPath);
+    Github.setCache({ currentUser: { login: 'patinthehat' } });
+
+    initOctokit('test-token');
+    const octokit = createOctokit();
+
+    const requestFn = jest.fn().mockImplementation(() => {
+        return Promise.resolve({ status: 201, data: { test: 1 } });
+    });
+    octokit.request = requestFn;
+
+    await expect(Github.forkRepository(parseFullRepositoryName(repository.fullRepositoryName()), octokit)).rejects.toThrow();
+});
+
 it('creates a pull request on a repository', async () => {
     const repository = new Repository('permafrost-dev/does-not-exist', tempPath);
     Github.setCache({ currentUser: { login: 'patinthehat' } });
