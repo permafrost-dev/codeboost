@@ -10,6 +10,7 @@ export interface AppSettings {
     use_pull_requests: boolean;
     log_target: LogTarget | LogTarget[];
     dry_run?: boolean;
+    auto_merge_pull_requests?: boolean;
 }
 
 export function loadSettings(filename: string): AppSettings {
@@ -29,17 +30,25 @@ export function transformSettings(settings: AppSettings): AppSettings {
     }
 
     if (!Array.isArray(settings.log_target)) {
-        settings.log_target = [settings.log_target];
+        settings.log_target = [ settings.log_target ];
     }
 
     settings.log_target = settings.log_target
         .map(target => <LogTarget>target.toLowerCase())
         .filter((target: string) => {
-            return ['console', 'file'].includes(target);
+            return [ 'console', 'file' ].includes(target);
         });
 
     if (typeof settings.dry_run === 'undefined') {
         settings.dry_run = false;
+    }
+
+    if (typeof settings.auto_merge_pull_requests === 'undefined') {
+        settings.auto_merge_pull_requests = false;
+    }
+
+    if (!settings.use_pull_requests) {
+        settings.use_forks = false;
     }
 
     return settings;

@@ -1,3 +1,4 @@
+import { Github } from '@/index';
 import { Repository } from '@/lib/Repository';
 import { execSync } from 'child_process';
 import { existsSync } from 'fs';
@@ -75,3 +76,17 @@ if (typeof process.env.CI !== 'undefined') {
         expect(isOnBranch).toBeTruthy();
     });
 }
+
+it('throws an error when forking a repository onto its own user', async () => {
+    const repository = new Repository('permafrost-dev/does-not-exist', tempPath);
+    Github.setCache({ currentUser: { login: 'permafrost-dev' } });
+
+    await expect(repository.createFork()).rejects.toThrow();
+});
+
+it('throws an error when forking a repository that does not exist', async () => {
+    const repository = new Repository('permafrost-dev/does-not-exist', tempPath);
+    Github.setCache({ currentUser: { login: 'patinthehat' } });
+
+    await expect(repository.createFork()).rejects.toThrow();
+});

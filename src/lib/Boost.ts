@@ -150,10 +150,11 @@ export class Boost {
 
         const catchErrors = async (callBack: CallableFunction) => {
             try {
-                await callBack();
+                return await callBack();
             } catch (e) {
                 hasError = true;
                 this.log(e);
+                return false;
             }
         };
 
@@ -213,8 +214,13 @@ export class Boost {
 
                         if (pr) {
                             this.log(`created pull request #${pr.number}`);
+
+                            if (this.appSettings.auto_merge_pull_requests) {
+                                await Github.mergePullRequest(repository, pr.number);
+                                this.log(`merged pull request #${pr.number}`);
+                            }
                         }
-                    }, 'would create pull request now');
+                    }, 'create pull request');
                 });
             }
         }

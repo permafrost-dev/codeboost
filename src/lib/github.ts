@@ -43,10 +43,8 @@ export function createOctokit(): Octokit {
 export class Github {
     protected static cache = { currentUser: null as { login: string } | null };
 
-    static async initCache(octokit: Octokit | null = null) {
-        octokit = octokit ?? createOctokit();
-
-        await Github.currentUser(octokit);
+    static async setCache(cache: any) {
+        Github.cache = cache;
     }
 
     static async currentUser(octokit: Octokit | null = null) {
