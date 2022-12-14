@@ -2,6 +2,8 @@
 
 ---
 
+[![Run Tests](https://github.com/permafrost-dev/codeboost/actions/workflows/run-tests.yml/badge.svg)](https://github.com/permafrost-dev/codeboost/actions/workflows/run-tests.yml)
+
 update large numbers of repositories quickly
 
 ## Setup
