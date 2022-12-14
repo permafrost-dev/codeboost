@@ -30,7 +30,7 @@ export class Application {
         try {
             await this.init();
             await this.codeboost.prepareRepository();
-            await this.codeboost.runBoost(boostName, [ '8.2' ]);
+            await this.codeboost.runBoost(boostName, ['8.2']);
         } catch (e: any) {
             this.codeboost.log(`error: ${e.message}`);
         }
