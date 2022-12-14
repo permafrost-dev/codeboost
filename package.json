@@ -6,7 +6,6 @@
     "license": "MIT",
     "keywords": [
         "nodejs",
-        "typescript",
         "automation",
         "git",
         "repositories"
@@ -46,7 +45,7 @@
         "analyze:deps:graph": "madge --extensions js,ts --image dependency-graph.svg --layout dot --ts-config tsconfig.json src/**",
         "test": "jest tests --verbose",
         "test:coverage": "jest tests --coverage",
-        "fmt": "rome --apply-suggested . && prettier --config prettier.config.js --write .",
+        "fmt": "rome format --skip-errors --write . && prettier --config prettier.config.js --write .",
         "lint": "eslint --ext ts,js src/",
         "lint:fix": "eslint --ext ts,js --fix src/",
         "lint:staged": "lint-staged",
