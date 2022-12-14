@@ -97,7 +97,7 @@ const searchFilesForString = async searchString => {
     // return array of files
 };
 
-/** @type {import('boostcode').BoostScriptHandler} */
+/** @type {import('codeboost').BoostScriptHandler} */
 module.exports.handler = async function ({ boost }) {
     boost.state.someGlobalVariable = 'some value';
 
@@ -146,7 +146,7 @@ export interface BoostScriptHandlerParameters {
 You may access any or all of these properties via object destructuring:
 
 ```javascript
-/** @type {import('boostcode').BoostScriptHandler} */
+/** @type {import('codeboost').BoostScriptHandler} */
 module.exports.handler = async function ({ boost, git, libs, repository, tools }) {
     // do something
 };
@@ -159,7 +159,7 @@ Boosts have a `state` property that can be used to store data between scripts. T
 Access this property via the `boost` object passed to the `handler` function:
 
 ```javascript
-/** @type {import('boostcode').BoostScriptHandler} */
+/** @type {import('codeboost').BoostScriptHandler} */
 module.exports.handler = async function ({ boost }) {
     boost.state.someGlobalVariable = 'some value';
 };

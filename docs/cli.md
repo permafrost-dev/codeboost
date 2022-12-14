@@ -25,7 +25,7 @@ export interface AppSettings {
 Example:
 
 ```javascript
-/** @type {import('boostcode').BoostConfiguration} */
+/** @type {import('codeboost').BoostConfiguration} */
 module.exports.default = {
     github_token: '$GITHUB_TOKEN',
     repository_storage_path: `${__dirname}/storage/repositories`,

@@ -21,7 +21,7 @@ export class Application {
         this.configFilename = this.getConfigFilename() ?? '';
 
         if (!this.configFilename) {
-            console.log(`${chalk.red('✗')} No config file found. Please run '${chalk.cyanBright('codeboost init')}'.`);
+            console.log(`${chalk.redBright('✗')} No config file found. Please run '${chalk.cyanBright('codeboost init')}'.`);
             // eslint-disable-next-line no-process-exit
             process.exit(1);
         }
@@ -60,7 +60,7 @@ export class Application {
             await this.codeboost.prepareRepository();
             await this.codeboost.runBoost(boostName, [ '8.2' ]);
         } catch (e: any) {
-            console.log(`error: ${e.message}`);
+            console.log(`${chalk.redBright('✗')} error: ${e.message}`);
         }
 
         this.historyManager.save();
