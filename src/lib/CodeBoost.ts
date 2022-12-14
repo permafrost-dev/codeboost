@@ -1,6 +1,5 @@
 import { AppSettings } from '@/lib/AppSettings';
 import { Boost } from '@/lib/Boost';
-import { BoostConfiguration } from '@/types/BoostConfiguration';
 import { HasLogger, LogTarget } from '@/traits/HasLogger';
 import { HistoryManager } from '@/lib/HistoryManager';
 import { Repository } from '@/lib/Repository';
@@ -12,9 +11,10 @@ export class CodeBoost extends Mixin(HasLogger) {
     public historyManager!: HistoryManager;
     public repositoryPrepared = false;
 
-    constructor(historyManager: HistoryManager) {
+    constructor(appSettings: AppSettings, historyManager: HistoryManager) {
         super();
-        this.createLogger(<LogTarget[]>this.appSettings?.log_target ?? [], {});
+        this.createLogger(<LogTarget[]>appSettings?.log_target ?? [], {});
+        this.appSettings = appSettings;
         this.historyManager = historyManager;
     }
 
@@ -39,7 +39,7 @@ export class CodeBoost extends Mixin(HasLogger) {
     }
 
     public async runBoost(id: string, args: string[]) {
-        const boost = new Boost(this, `${__dirname}/boosts/${id}`);
+        const boost = new Boost(this, `${this.appSettings.boosts_path}/${id}`);
         await boost.run(this.repository, args);
 
         return boost;

@@ -1,14 +1,29 @@
 /* eslint-disable sort-keys */
 
+import { AppSettings } from '@/index';
 import { Boost } from '@/lib/Boost';
 import { CodeBoost } from '@/lib/CodeBoost';
 import { Repository } from '@/lib/Repository';
 import { BoostConfiguration } from '@/types/BoostConfiguration';
 import { FakeHistoryManager } from '@tests/fakes/FakeHistoryManager';
 
+const createCodeBoost = (appSettings: AppSettings | null = null, historyMgr: any = null) => {
+    appSettings = appSettings ?? {
+        github_token: '1234567890',
+        repository_storage_path: `${__dirname}/../fixtures/temp`,
+        boosts_path: `${__dirname}/../fixtures`,
+        use_forks: false,
+        use_pull_requests: false,
+        log_target: [ 'console' ],
+    };
+    historyMgr = historyMgr ?? new FakeHistoryManager();
+
+    return new CodeBoost(appSettings, historyMgr);
+};
+
 const createBoost = (path, config = {}, historyMgr: any = null, codeboost: any = null) => {
     historyMgr = historyMgr ?? new FakeHistoryManager();
-    codeboost = codeboost ?? new CodeBoost(historyMgr);
+    codeboost = codeboost ?? createCodeBoost(null, historyMgr);
 
     const result = new Boost(codeboost, path);
     result.config = Object.assign({}, result.config, config);
@@ -38,10 +53,18 @@ it('sets the correct properties on create', async () => {
             parallel: true,
             files: [],
         },
-        actions: [],
     };
 
-    const boost = new Boost(new CodeBoost(new FakeHistoryManager()), `${__dirname}/../fixtures/test-boost-1`);
+    const appSettings: AppSettings = {
+        github_token: '1234567890',
+        repository_storage_path: `${__dirname}/../fixtures/temp`,
+        boosts_path: `${__dirname}/../fixtures`,
+        use_forks: false,
+        use_pull_requests: false,
+        log_target: [ 'console' ],
+    };
+
+    const boost = new Boost(new CodeBoost(appSettings, new FakeHistoryManager()), `${__dirname}/../fixtures/test-boost-1`);
     boost.config = boostConfig;
     boost.init(`${__dirname}/../fixtures/test-boost-1`);
 
@@ -124,7 +147,7 @@ it('mocks a class method', () => {
 
 it(`runs all of a boost's scripts synchronously`, async () => {
     const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, { scripts: { parallel: false, files: [] } });
-    boost.scripts = [jest.fn(), jest.fn()];
+    boost.scripts = [ jest.fn(), jest.fn() ];
 
     await boost.runScripts(<any>{});
 
@@ -133,7 +156,7 @@ it(`runs all of a boost's scripts synchronously`, async () => {
 
 it(`runs all of a boost's scripts asynchronously`, async () => {
     const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, { scripts: { parallel: true, files: [] } });
-    boost.scripts = [jest.fn(), jest.fn()];
+    boost.scripts = [ jest.fn(), jest.fn() ];
 
     await boost.runScripts(<any>{});
 
@@ -145,9 +168,9 @@ it('runs on a repository', async () => {
     const createScriptHandlerParametersMock = createBoostMock('createScriptHandlerParameters').mockImplementation(() => {
         return <any>{};
     });
-    const mocks = [checkoutPullBranchMock, createScriptHandlerParametersMock];
+    const mocks = [ checkoutPullBranchMock, createScriptHandlerParametersMock ];
 
-    const codeboost = new CodeBoost(new FakeHistoryManager());
+    const codeboost = createCodeBoost(null, new FakeHistoryManager());
     codeboost.appSettings = { use_pull_requests: true } as any;
 
     const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, {}, codeboost.historyManager, codeboost);
@@ -167,9 +190,9 @@ it('runs on a repository and creates a history item', async () => {
     const createScriptHandlerParametersMock = createBoostMock('createScriptHandlerParameters').mockImplementation(() => {
         return <any>{};
     });
-    const mocks = [checkoutPullBranchMock, createScriptHandlerParametersMock];
+    const mocks = [ checkoutPullBranchMock, createScriptHandlerParametersMock ];
 
-    const codeboost = new CodeBoost(new FakeHistoryManager());
+    const codeboost = createCodeBoost(null, new FakeHistoryManager());
     codeboost.appSettings = { use_pull_requests: true } as any;
 
     const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, {}, codeboost.historyManager, codeboost);
@@ -187,7 +210,7 @@ it('runs on a repository and creates a history item', async () => {
 });
 
 it('runs on a repository and creates a skipped history item if limits apply', async () => {
-    const codeboost = new CodeBoost(new FakeHistoryManager());
+    const codeboost = createCodeBoost(null, new FakeHistoryManager());
     codeboost.appSettings = { use_pull_requests: true } as any;
     const config = { repository_limits: { max_runs_per_version: 1, minutes_between_runs: 60 } };
     const boost = createBoost(`${__dirname}/../fixtures/test-boost-1`, config, codeboost.historyManager, codeboost);

@@ -1,3 +1,8 @@
+---
+title: Boosts
+description: Learn how to create and use boosts.
+---
+
 # boosts
 
 A Boost is a collection of scripts written in JavaScript/NodeJS that are used to automate common tasks in a repository and can be run in batches to process many repositories at once.
@@ -52,13 +57,12 @@ interface BoostConfiguration {
         parallel: boolean;
         files: string[];
     };
-    actions: any[];
 }
 ```
 
 ## boost initialization
 
-Inside the `boosts/my-boost` directory, create a file named `scripts/init.js`. This file is used to initialize your boost. It should export a function named `handler` that takes a single argument, an object with the following properties:
+Inside the `boosts/my-boost` directory, create a file named `init.js`. This file is used to initialize your boost. It should export a function named `handler` that takes a single argument, an object with the following properties:
 
 ```typescript
 export interface BoostScriptHandlerParameters {
@@ -93,9 +97,11 @@ const searchFilesForString = async searchString => {
     // return array of files
 };
 
+/** @type {import('boostcode').BoostScriptHandler} */
 module.exports.handler = async function ({ boost }) {
     boost.state.someGlobalVariable = 'some value';
 
+    //in all boost scripts, you can access the boost state via `boost.state`
     boost.state.files = await searchFilesForString('hello');
 };
 ```
@@ -140,6 +146,7 @@ export interface BoostScriptHandlerParameters {
 You may access any or all of these properties via object destructuring:
 
 ```javascript
+/** @type {import('boostcode').BoostScriptHandler} */
 module.exports.handler = async function ({ boost, git, libs, repository, tools }) {
     // do something
 };
@@ -152,7 +159,8 @@ Boosts have a `state` property that can be used to store data between scripts. T
 Access this property via the `boost` object passed to the `handler` function:
 
 ```javascript
-module.exports.handler = async function ({ boost, git, libs, repository, tools }) {
+/** @type {import('boostcode').BoostScriptHandler} */
+module.exports.handler = async function ({ boost }) {
     boost.state.someGlobalVariable = 'some value';
 };
 ```

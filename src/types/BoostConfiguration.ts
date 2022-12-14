@@ -14,5 +14,4 @@ export interface BoostConfiguration {
         parallel: boolean;
         files: string[];
     };
-    actions: any[];
 }

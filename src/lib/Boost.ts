@@ -76,7 +76,6 @@ export class Boost {
 
         this.pullRequest = this.loadPullRequest(this.config.pull_request);
         this.scripts = this.loadScripts(this.config.scripts.files);
-        this.actions = this.config.actions;
     }
 
     public get appSettings(): AppSettings {

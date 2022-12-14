@@ -20,7 +20,7 @@ export class Application {
 
         const repo = new Repository(this.repositoryName, this.settings.repository_storage_path);
 
-        this.codeboost = new CodeBoost(this.historyManager);
+        this.codeboost = new CodeBoost(this.settings, this.historyManager);
         await this.codeboost.init(repo, this.settings);
     }
 
