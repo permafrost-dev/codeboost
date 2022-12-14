@@ -17,3 +17,4 @@
 dependency-graph.svg
 package-lock.json
 yarn.lock
+api-extractor.json
