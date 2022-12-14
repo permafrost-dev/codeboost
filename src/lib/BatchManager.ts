@@ -12,7 +12,7 @@ export class BatchManager {
     }
 
     protected getUsableDataset(boost: Boost) {
-        return this.data.filter(item => boost.canRunOnRepository(item.repository));
+        return this.data.filter(repo => boost.canRunOnRepository(repo.name));
     }
 
     protected getItemState(item: any) {
