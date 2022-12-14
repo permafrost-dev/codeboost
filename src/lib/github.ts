@@ -77,8 +77,14 @@ export class Github {
     static async forkRepository(repository: RepositoryInfo, octokit: Octokit | null = null) {
         octokit = octokit ?? createOctokit();
 
+        const currentUserLogin = (await Github.currentUser(octokit)).login;
+
+        if (currentUserLogin === repository.owner) {
+            throw new Error(`Cannot fork repository ${repository.owner}/${repository.name} into itself`);
+        }
+
         const result = await octokit.request(`POST /repos/${repository.owner}/${repository.name}/forks`, {
-            owner: (await Github.currentUser(octokit)).login,
+            owner: currentUserLogin,
             repo: this.name,
             default_branch_only: true,
         });
