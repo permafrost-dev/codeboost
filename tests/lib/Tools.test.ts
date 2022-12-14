@@ -73,5 +73,5 @@ it('reads a yaml file', () => {
 it('reads a json file', () => {
     const path = `${__dirname}/../fixtures/files/test1.json`;
 
-    expect(tools.readYaml(path)).toMatchSnapshot();
+    expect(tools.readJson(path)).toMatchSnapshot();
 });
