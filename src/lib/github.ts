@@ -1,5 +1,5 @@
 import { APP_VERSION } from '@/lib/consts';
-import { Repository } from '@/lib/Repository';
+import { RepositoryInfo } from '@/types/RepositoryInfo';
 import { Octokit } from '@octokit/core';
 import { throttling } from '@octokit/plugin-throttling';
 
@@ -74,7 +74,7 @@ export class Github {
      * @param {Repository} repository
      * @param {Octokit|null} octokit
      */
-    static async forkRepository(repository: Repository, octokit: Octokit | null = null) {
+    static async forkRepository(repository: RepositoryInfo, octokit: Octokit | null = null) {
         octokit = octokit ?? createOctokit();
 
         const result = await octokit.request(`POST /repos/${repository.owner}/${repository.name}/forks`, {
@@ -90,7 +90,7 @@ export class Github {
         return result.data;
     }
 
-    static async getRepository(repository: Repository, octokit: Octokit | null = null) {
+    static async getRepository(repository: RepositoryInfo, octokit: Octokit | null = null) {
         octokit = octokit ?? createOctokit();
 
         const result = await octokit.request(`GET /repos/${repository.owner}/${repository.name}`);
@@ -103,7 +103,14 @@ export class Github {
     }
 
     // create a pull request
-    static async createPullRequest(repository: Repository, branchName: string, title: string, body: string, octokit: Octokit | null = null) {
+    static async createPullRequest(
+        repository: RepositoryInfo,
+        branchName: string,
+        defaultBranchName: string,
+        title: string,
+        body: string,
+        octokit: Octokit | null = null,
+    ) {
         octokit = octokit ?? createOctokit();
 
         const currentUsername = (await Github.currentUser(octokit)).login;
@@ -114,7 +121,7 @@ export class Github {
             title,
             body,
             head: `${currentUsername}:${branchName}`,
-            base: await repository.defaultBranch(),
+            base: defaultBranchName,
         });
 
         if (result.status !== 201) {

@@ -181,7 +181,7 @@ export class Boost {
                 const title = await edge.renderRaw(loadStringOrFile(this.pullRequest.title), { boost: this, state: () => this.state });
                 const body = await edge.renderRaw(loadStringOrFile(this.pullRequest.body), { boost: this, state: () => this.state });
 
-                const pr: any = null; //await Github.createPullRequest(repository, this.pullRequest.branch, title.trim(), body.trim());
+                const pr: any = null; //await Github.createPullRequest(repository, this.pullRequest.branch, await this.repository?.defaultBranch(), title.trim(), body.trim());
                 historyItem.pull_request = pr?.number;
                 //this.log(`created pull request #${pr.number}`);
                 this.log('skipping pr creation');

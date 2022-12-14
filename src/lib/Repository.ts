@@ -1,5 +1,6 @@
 import { createOctokit, Github } from '@/lib/github';
 import { parseFullRepositoryName } from '@/lib/stringHelpers';
+import { RepositoryInfo } from '@/types/RepositoryInfo';
 import { execSync } from 'child_process';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
@@ -10,6 +11,13 @@ export class Repository {
     public owner: string;
     public path: string;
     protected gitInstance!: SimpleGit;
+
+    public get info() {
+        return <RepositoryInfo>{
+            owner: this.owner,
+            name: this.name,
+        };
+    }
 
     public get git() {
         if (this.gitInstance === undefined) {
@@ -86,7 +94,7 @@ export class Repository {
     }
 
     public async defaultBranch() {
-        const result = await this.git.revparse('--abbrev-ref', ['origin/HEAD']);
+        const result = await this.git.revparse('--abbrev-ref', [ 'origin/HEAD' ]);
         return result.replace(/^.+\//, '');
     }
 
@@ -94,7 +102,7 @@ export class Repository {
         const octokit = createOctokit();
 
         try {
-            const result = await Github.forkRepository(this, octokit);
+            const result = await Github.forkRepository(this.info, octokit);
             this.git.addRemote('fork', result.ssh_url);
             return;
         } catch (e) {
@@ -102,7 +110,7 @@ export class Repository {
         }
 
         try {
-            const result = await Github.getRepository(this, octokit);
+            const result = await Github.getRepository(this.info, octokit);
             this.git.addRemote('fork', result.ssh_url);
         } catch (e) {
             console.error(e);
