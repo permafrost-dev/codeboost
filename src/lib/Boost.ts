@@ -152,7 +152,6 @@ export class Boost {
             this.pullRequest.branch = await repository.defaultBranch();
         }
 
-        let pr: any = null;
         let hasError = false;
 
         await this.updatePullRequestBranchName();
@@ -182,7 +181,7 @@ export class Boost {
                 const title = await edge.renderRaw(loadStringOrFile(this.pullRequest.title), { boost: this, state: () => this.state });
                 const body = await edge.renderRaw(loadStringOrFile(this.pullRequest.body), { boost: this, state: () => this.state });
 
-                pr = null; //await Github.createPullRequest(repository, this.pullRequest.branch, title.trim(), body.trim());
+                const pr: any = null; //await Github.createPullRequest(repository, this.pullRequest.branch, title.trim(), body.trim());
                 historyItem.pull_request = pr?.number;
                 //this.log(`created pull request #${pr.number}`);
                 this.log('skipping pr creation');

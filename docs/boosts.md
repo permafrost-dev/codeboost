@@ -19,7 +19,7 @@ The only requirement for a boost is that it contains a valid `boost.js` configur
 Inside this directory, create a file named `boost.js`. This is the main configuration file for your boost. It should export a function named `handler` that takes a single argument, an object with the following properties:
 
 ```typescript
-{
+interface BoostConfiguration {
     id: string;
     version: string;
     repository_limits: {
@@ -138,5 +138,17 @@ You may access any or all of these properties via object destructuring:
 ```javascript
 module.exports.handler = async function ({ boost, git, libs, repository, tools }) {
     // do something
+};
+```
+
+## boost state
+
+Boosts have a `state` property that can be used to store data between scripts. This is useful for storing data that is used by multiple scripts.
+
+Access this property via the `boost` object passed to the `handler` function:
+
+```javascript
+module.exports.handler = async function ({ boost, git, libs, repository, tools }) {
+    boost.state.someGlobalVariable = 'some value';
 };
 ```
