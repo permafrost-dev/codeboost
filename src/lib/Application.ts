@@ -19,6 +19,13 @@ export class Application {
 
     async init() {
         this.configFilename = this.getConfigFilename() ?? '';
+
+        if (!this.configFilename) {
+            console.log(`${chalk.red('✗')} No config file found. Please run '${chalk.cyanBright('codeboost init')}'.`);
+            // eslint-disable-next-line no-process-exit
+            process.exit(1);
+        }
+
         this.settings = loadSettings(this.configFilename);
         initOctokit(this.settings.github_token);
 
