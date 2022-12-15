@@ -6,14 +6,14 @@ const mockData = [
     { name: 'repo3', state: {} },
 ];
 
-const mockCodeBoost = {getBoost: jest.fn(),};
+const mockCodeBoost = { getBoost: jest.fn() };
 
 // @ts-ignore
 const batchManager = new BatchManager('', mockCodeBoost);
 
 beforeEach(() => {
     // Clear mock data before each test
-    batchManager.data = [ ...mockData ];
+    batchManager.data = [...mockData];
 
     // Clear mock function calls before each test
     mockCodeBoost.getBoost.mockClear();
@@ -22,20 +22,16 @@ beforeEach(() => {
 describe('BatchManager', () => {
     describe('getBatch', () => {
         it('should return the specified number of items from the dataset', () => {
-            mockCodeBoost.getBoost.mockImplementation(() => ({canRunOnRepository: jest.fn().mockImplementation(() => true),}));
+            mockCodeBoost.getBoost.mockImplementation(() => ({ canRunOnRepository: jest.fn().mockImplementation(() => true) }));
 
             // Test with a batch size of 1
-            expect(batchManager.getBatch('test-boost', 1)).toEqual([ mockData[0] ]);
+            expect(batchManager.getBatch('test-boost', 1)).toEqual([mockData[0]]);
 
             // Test with a batch size of 2
-            expect(batchManager.getBatch('test-boost', 2)).toEqual([ mockData[0], mockData[1] ]);
+            expect(batchManager.getBatch('test-boost', 2)).toEqual([mockData[0], mockData[1]]);
 
             // Test with a batch size of 3
-            expect(batchManager.getBatch('test-boost', 3)).toEqual([
-                mockData[0],
-                mockData[1],
-                mockData[2] 
-            ]);
+            expect(batchManager.getBatch('test-boost', 3)).toEqual([mockData[0], mockData[1], mockData[2]]);
         });
 
         it('should call the getUsableDataset function with the boost name', () => {
@@ -53,9 +49,9 @@ describe('BatchManager', () => {
     describe('getUsableDataset', () => {
         it('should return only items where the boost can run on the repository', () => {
             // Set up mock for the getBoost function
-            mockCodeBoost.getBoost.mockImplementation(() => ({canRunOnRepository: jest.fn().mockImplementation(() => true),}));
+            mockCodeBoost.getBoost.mockImplementation(() => ({ canRunOnRepository: jest.fn().mockImplementation(() => true) }));
 
-            batchManager.data = [ ...mockData ];
+            batchManager.data = [...mockData];
 
             // Expect the getUsableDataset function to return only the first and third items from the mock data
             expect(batchManager.getUsableDataset('test-boost')).toHaveLength(3);
@@ -66,7 +62,7 @@ describe('BatchManager', () => {
             const spy = jest.fn(repo => repo !== 'repo2');
 
             // Set up mock for the getBoost function
-            mockCodeBoost.getBoost.mockImplementation(() => ({canRunOnRepository: spy,}));
+            mockCodeBoost.getBoost.mockImplementation(() => ({ canRunOnRepository: spy }));
 
             // Call the getUsableDataset function
             batchManager.getUsableDataset('test-boost');
