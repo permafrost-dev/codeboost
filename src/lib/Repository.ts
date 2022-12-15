@@ -1,16 +1,18 @@
+import { eventbus } from '@/lib/EventBus';
+import { GIT_FILE_ADDED_EVENT } from '@/lib/Events';
 import { createOctokit, Github } from '@/lib/github';
 import { parseFullRepositoryName } from '@/lib/stringHelpers';
 import { RepositoryInfo } from '@/types/RepositoryInfo';
 import { execSync } from 'child_process';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
-import simpleGit, { SimpleGit } from 'simple-git';
+import simpleGit, { Response, SimpleGit, SimpleGitTaskCallback } from 'simple-git';
 
 export class Repository {
     public name: string;
     public owner: string;
     public path: string;
-    protected gitInstance!: SimpleGit;
+    public gitInstance!: SimpleGit;
 
     public get info() {
         return <RepositoryInfo>{
@@ -24,11 +26,19 @@ export class Repository {
             this.gitInstance = simpleGit({
                 baseDir: this.path,
                 binary: 'git',
-                maxConcurrentProcesses: 2,
+                maxConcurrentProcesses: 3,
                 trimmed: false,
-            });
+            }) as SimpleGit;
         }
+
         return this.gitInstance;
+    }
+
+    public initGitListeners(runId: string) {
+        this.gitInstance.add = (files: string | string[], callback?: SimpleGitTaskCallback<string>): Response<string> => {
+            eventbus.emit(GIT_FILE_ADDED_EVENT, { repository: this.info, files, runId });
+            return this.gitInstance.raw([ 'add', ...[].concat(<any>files) ], callback);
+        };
     }
 
     constructor(fullRepositoryName: string, repositoryStoragePath: string) {
@@ -96,7 +106,7 @@ export class Repository {
     }
 
     public async defaultBranch() {
-        const result = await this.git.revparse('--abbrev-ref', ['origin/HEAD']);
+        const result = await this.git.revparse('--abbrev-ref', [ 'origin/HEAD' ]);
         return result.replace(/^.+\//, '');
     }
 

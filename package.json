@@ -67,6 +67,7 @@
         "deepmerge": "^4.2.2",
         "dotenv": "^16.0.3",
         "edge.js": "^5.5.0",
+        "eventemitter2": "^6.4.9",
         "js-yaml": "^4.1.0",
         "nanoid": "^4.0.0",
         "semver": "^7.3.8",

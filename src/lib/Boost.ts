@@ -8,9 +8,11 @@ import { BoostConfiguration } from '@/types/BoostConfiguration';
 import edge from 'edge.js';
 import { existsSync, readFileSync } from 'fs';
 import semver from 'semver';
-import { SimpleGit } from 'simple-git';
+import simpleGit, { SimpleGit, SimpleGitBase } from 'simple-git';
 import dayjs from 'dayjs';
 import { Github } from '@/lib/github';
+import { eventbus } from '@/lib/EventBus';
+import { GIT_FILE_ADDED_EVENT } from '@/lib/Events';
 
 export interface BoostScriptHandlerParameters {
     /** arguments passed in from the user */
@@ -124,6 +126,16 @@ export class Boost {
     public async run(repository: Repository, args: any[] = []) {
         this.repository = repository;
 
+        this.repository.initGitListeners(this.runId);
+
+        const listener = eventbus.on(GIT_FILE_ADDED_EVENT, ({ repository, files, runId }) => {
+            if (runId !== this.runId || this.repository?.fullRepositoryName() !== `${repository.owner}/${repository.name}`) {
+                return;
+            }
+
+            this.changedFiles.push(...files);
+        });
+
         // changes to historyItem properties will be reflected in the saved history automatically
         // as createEntry returns a proxy object
         const historyItem: BoostHistoryItem = this.codeBoost.historyManager.createEntry({
@@ -146,13 +158,12 @@ export class Boost {
             return false;
         }
 
-        const params = this.createScriptHandlerParameters(args, historyItem);
+        const params = await this.createScriptHandlerParameters(args, historyItem);
 
         const catchErrors = async (callBack: CallableFunction, args: any = []) => {
             try {
                 return await callBack(...args);
             } catch (e) {
-                console.log('******');
                 hasError = true;
                 this.log(e);
                 return false;
@@ -179,21 +190,21 @@ export class Boost {
             await this.checkoutPullRequestBranch();
         }
 
-        catchErrors(async () => {
+        await catchErrors(async () => {
             await this.runInitializationScript(params);
             await this.runScripts(params);
         });
 
         if (!hasError && this.changedFiles.length > 0) {
-            catchErrors(async () => {
+            await catchErrors(async () => {
                 const remote = this.appSettings.use_forks ? 'fork' : 'origin';
-                handleDryRun(
+                await handleDryRun(
                     async () => await repository.git.push(remote, this.pullRequest.branch),
                     `push branch ${this.pullRequest.branch} to ${remote}`,
                 );
             });
 
-            catchErrors(async () => {
+            await catchErrors(async () => {
                 handleDryRun(async () => {
                     await this.handlePullRequestCreation({ repository, historyItem });
                 }, 'create pull request');
@@ -204,6 +215,8 @@ export class Boost {
         historyItem.state = hasError ? BoostHistoryItemState.FAILED : BoostHistoryItemState.SUCCEEDED;
 
         this.log('Done.');
+
+        listener.off(GIT_FILE_ADDED_EVENT, () => {});
     }
 
     public async handlePullRequestCreation({ repository, historyItem }) {
@@ -233,7 +246,7 @@ export class Boost {
         }
     }
 
-    public createScriptHandlerParameters(args: any[], historyItem: BoostHistoryItem): BoostScriptHandlerParameters {
+    public async createScriptHandlerParameters(args: any[], historyItem: BoostHistoryItem) {
         return <BoostScriptHandlerParameters>{
             args,
             boost: this,

@@ -36,7 +36,9 @@ export class Application {
 
         initOctokit(settings.github_token);
 
-        this.historyManager = new HistoryManager(options.historyFn);
+        if (!this.historyManager) {
+            this.historyManager = new HistoryManager(options.historyFn);
+        }
 
         return settings;
     }
@@ -75,8 +77,6 @@ export class Application {
             }
         }
 
-        console.log({ result });
-
         // If the config file is not found in any of the above locations, return the default value
         return result;
     }
@@ -87,18 +87,23 @@ export class Application {
 
         // Set historyFn to empty string if the file does not exist
         if (!existsSync(options.historyFn)) {
-            options.historyFn = '';
+            writeFileSync(options.historyFn, JSON.stringify([]));
+            // options.historyFn = '';
         }
 
         const settings = await this.init(options);
 
-        // Define a helper function to run codeboost on a repository
+        if (options.dryRun) {
+            console.log(`${chalk.yellowBright('dry-run mode enabled')}`);
+            settings.dry_run = true;
+        }
+
         const runCodeBoost = async (repoName: string) => {
             try {
                 const codeboost = await this.initCodeBoost(repoName, settings);
 
                 await codeboost.prepareRepository();
-                await codeboost.runBoost(boostName, ['8.2']);
+                await codeboost.runBoost(boostName, [ '8.2' ]);
             } catch (e: any) {
                 console.log(`${chalk.redBright('✗')} error: ${e.message}`);
             }
@@ -110,6 +115,8 @@ export class Application {
         if (!options.batch) {
             return await runCodeBoost(repoName);
         }
+
+        repoName = 'temp/temp';
 
         // Otherwise, run codeboost on each item in the batch
         const codeboost = await this.initCodeBoost(repoName, settings);
