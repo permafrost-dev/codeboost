@@ -6,6 +6,7 @@ import { Repository } from '@/lib/Repository';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { userInfo } from 'os';
 import chalk from 'chalk';
+import { BatchManager } from '@/lib/BatchManager';
 
 export class Application {
     public settings!: AppSettings;
@@ -19,7 +20,7 @@ export class Application {
         }
     }
 
-    async init() {
+    async init(repoName: string, options: Record<string, any> = {}) {
         this.configFilename = this.getConfigFilename() ?? '';
 
         if (!this.configFilename) {
@@ -29,12 +30,22 @@ export class Application {
         }
 
         this.settings = loadSettings(this.configFilename);
+
+        if (typeof options.dryRun === 'boolean') {
+            this.settings.dry_run = options.dryRun;
+        }
+
         initOctokit(this.settings.github_token);
+    }
 
-        const repo = new Repository(this.repositoryName, this.settings.repository_storage_path);
+    public async initCodeBoost(repoName: string) {
+        const repo = new Repository(repoName, this.settings.repository_storage_path);
 
-        this.codeboost = new CodeBoost(this.settings, this.historyManager);
-        await this.codeboost.init(repo, this.settings);
+        const codeboost = new CodeBoost(this.settings, this.historyManager);
+        await codeboost.init(repo, this.settings);
+        this.codeboost = codeboost;
+
+        return codeboost;
     }
 
     getConfigFilename() {
@@ -60,7 +71,7 @@ export class Application {
         return result;
     }
 
-    async executeRun(repoName: string, boostName: string) {
+    async executeRun(repoName: string, boostName: string, options: Record<string, any>) {
         const homePath = userInfo({ encoding: 'utf8' }).homedir;
         let historyFn = `${homePath}/.codeboost/history.json`;
 
@@ -69,19 +80,31 @@ export class Application {
         }
 
         this.historyManager = new HistoryManager(historyFn);
+        await this.init(repoName, options);
 
-        this.repositoryName = repoName;
+        const execute = async repoName => {
+            try {
+                const codeboost = await this.initCodeBoost(repoName);
 
-        await this.init();
+                await codeboost.prepareRepository();
+                await codeboost.runBoost(boostName, [ '8.2' ]);
+            } catch (e: any) {
+                console.log(`${chalk.redBright('✗')} error: ${e.message}`);
+            }
 
-        try {
-            await this.codeboost.prepareRepository();
-            await this.codeboost.runBoost(boostName, ['8.2']);
-        } catch (e: any) {
-            console.log(`${chalk.redBright('✗')} error: ${e.message}`);
+            this.historyManager.save();
+        };
+
+        if (!options.batch) {
+            return await execute(repoName);
         }
 
-        this.historyManager.save();
+        const codeboost = await this.initCodeBoost(repoName);
+
+        const batchMgr = new BatchManager(options.batch);
+        const boost = codeboost.getBoost(boostName);
+
+        await Promise.allSettled(batchMgr.getBatch(boost, options.size).map(item => execute(item.name)));
     }
 
     async executeInit() {

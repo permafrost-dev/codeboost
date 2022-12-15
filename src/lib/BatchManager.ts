@@ -4,7 +4,7 @@ export class BatchManager {
     public data: any[] = [];
 
     constructor(public filename: string) {
-        this.data = require(filename);
+        this.data = require(`${process.cwd()}/${filename}`);
     }
 
     public getBatch(boost: Boost, size: number) {
@@ -12,7 +12,7 @@ export class BatchManager {
     }
 
     protected getUsableDataset(boost: Boost) {
-        return this.data.filter(repo => boost.canRunOnRepository(repo.name));
+        return this.data.filter(repo => boost.canRunOnRepository(repo.name) || true);
     }
 
     protected getItemState(item: any) {

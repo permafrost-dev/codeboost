@@ -38,10 +38,15 @@ export class CodeBoost extends Mixin(HasLogger) {
         this.repositoryPrepared = true;
     }
 
-    public async runBoost(id: string, args: string[]) {
-        const boost = new Boost(this, `${this.appSettings.boosts_path}/${id}`);
+    public async runBoost(boost: string | Boost, args: string[]) {
+        boost = typeof boost === 'string' ? this.getBoost(boost) : boost;
+
         await boost.run(this.repository, args);
 
         return boost;
+    }
+
+    public getBoost(boostName: string) {
+        return new Boost(this, `${this.appSettings.boosts_path}/${boostName}`);
     }
 }
