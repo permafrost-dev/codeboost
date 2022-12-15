@@ -148,9 +148,9 @@ export class Boost {
 
         const params = this.createScriptHandlerParameters(args, historyItem);
 
-        const catchErrors = async (callBack: CallableFunction) => {
+        const catchErrors = async (callBack: CallableFunction, args: any = []) => {
             try {
-                return await callBack();
+                return await callBack(...args);
             } catch (e) {
                 hasError = true;
                 this.log(e);
@@ -159,12 +159,12 @@ export class Boost {
         };
 
         const handleDryRun = async (callback: CallableFunction, dryRunMessage: string) => {
-            if (this.appSettings.dry_run) {
-                this.log(`[dry run] ${dryRunMessage}`);
-                return null;
+            if (!this.appSettings.dry_run) {
+                return await callback();
             }
 
-            return await callback();
+            this.log(`[dry run] ${dryRunMessage}`);
+            return null;
         };
 
         let hasError = false;
@@ -178,57 +178,56 @@ export class Boost {
             await this.checkoutPullRequestBranch();
         }
 
-        catchErrors(async () => {
-            await this.runInitializationScript(params);
-        });
-
-        catchErrors(async () => {
-            await this.runScripts(params);
-        });
+        await catchErrors(this.runInitializationScript, params);
+        await catchErrors(this.runScripts, params);
 
         if (!hasError && this.changedFiles.length > 0) {
             catchErrors(async () => {
-                if (this.appSettings.use_forks) {
-                    handleDryRun(async () => await repository.pushToFork(this.pullRequest.branch), `push branch ${this.pullRequest.branch} to fork`);
-                } else {
-                    handleDryRun(
-                        async () => await await repository.git.push('origin', this.pullRequest.branch),
-                        `push branch ${this.pullRequest.branch} to origin`,
-                    );
-                }
+                const remote = this.appSettings.use_forks ? 'fork' : 'origin';
+                handleDryRun(
+                    async () => await repository.git.push(remote, this.pullRequest.branch),
+                    `push branch ${this.pullRequest.branch} to ${remote}`,
+                );
             });
 
-            if (this.appSettings.use_pull_requests) {
-                catchErrors(async () => {
-                    handleDryRun(async () => {
-                        const loadStringOrFile = (value: string) => {
-                            return existsSync(`${this.path}/${value}`) ? readFileSync(`${this.path}/${value}`, 'utf8') : value;
-                        };
-
-                        const title = await edge.renderRaw(loadStringOrFile(this.pullRequest.title), { boost: this, state: () => this.state });
-                        const body = await edge.renderRaw(loadStringOrFile(this.pullRequest.body), { boost: this, state: () => this.state });
-
-                        const defaultBranch = (await this.repository?.defaultBranch()) ?? 'main';
-                        const pr: any = await Github.createPullRequest(repository, this.pullRequest.branch, defaultBranch, title.trim(), body.trim());
-                        historyItem.pull_request = pr?.number;
-
-                        if (pr) {
-                            this.log(`created pull request #${pr.number}`);
-
-                            if (this.appSettings.auto_merge_pull_requests) {
-                                await Github.mergePullRequest(repository, pr.number);
-                                this.log(`merged pull request #${pr.number}`);
-                            }
-                        }
-                    }, 'create pull request');
-                });
-            }
+            catchErrors(async () => {
+                handleDryRun(async () => {
+                    await this.handlePullRequestCreation({ repository, historyItem });
+                }, 'create pull request');
+            });
         }
 
         historyItem.finished_at = new Date().toISOString();
         historyItem.state = hasError ? BoostHistoryItemState.FAILED : BoostHistoryItemState.SUCCEEDED;
 
         this.log('Done.');
+    }
+
+    public async handlePullRequestCreation({ repository, historyItem }) {
+        if (!this.appSettings.use_pull_requests) {
+            return;
+        }
+
+        const loadStringOrFile = (value: string) => {
+            return existsSync(`${this.path}/${value}`) ? readFileSync(`${this.path}/${value}`, 'utf8') : value;
+        };
+
+        const title = await edge.renderRaw(loadStringOrFile(this.pullRequest.title), { boost: this, state: () => this.state });
+        const body = await edge.renderRaw(loadStringOrFile(this.pullRequest.body), { boost: this, state: () => this.state });
+
+        const defaultBranch = (await this.repository?.defaultBranch()) ?? 'main';
+
+        const pr: any = await Github.createPullRequest(repository, this.pullRequest.branch, defaultBranch, title.trim(), body.trim());
+        historyItem.pull_request = pr?.number;
+
+        if (pr) {
+            this.log(`created pull request #${pr.number}`);
+
+            if (this.appSettings.auto_merge_pull_requests) {
+                await Github.mergePullRequest(repository, pr.number);
+                this.log(`merged pull request #${pr.number}`);
+            }
+        }
     }
 
     public createScriptHandlerParameters(args: any[], historyItem: BoostHistoryItem): BoostScriptHandlerParameters {
