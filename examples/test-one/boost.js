@@ -12,7 +12,7 @@ module.exports.default = {
     },
     scripts: {
         parallel: true,
-        files: ['a.js', 'b.js'],
+        files: [ 'a.js', 'b.js' ],
     },
     actions: [{ name: 'update-file', file: { src: 'composer.json', dest: 'composer.json' } }],
 };

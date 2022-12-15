@@ -1,4 +1,6 @@
-const findTestWorkflow = async function ({ boost, git, libs, repository, tools }) {
+const findTestWorkflow = async function ({
+    boost, git, libs, repository, tools 
+}) {
     boost.log('finding tests workflow...');
 
     if (typeof boost.state.testWorkflowFile === 'string' && boost.state.testWorkflowFile.length > 0) {
