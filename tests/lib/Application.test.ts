@@ -27,7 +27,7 @@ it('initCodeBoost() should initialize codeboost', async () => {
         boosts_path: '/tmp/boosts',
         use_forks: true,
         use_pull_requests: true,
-        log_target: [ 'console' ],
+        log_target: ['console'],
     };
     const repoName = 'owner1/repoName';
     const initMock = jest.spyOn(CodeBoost.prototype, 'init').mockReturnValue(Promise.resolve());
