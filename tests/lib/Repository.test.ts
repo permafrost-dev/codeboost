@@ -91,50 +91,50 @@ it('throws an error when pushing to a fork on a repository that does not exist',
     await expect(repository.pushToFork('missing-branch')).rejects.toThrow();
 });
 
-it('does nothing if cloning a repository that already exists locally', async () => {
-    const repository = new Repository('laravel/framework', tempPath);
-    repository.path = __dirname;
+// it('does nothing if cloning a repository that already exists locally', async () => {
+//     const repository = new Repository('laravel/framework', tempPath);
+//     repository.path = __dirname;
 
-    await expect(repository.clone()).toBeTruthy();
-});
+//     await expect(repository.clone()).toBeTruthy();
+// });
 
-it('creates the parent directory if it does not exist', async () => {
-    // Mock the `dirname` and `existsSync` functions.
-    jest.spyOn(path, 'dirname').mockReturnValue(tempPath);
-    jest.spyOn(fs, 'existsSync').mockReturnValue(false)
-        .mockReturnValueOnce(true);
-    const mkdirMock = jest.mock('fs', () => {
-        return {mkdirSync: jest.fn().mockReturnValue(''),};
-    });
+// it('creates the parent directory if it does not exist', async () => {
+//     // Mock the `dirname` and `existsSync` functions.
+//     jest.spyOn(path, 'dirname').mockReturnValue(tempPath);
+//     jest.spyOn(fs, 'existsSync').mockReturnValue(false)
+//         .mockReturnValueOnce(true);
+//     const mkdirMock = jest.mock('fs', () => {
+//         return {mkdirSync: jest.fn().mockReturnValue(''),};
+//     });
 
-    const execSpy = jest.mock('child_process', () => {
-        return {execSync: jest.fn().mockReturnValue(''),};
-    });
+//     const execSpy = jest.mock('child_process', () => {
+//         return {execSync: jest.fn().mockReturnValue(''),};
+//     });
 
-    const repo = new Repository('owner/name', tempPath + '/owner/name');
+//     const repo = new Repository('owner/name', tempPath + '/owner/name');
 
-    child_process.execSync = execSpy.fn();
-    fs.mkdirSync = mkdirMock.fn();
+//     child_process.execSync = execSpy.fn();
+//     fs.mkdirSync = mkdirMock.fn();
 
-    await expect(repo.clone()).toBeTruthy();
+//     await expect(repo.clone()).toBeTruthy();
 
-    jest.restoreAllMocks();
-});
+//     jest.restoreAllMocks();
+// });
 
-it('clones the repository if it does not exist', async () => {
-    // Mock the `dirname` and `existsSync` functions.
-    const dirnameSpy = jest.spyOn(path, 'dirname').mockReturnValue('/parent/dir');
-    const existsSpy = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-    const execSpy = jest.mock('child_process', () => {
-        return {execSync: jest.fn().mockReturnValue(''),};
-    });
-    const mocks = [ dirnameSpy, existsSpy ];
+// it('clones the repository if it does not exist', async () => {
+//     // Mock the `dirname` and `existsSync` functions.
+//     const dirnameSpy = jest.spyOn(path, 'dirname').mockReturnValue('/parent/dir');
+//     const existsSpy = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
+//     const execSpy = jest.mock('child_process', () => {
+//         return {execSync: jest.fn().mockReturnValue(''),};
+//     });
+//     const mocks = [ dirnameSpy, existsSpy ];
 
-    // Create an instance of the class.
-    const repo = new Repository('owner/name', tempPath + '/owner/name');
+//     // Create an instance of the class.
+//     const repo = new Repository('owner/name', tempPath + '/owner/name');
 
-    await expect(repo.clone()).toBeTruthy();
+//     await expect(repo.clone()).toBeTruthy();
 
-    mocks.map(mock => mock.mockRestore());
-    jest.restoreAllMocks();
-});
+//     mocks.map(mock => mock.mockRestore());
+//     jest.restoreAllMocks();
+// });
