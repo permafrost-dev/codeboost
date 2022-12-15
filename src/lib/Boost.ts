@@ -152,6 +152,7 @@ export class Boost {
             try {
                 return await callBack(...args);
             } catch (e) {
+                console.log('******');
                 hasError = true;
                 this.log(e);
                 return false;
@@ -178,8 +179,10 @@ export class Boost {
             await this.checkoutPullRequestBranch();
         }
 
-        await catchErrors(this.runInitializationScript, params);
-        await catchErrors(this.runScripts, params);
+        catchErrors(async () => {
+            await this.runInitializationScript(params);
+            await this.runScripts(params);
+        });
 
         if (!hasError && this.changedFiles.length > 0) {
             catchErrors(async () => {

@@ -67,16 +67,18 @@ export class Application {
             `${cwd}/${this.configFilename}`,
         ];
 
-        console.log(configFilenames);
+        let result = this.configFilename;
 
         for (const filename of configFilenames) {
             if (existsSync(filename) && filename.endsWith('.js')) {
-                return filename;
+                result = filename;
             }
         }
 
+        console.log({ result });
+
         // If the config file is not found in any of the above locations, return the default value
-        return this.configFilename;
+        return result;
     }
 
     async executeRun(repoName: string, boostName: string, options: Record<string, any>) {
