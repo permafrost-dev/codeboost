@@ -1,10 +1,14 @@
-import { Boost } from '@/lib/Boost';
 import { CodeBoost } from '@/lib/CodeBoost';
 
 export class BatchManager {
     public data: any[] = [];
 
-    constructor(public filename: string, protected codeboost: CodeBoost) {
+    constructor(public filename: string, public codeboost: CodeBoost) {
+        if (!filename) {
+            this.data = [];
+            return;
+        }
+
         this.data = require(`${process.cwd()}/${filename}`);
     }
 
@@ -16,8 +20,8 @@ export class BatchManager {
         return this.getUsableDataset(boostName).slice(0, size);
     }
 
-    protected getUsableDataset(boostName: string) {
-        return this.data.filter(repo => this.getBoost(boostName).canRunOnRepository(repo.name) || true);
+    public getUsableDataset(boostName: string) {
+        return this.data.filter(repo => this.getBoost(boostName)?.canRunOnRepository(repo.name));
     }
 
     protected getItemState(item: any) {
