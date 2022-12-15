@@ -24,15 +24,6 @@ it('sets properties correctly on create', async () => {
     expect(repository).toMatchSnapshot();
 });
 
-// it('clones a repository', async () => {
-//     const repository = new Repository('laravel/framework', tempPath);
-
-//     await repository.clone();
-
-//     expect(existsSync(`${__dirname}/../fixtures/temp/laravel/framework`)).toBeTruthy();
-//     expect(existsSync(`${__dirname}/../fixtures/temp/laravel/framework/.git`)).toBeTruthy();
-// });
-
 it('gets the current branch names', async () => {
     const repository = new Repository('permafrost-dev/codeboost', tempPath);
     repository.path = `${__dirname}/../..`;

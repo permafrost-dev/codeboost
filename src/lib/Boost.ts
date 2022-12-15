@@ -297,34 +297,27 @@ export class Boost {
     public canRunOnRepository(repo: Repository | string) {
         const repoName = typeof repo === 'string' ? repo : repo.fullRepositoryName();
 
-        // get runs for this boost version and for the current repository,
-        // but don't include skipped runs or the current run
         const runs = this.history
             .filter(run => run.repository === repoName)
             .filter(run => run.version === this.version && run.run_id !== this.runId)
             .filter(run => run.state !== BoostHistoryItemState.SKIPPED);
 
-        // boost has run too many times
-        if (runs.length >= this.repositoryLimits.maxRunsPerVersion) {
+        if (this.repositoryLimits.maxRunsPerVersion <= runs.length) {
             return false;
         }
 
-        // check the time between runs
+        return !this.isRunTimeRestricted(runs);
+    }
+
+    protected isRunTimeRestricted(runs: BoostHistoryItem[]): boolean {
         for (const item of runs) {
             const runDate = dayjs(item.started_at);
-            const diffInMinutes = dayjs().diff(runDate, 'minute');
 
-            // the minimum time between runs has not passed, so don't run again
-            if (diffInMinutes < this.repositoryLimits.minutesBetweenRuns) {
-                return false;
+            if (dayjs().diff(runDate, 'minute') < this.repositoryLimits.minutesBetweenRuns) {
+                return true;
             }
         }
 
-        // check for any open pull requests
-        if (runs.filter(item => item.pull_request !== null).length) {
-            //
-        }
-
-        return true;
+        return false;
     }
 }
