@@ -28,7 +28,7 @@ it('initCodeBoost() should initialize codeboost', async () => {
         boosts_path: '/tmp/boosts',
         use_forks: true,
         use_pull_requests: true,
-        log_target: ['console'],
+        log_target: [ 'console' ],
     };
     const repoName = 'owner1/repoName';
     const initMock = jest.spyOn(CodeBoost.prototype, 'init').mockReturnValue(Promise.resolve());
@@ -114,8 +114,12 @@ describe('Application', () => {
 
             const fsMock = jest.mock('fs', () => ({ existsSync: jest.fn() }));
 
+            const origFn = fs.existsSync;
             // Set up the mock file system so that the config file is found in the second location in the list
-            fs.existsSync = jest.fn().mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValueOnce(false).mockReturnValueOnce(false);
+            fs.existsSync = jest.fn().mockReturnValueOnce(false)
+                .mockReturnValueOnce(true)
+                .mockReturnValueOnce(false)
+                .mockReturnValueOnce(false);
 
             const result = app.getConfigFilename(fakeHomeDir);
 
@@ -123,6 +127,7 @@ describe('Application', () => {
             expect(result).toBe(expectedConfigFilename);
 
             jest.restoreAllMocks();
+            fs.existsSync = origFn;
         });
 
         it('should return the default config filename if the config file is not found in any of the specified locations', () => {
@@ -133,12 +138,17 @@ describe('Application', () => {
             const fsMock = jest.mock('fs', () => ({ existsSync: jest.fn() }));
 
             // Set up the mock file system so that the config file is not found in any of the locations
-            fs.existsSync = jest.fn().mockReturnValueOnce(false).mockReturnValueOnce(false).mockReturnValueOnce(false).mockReturnValueOnce(false);
+            const origFn = fs.existsSync;
+            fs.existsSync = jest.fn().mockReturnValueOnce(false)
+                .mockReturnValueOnce(false)
+                .mockReturnValueOnce(false)
+                .mockReturnValueOnce(false);
 
             const result = app.getConfigFilename(fakeHomeDir);
             expect(result).toBe(app.configFilename);
 
             jest.restoreAllMocks();
+            fs.existsSync = origFn;
         });
     });
 });
