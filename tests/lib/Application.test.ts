@@ -28,7 +28,7 @@ it('initCodeBoost() should initialize codeboost', async () => {
         boosts_path: '/tmp/boosts',
         use_forks: true,
         use_pull_requests: true,
-        log_target: [ 'console' ],
+        log_target: ['console'],
     };
     const repoName = 'owner1/repoName';
     const initMock = jest.spyOn(CodeBoost.prototype, 'init').mockReturnValue(Promise.resolve());
@@ -94,9 +94,9 @@ describe('Application', () => {
         it('should return the specified config filename if provided', () => {
             const fakeHomeDir = '/fake/home/dir';
 
-            const osMock = jest.mock('os', () => ({userInfo: jest.fn(() => ({ homedir: fakeHomeDir })),}));
+            const osMock = jest.mock('os', () => ({ userInfo: jest.fn(() => ({ homedir: fakeHomeDir })) }));
 
-            const fsMock = jest.mock('fs', () => ({existsSync: jest.fn(),}));
+            const fsMock = jest.mock('fs', () => ({ existsSync: jest.fn() }));
 
             app.specifiedConfigFilename = true;
             app.configFilename = mockConfigFilename;
@@ -110,15 +110,12 @@ describe('Application', () => {
         it('should return the config filename from the first location it is found in the list of config filenames', () => {
             const fakeHomeDir = '/fake/home/dir';
 
-            const osMock = jest.mock('os', () => ({userInfo: jest.fn(() => ({ homedir: fakeHomeDir })),}));
+            const osMock = jest.mock('os', () => ({ userInfo: jest.fn(() => ({ homedir: fakeHomeDir })) }));
 
-            const fsMock = jest.mock('fs', () => ({existsSync: jest.fn(),}));
+            const fsMock = jest.mock('fs', () => ({ existsSync: jest.fn() }));
 
             // Set up the mock file system so that the config file is found in the second location in the list
-            fs.existsSync = jest.fn().mockReturnValueOnce(false)
-                .mockReturnValueOnce(true)
-                .mockReturnValueOnce(false)
-                .mockReturnValueOnce(false);
+            fs.existsSync = jest.fn().mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValueOnce(false).mockReturnValueOnce(false);
 
             const result = app.getConfigFilename(fakeHomeDir);
 
@@ -131,15 +128,12 @@ describe('Application', () => {
         it('should return the default config filename if the config file is not found in any of the specified locations', () => {
             const fakeHomeDir = '/fake/home/dir';
 
-            const osMock = jest.mock('os', () => ({userInfo: jest.fn(() => ({ homedir: fakeHomeDir })),}));
+            const osMock = jest.mock('os', () => ({ userInfo: jest.fn(() => ({ homedir: fakeHomeDir })) }));
 
-            const fsMock = jest.mock('fs', () => ({existsSync: jest.fn(),}));
+            const fsMock = jest.mock('fs', () => ({ existsSync: jest.fn() }));
 
             // Set up the mock file system so that the config file is not found in any of the locations
-            fs.existsSync = jest.fn().mockReturnValueOnce(false)
-                .mockReturnValueOnce(false)
-                .mockReturnValueOnce(false)
-                .mockReturnValueOnce(false);
+            fs.existsSync = jest.fn().mockReturnValueOnce(false).mockReturnValueOnce(false).mockReturnValueOnce(false).mockReturnValueOnce(false);
 
             const result = app.getConfigFilename(fakeHomeDir);
             expect(result).toBe(app.configFilename);
