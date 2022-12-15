@@ -1,8 +1,9 @@
-import { createOctokit, Github, initOctokit } from '@/index';
+import { Github } from '@/index';
 import { Repository } from '@/lib/Repository';
-import { parseFullRepositoryName } from '@/lib/stringHelpers';
 import { execSync } from 'child_process';
-import { existsSync } from 'fs';
+import fs, { existsSync } from 'fs';
+import path from 'path';
+import child_process from 'child_process';
 
 const tempPath = `${__dirname}/../fixtures/temp`;
 
@@ -94,5 +95,46 @@ it('does nothing if cloning a repository that already exists locally', async () 
     const repository = new Repository('laravel/framework', tempPath);
     repository.path = __dirname;
 
-    await expect(repository.clone()).not.toThrow();
+    await expect(repository.clone()).toBeTruthy();
+});
+
+it('creates the parent directory if it does not exist', async () => {
+    // Mock the `dirname` and `existsSync` functions.
+    jest.spyOn(path, 'dirname').mockReturnValue(tempPath);
+    jest.spyOn(fs, 'existsSync').mockReturnValue(false)
+        .mockReturnValueOnce(true);
+    const mkdirMock = jest.mock('fs', () => {
+        return {mkdirSync: jest.fn().mockReturnValue(''),};
+    });
+
+    const execSpy = jest.mock('child_process', () => {
+        return {execSync: jest.fn().mockReturnValue(''),};
+    });
+
+    const repo = new Repository('owner/name', tempPath + '/owner/name');
+
+    child_process.execSync = execSpy.fn();
+    fs.mkdirSync = mkdirMock.fn();
+
+    await expect(repo.clone()).toBeTruthy();
+
+    jest.restoreAllMocks();
+});
+
+it('clones the repository if it does not exist', async () => {
+    // Mock the `dirname` and `existsSync` functions.
+    const dirnameSpy = jest.spyOn(path, 'dirname').mockReturnValue('/parent/dir');
+    const existsSpy = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
+    const execSpy = jest.mock('child_process', () => {
+        return {execSync: jest.fn().mockReturnValue(''),};
+    });
+    const mocks = [ dirnameSpy, existsSpy ];
+
+    // Create an instance of the class.
+    const repo = new Repository('owner/name', tempPath + '/owner/name');
+
+    await expect(repo.clone()).toBeTruthy();
+
+    mocks.map(mock => mock.mockRestore());
+    jest.restoreAllMocks();
 });
