@@ -1,18 +1,23 @@
 import { Boost } from '@/lib/Boost';
+import { CodeBoost } from '@/lib/CodeBoost';
 
 export class BatchManager {
     public data: any[] = [];
 
-    constructor(public filename: string) {
+    constructor(public filename: string, protected codeboost: CodeBoost) {
         this.data = require(`${process.cwd()}/${filename}`);
     }
 
-    public getBatch(boost: Boost, size: number) {
-        return this.getUsableDataset(boost).slice(0, size);
+    protected getBoost(boostName: string) {
+        return this.codeboost.getBoost(boostName);
     }
 
-    protected getUsableDataset(boost: Boost) {
-        return this.data.filter(repo => boost.canRunOnRepository(repo.name) || true);
+    public getBatch(boostName: string, size: number) {
+        return this.getUsableDataset(boostName).slice(0, size);
+    }
+
+    protected getUsableDataset(boostName: string) {
+        return this.data.filter(repo => this.getBoost(boostName).canRunOnRepository(repo.name) || true);
     }
 
     protected getItemState(item: any) {
