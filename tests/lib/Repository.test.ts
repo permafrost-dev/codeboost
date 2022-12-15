@@ -92,7 +92,7 @@ it('throws an error when pushing to a fork on a repository that does not exist',
 
 it('does nothing if cloning a repository that already exists locally', async () => {
     const repository = new Repository('laravel/framework', tempPath);
-    repository.path = tempPath;
+    repository.path = __dirname;
 
-    await expect(repository.clone()).toBeTruthy();
+    await expect(repository.clone()).not.toThrow();
 });
