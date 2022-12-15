@@ -17,7 +17,7 @@ it('gets a repository', async () => {
             status: 200,
             data: {
                 full_name: 'permafrost-dev/node-ray',
-                owner: {login: 'permafrost-dev',},
+                owner: { login: 'permafrost-dev' },
                 name: 'node-ray',
             },
         });
