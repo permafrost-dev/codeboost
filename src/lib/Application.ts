@@ -5,8 +5,8 @@ import { HistoryManager } from '@/lib/HistoryManager';
 import { Repository } from '@/lib/Repository';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { userInfo } from 'os';
-import chalk from 'chalk';
 import { BatchManager } from '@/lib/BatchManager';
+import chalk from 'chalk';
 
 export class Application {
     public settings!: AppSettings;
@@ -51,39 +51,45 @@ export class Application {
     }
 
     getConfigFilename() {
+        const homeDir = userInfo({ encoding: 'utf8' }).homedir;
+        const cwd = process.cwd();
+
+        // Use specified config filename if provided
         if (this.specifiedConfigFilename) {
             return this.configFilename;
         }
 
-        const files = [
-            userInfo({ encoding: 'utf8' }).homedir + '/.codeboost/codeboost.config.js',
-            userInfo({ encoding: 'utf8' }).homedir + '/codeboost.config.js',
-            process.cwd() + '/codeboost.config.js',
-            process.cwd() + '/' + this.configFilename,
+        // Otherwise, try to find the config file in the following locations, in order:
+        const configFilenames = [
+            `${homeDir}/.codeboost/codeboost.config.js`,
+            `${homeDir}/codeboost.config.js`,
+            `${cwd}/codeboost.config.js`,
+            `${cwd}/${this.configFilename}`,
         ];
 
-        let result = this.configFilename;
-
-        for (const file of files) {
-            if (existsSync(file) && file.endsWith('.js')) {
-                result = file;
+        for (const filename of configFilenames) {
+            if (existsSync(filename) && filename.endsWith('.js')) {
+                return filename;
             }
         }
 
-        return result;
+        // If the config file is not found in any of the above locations, return the default value
+        return this.configFilename;
     }
 
     async executeRun(repoName: string, boostName: string, options: Record<string, any>) {
         const homePath = userInfo({ encoding: 'utf8' }).homedir;
         options.historyFn = `${homePath}/.codeboost/history.json`;
 
+        // Set historyFn to empty string if the file does not exist
         if (!existsSync(options.historyFn)) {
             options.historyFn = '';
         }
 
         const settings = await this.init(options);
 
-        const execute = async repoName => {
+        // Define a helper function to run codeboost on a repository
+        const runCodeBoost = async (repoName: string) => {
             try {
                 const codeboost = await this.initCodeBoost(repoName, settings);
 
@@ -96,19 +102,21 @@ export class Application {
             this.historyManager.save();
         };
 
+        // If options.batch is not set, run codeboost on the provided repository
         if (!options.batch) {
-            return await execute(repoName);
+            return await runCodeBoost(repoName);
         }
 
+        // Otherwise, run codeboost on each item in the batch
         const codeboost = await this.initCodeBoost(repoName, settings);
         const batchMgr = new BatchManager(options.batch, codeboost);
         const batch = batchMgr.getBatch(boostName, options.size);
 
-        await Promise.allSettled(batch.map(item => execute(item.name)));
+        await Promise.allSettled(batch.map(item => runCodeBoost(item.name)));
     }
 
-    async executeInit() {
-        const homePath = userInfo({ encoding: 'utf8' }).homedir;
+    async executeInit(homePath: string | null = null) {
+        homePath = homePath ?? userInfo({ encoding: 'utf8' }).homedir;
         let configFn = `${homePath}/.codeboost/codeboost.config.js`;
 
         if (this.specifiedConfigFilename) {
