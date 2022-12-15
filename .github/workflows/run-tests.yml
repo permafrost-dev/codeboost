@@ -42,7 +42,7 @@ jobs:
         id: npm-cache
         with:
           path: ${{ steps.npm-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ matrix.node-version }}-npm-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ matrix.node-version }}-npm-${{ hashFiles('**/package.json') }}
           restore-keys: |
             ${{ runner.os }}-node-${{ matrix.node-version }}-npm-
 
