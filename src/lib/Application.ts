@@ -50,8 +50,8 @@ export class Application {
         return codeboost;
     }
 
-    getConfigFilename() {
-        const homeDir = userInfo({ encoding: 'utf8' }).homedir;
+    public getConfigFilename(homePath: string | null = null) {
+        homePath = homePath ?? userInfo({ encoding: 'utf8' }).homedir;
         const cwd = process.cwd();
 
         // Use specified config filename if provided
@@ -61,11 +61,13 @@ export class Application {
 
         // Otherwise, try to find the config file in the following locations, in order:
         const configFilenames = [
-            `${homeDir}/.codeboost/codeboost.config.js`,
-            `${homeDir}/codeboost.config.js`,
+            `${homePath}/.codeboost/codeboost.config.js`,
+            `${homePath}/codeboost.config.js`,
             `${cwd}/codeboost.config.js`,
             `${cwd}/${this.configFilename}`,
         ];
+
+        console.log(configFilenames);
 
         for (const filename of configFilenames) {
             if (existsSync(filename) && filename.endsWith('.js')) {
@@ -94,7 +96,7 @@ export class Application {
                 const codeboost = await this.initCodeBoost(repoName, settings);
 
                 await codeboost.prepareRepository();
-                await codeboost.runBoost(boostName, ['8.2']);
+                await codeboost.runBoost(boostName, [ '8.2' ]);
             } catch (e: any) {
                 console.log(`${chalk.redBright('✗')} error: ${e.message}`);
             }
