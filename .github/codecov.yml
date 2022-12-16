@@ -2,12 +2,12 @@ codecov:
   branch: main
   require_ci_to_pass: true
 
-  coverage:
-    notify:
-      slack:
-        branches: main
-        threshold: 10%
+coverage:
+  notify:
+    slack:
+      default:
         url: '{CODECOV_SLACK_WEBHOOK_URL}'
+        only_pulls: false
 
   status:
     project:
@@ -19,6 +19,7 @@ codecov:
     patch:
       default:
         informational: true
+
   range: 30..75
   round: up
   precision: 1
@@ -34,8 +35,9 @@ parsers:
       macro: no
 
 comment:
-  layout: 'reach,diff,flags,files,footer'
+  layout: 'reach,diff,flags,tree,betaprofiling,footer'
   behavior: default
+  show_critical_paths: true
   require_changes: true
 
 ignore:
