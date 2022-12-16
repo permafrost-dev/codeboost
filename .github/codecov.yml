@@ -5,8 +5,9 @@ codecov:
 coverage:
   notify:
     slack:
+      message: 'hello from codecov'
       default:
-        url: '{CODECOV_SLACK_WEBHOOK_URL}'
+        url: secret:v2::6L1ovpYJry+OjhAfrUpBTkLLUmKjY2TrCQdlMY1oNuaK4PlK7xwnJftUsqQx+NYnNdqVbNDY0lD+VtylZx07Tyye//mYF4V265NrlhlwH6ui/TJ8l2RVe8eM9fDodDyzTlqXl4cf8aWU6W20nuQyXcSuEkpn6pwxfjK3HPN6Cb8=
         only_pulls: false
 
   status:
