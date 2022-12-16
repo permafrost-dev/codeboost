@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://static.permafrost.dev/images/codeboost/logo.svg" width="100" height="100" alt="codeboost logo"/>
+    <img src="https://static-assets.permafrost.dev/images/projects/codeboost/logo.svg" width="100" height="100" alt="codeboost logo"/>
 </p>
 
 # codeboost

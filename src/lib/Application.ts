@@ -103,7 +103,7 @@ export class Application {
                 const codeboost = await this.initCodeBoost(repoName, settings);
 
                 await codeboost.prepareRepository();
-                await codeboost.runBoost(boostName, [ '8.2' ]);
+                codeboost.runBoost(boostName, [ '8.2' ]);
             } catch (e: any) {
                 console.log(`${chalk.redBright('✗')} error: ${e.message}`);
             }
