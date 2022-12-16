@@ -4,12 +4,7 @@ export class BatchManager {
     public data: any[] = [];
 
     constructor(public filename: string, public codeboost: CodeBoost) {
-        if (!filename) {
-            this.data = [];
-            return;
-        }
-
-        this.data = require(`${process.cwd()}/${filename}`);
+        this.data = filename ? require(filename) : [];
     }
 
     protected getBoost(boostName: string) {
@@ -22,9 +17,5 @@ export class BatchManager {
 
     public getUsableDataset(boostName: string) {
         return this.data.filter(repo => this.getBoost(boostName)?.canRunOnRepository(repo.name));
-    }
-
-    protected getItemState(item: any) {
-        return item.state || {};
     }
 }

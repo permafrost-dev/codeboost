@@ -2,6 +2,7 @@ import packageJson from '@/../package.json';
 import { Application } from '@/lib/Application';
 import { APP_VERSION } from '@/lib/consts';
 import { Command } from 'commander';
+import { resolve } from 'path';
 import updateNotifier from 'simple-update-notifier';
 
 updateNotifier({ pkg: packageJson });
@@ -22,6 +23,10 @@ program
     .option('-s,--size <batchSize>', 'size of the batch to run', '2')
     .action(async (name, options) => {
         options.size = Number(options.size);
+
+        if (options.batch) {
+            options.batch = resolve(options.batch);
+        }
 
         const app = new Application(options.config, options.config.length > 0);
         await app.executeRun(options.repo, name, options);
