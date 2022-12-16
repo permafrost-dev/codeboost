@@ -2,12 +2,12 @@ codecov:
   branch: main
   require_ci_to_pass: true
 
-coverage:
-  notify:
-    slack:
-      branches: main
-      threshold: 10%
-      url: '{CODECOV_SLACK_WEBHOOK_URL}'
+  coverage:
+    notify:
+      slack:
+        branches: main
+        threshold: 10%
+        url: '{CODECOV_SLACK_WEBHOOK_URL}'
 
   status:
     project:
