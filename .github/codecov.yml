@@ -1,21 +1,27 @@
 codecov:
   branch: main
-  require_ci_to_pass: yes
+  require_ci_to_pass: true
 
 coverage:
+  notify:
+    slack:
+      branches: main
+      threshold: 10%
+      url: '{CODECOV_SLACK_WEBHOOK_URL}'
+
   status:
     project:
       default:
         informational: true
         target: auto
         # this allows a 10% drop from the previous base commit coverage
-        threshold: 20%
+        threshold: 10%
     patch:
       default:
         informational: true
-  precision: 2
+  range: 30..75
   round: up
-  range: '40...80'
+  precision: 1
 
 parsers:
   javascript:

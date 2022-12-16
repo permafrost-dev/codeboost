@@ -52,6 +52,14 @@ jobs:
       - name: Run the tests with coverage
         run: npm run test -- --passWithNoTests --coverage --coverageReporters json
 
+      - name: Prepare codecov config
+        run: |
+          wget https://github.com/webdevops/go-replace/releases/download/22.10.0/go-replace.linux.amd64 -O /tmp/goreplace
+          chmod +x /tmp/goreplace
+          echo $PWD
+          echo ${{ env.PWD }}
+          /tmp/goreplace -s '{CODECOV_SLACK_WEBHOOK_URL}' -r '${{ secrets.CODECOV_SLACK_WEBHOOK_URL }}' .github/codecov.yml
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         if: ${{ success() && env.USE_CODECOV_SERVICE == 'yes' }}

@@ -164,10 +164,17 @@ export class Tools {
                 const stats = lstatSafe(srcFn);
 
                 this.handleFilesForDirectoryCopy({
-                    stats, srcFn, destFn, files: new Proxy(files, {}), onCopiedCallback 
+                    stats,
+                    srcFn,
+                    destFn,
+                    files: new Proxy(files, {}),
+                    onCopiedCallback,
                 });
                 this.handleDirectoriesForDirectoryCopy({
-                    stats, srcFn, destFn, handler 
+                    stats,
+                    srcFn,
+                    destFn,
+                    handler,
                 });
             });
         };
