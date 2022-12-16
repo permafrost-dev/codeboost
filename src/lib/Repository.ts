@@ -35,7 +35,7 @@ export class Repository {
     }
 
     public initGitListeners(runId: string) {
-        this.gitInstance.add = (files: string | string[], callback?: SimpleGitTaskCallback<string>): Response<string> => {
+        this.git.add = (files: string | string[], callback?: SimpleGitTaskCallback<string>): Response<string> => {
             eventbus.emit(GIT_FILE_ADDED_EVENT, { repository: this.info, files, runId });
             return this.gitInstance.raw([ 'add', ...[].concat(<any>files) ], callback);
         };
