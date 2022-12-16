@@ -192,7 +192,9 @@ export class Boost {
 
         await catchErrors(async () => {
             await this.runInitializationScript(params);
-            await this.runScripts(params);
+            await this.runScripts(params).then(() => {
+                this.log('Finished running scripts');
+            });
         });
 
         if (!hasError && this.changedFiles.length > 0) {

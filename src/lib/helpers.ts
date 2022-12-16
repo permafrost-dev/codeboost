@@ -1,3 +1,4 @@
+import { lstatSync } from 'fs';
 import { customAlphabet } from 'nanoid';
 import semver, { SemVer } from 'semver';
 
@@ -23,3 +24,9 @@ export const generateRunId = () => {
 
     return func(14);
 };
+
+export function lstatSafe(filename) {
+    const result = lstatSync(filename, { throwIfNoEntry: false }) || null;
+
+    return result;
+}

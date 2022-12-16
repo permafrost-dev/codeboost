@@ -1,8 +1,10 @@
+import { lstatSafe } from '@/lib/helpers';
 import { execSync } from 'child_process';
 import { createHash } from 'crypto';
-import { copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs';
+import { copyFile, copyFileSync, existsSync, lstatSync, mkdirSync, readdir, readdirSync, readFileSync, writeFileSync } from 'fs';
 import yaml from 'js-yaml';
 import { dirname } from 'path';
+import { promisify } from 'util';
 
 export type OnFileCopiedCallback = (src: string, dest: string) => void;
 
@@ -58,6 +60,8 @@ export class Tools {
         }
 
         copyFileSync(src, dest);
+
+        return dest;
     }
 
     /**
@@ -75,7 +79,9 @@ export class Tools {
      * @returns {string} The sha-256 hash of the string.
      */
     public hashstring(str: string) {
-        return createHash('sha256').update(str).digest('hex').toLowerCase();
+        return createHash('sha256').update(str)
+            .digest('hex')
+            .toLowerCase();
     }
 
     /**
@@ -149,41 +155,53 @@ export class Tools {
      * @returns {string[]}
      */
     public recursiveDirectoryCopy(src: string, dest: string, onCopiedCallback: OnFileCopiedCallback | null = null) {
-        const destFiles: string[] = [];
+        const files: string[] = [];
+
         const handler = (src, dest) => {
-            const files = readdirSync(src);
+            readdirSync(src).forEach(file => {
+                const srcFn = src + '/' + file;
+                const destFn = dest + '/' + file;
+                const stats = lstatSafe(srcFn);
 
-            files
-                .filter(file => file !== '.' && file !== '..')
-                .forEach(file => {
-                    const srcFn = src + '/' + file;
-                    const destFn = dest + '/' + file;
-
-                    const stats = lstatSync(srcFn, { throwIfNoEntry: false }) || null;
-
-                    if (stats === null) {
-                        return;
-                    }
-
-                    if (stats?.isFile() && !this.filesAreEqual(srcFn, destFn)) {
-                        copyFileSync(srcFn, destFn);
-                        destFiles.push(destFn);
-
-                        if (onCopiedCallback) {
-                            onCopiedCallback(srcFn, destFn);
-                        }
-                    }
-
-                    if (stats?.isDirectory()) {
-                        if (!this.fileexists(destFn)) {
-                            mkdirSync(destFn);
-                        }
-                        handler(srcFn, destFn);
-                    }
+                this.handleFilesForDirectoryCopy({
+                    stats, srcFn, destFn, files: new Proxy(files, {}), onCopiedCallback 
                 });
-            return destFiles;
+                this.handleDirectoriesForDirectoryCopy({
+                    stats, srcFn, destFn, handler 
+                });
+            });
         };
 
-        return handler(src, dest);
+        handler(src, dest);
+
+        return files;
+    }
+
+    protected handleDirectoriesForDirectoryCopy({
+        stats, srcFn, destFn, handler 
+    }) {
+        if (!stats?.isDirectory()) {
+            return;
+        }
+
+        if (!this.fileexists(destFn)) {
+            mkdirSync(destFn, { recursive: true });
+        }
+
+        handler(srcFn, destFn);
+    }
+
+    protected handleFilesForDirectoryCopy({
+        stats, srcFn, destFn, files, onCopiedCallback 
+    }) {
+        if (!stats?.isFile() || this.filesAreEqual(srcFn, destFn)) {
+            return;
+        }
+
+        files.push(this.copyfile(srcFn, destFn));
+
+        if (onCopiedCallback) {
+            onCopiedCallback(srcFn, destFn);
+        }
     }
 }

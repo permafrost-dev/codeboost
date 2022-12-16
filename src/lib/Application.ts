@@ -116,6 +116,7 @@ export class Application {
             return await runCodeBoost(repoName);
         }
 
+        //set a temp repo name so no error is thrown when creating the Repository class
         repoName = 'temp/temp';
 
         // Otherwise, run codeboost on each item in the batch
