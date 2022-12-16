@@ -38,6 +38,15 @@ Run a boost:
 codeboost run -r <repository> <boost>
 ```
 
+Run a boost on a batch of repositories:
+
+```bash
+codeboost run --batch repositories.json --size 3 <boost>
+```
+
+When running in batch mode, the `--size` option can be used to specify the number of repositories to process at once. The default is 1.
+The `--batch` option can be used to specify a JSON file containing an array of objects that have a `name` property that resolves to "owner/repo-name". The object can contain other attributes as well, but MUST contain the name property for batch mode to work correctly.
+
 ## Configuration
 
 To use the `codeboost` CLI, create a file named `boost.config.js` in your current working directory or run `codeboost init` to create a default configuration file.
