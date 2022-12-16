@@ -22,31 +22,28 @@ function loadLogTarget(settings) {
         settings.log_target = [ settings.log_target ];
     }
 
-    return (settings.log_target = settings.log_target
+    settings.log_target = settings.log_target
         .map(target => <LogTarget>target.toLowerCase())
-        .filter((target: string) => [ 'console', 'file' ].includes(target)));
+        .filter((target: string) => [ 'console', 'file' ].includes(target));
+
+    return settings;
 }
 
 const isString = (value: any) => typeof value === 'string';
 const isUndefined = (value: any) => typeof value === 'undefined';
+const getEnvVar = (settings, key: string) => process.env[settings[key].slice(1)];
+const setDefaultValue = (settings, key: string, value: any) => isUndefined(settings[key]) && (settings[key] = value);
 
 export function transformSettings(settings: AppSettings): AppSettings {
-    const getEnvVar = (key: string) => process.env[settings[key].slice(1)];
-    const setDefaultValue = (key: string, value: any) => isUndefined(settings[key]) && (settings[key] = value);
-
     // load settings from environment variable references starting with '$'
-    for (const key in settings) {
-        if (isString(settings[key]) && !!getEnvVar(key)) {
-            settings[key] = getEnvVar(key);
-        }
-    }
+    Object.keys(settings)
+        .filter(key => isString(settings[key]) && !!getEnvVar(settings, key))
+        .forEach(key => (settings[key] = getEnvVar(settings, key)));
 
-    setDefaultValue('dry_run', false);
-    setDefaultValue('auto_merge_pull_requests', false);
+    setDefaultValue(settings, 'dry_run', false);
+    setDefaultValue(settings, 'auto_merge_pull_requests', false);
 
-    if (!settings.use_pull_requests) {
-        settings.use_forks = false;
-    }
+    settings.use_forks = settings.use_pull_requests ? settings.use_forks : false;
 
     return loadLogTarget(settings);
 }
