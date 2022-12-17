@@ -62,7 +62,7 @@
         "@octokit/core": "^4.1.0",
         "@octokit/plugin-throttling": "^4.3.2",
         "better-queue": "^3.8.12",
-        "chalk": "^4.2.0",
+        "chalk": "^4.0",
         "commander": "^9.4.1",
         "dayjs": "^1.11.7",
         "deepmerge": "^4.2.2",

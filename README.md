@@ -10,6 +10,8 @@
     <img src="https://github.com/permafrost-dev/codeboost/actions/workflows/run-tests.yml/badge.svg?a=1" alt="Run Tests"> <img alt="Codecov" src="https://codecov.io/gh/permafrost-dev/codeboost/branch/main/graph/badge.svg?token=qYptYEWlm7&style=flat-square"> <img src="https://img.shields.io/github/license/permafrost-dev/codeboost?style=flat-square" alt="license">
     <br/>
     <img src="https://img.shields.io/codeclimate/tech-debt/permafrost-dev/codeboost?label=technical%20debt&amp;logo=codeclimate&amp;style=flat-square" alt="techdebt"> <img src="https://api.codeclimate.com/v1/badges/688e30d604cdcd93a262/maintainability" />
+    <br/>
+    <img alt="Depfu" src="https://img.shields.io/depfu/dependencies/github/permafrost-dev/codeboost?style=flat-square"> <img alt="npm downloads" src="https://img.shields.io/npm/dm/codeboost?style=flat-square">
 </p>
 
 `codeboost` is a CLI tool and library that allows you to run "boosts" on repositories. Boosts are small scripts that can be used to automate common tasks such as updating dependencies, fixing linting errors, or updating workflows to use a new version of a library.
