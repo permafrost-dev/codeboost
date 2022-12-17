@@ -162,7 +162,7 @@ export class Boost {
 
         const catchErrors = async (callBack: CallableFunction, args: any = []) => {
             try {
-                return await callBack(...args);
+                return await await callBack(...args);
             } catch (e) {
                 hasError = true;
                 this.log(e);
@@ -192,9 +192,7 @@ export class Boost {
 
         await catchErrors(async () => {
             await this.runInitializationScript(params);
-            await this.runScripts(params).then(() => {
-                this.log('Finished running scripts');
-            });
+            await this.runScripts(params);
         });
 
         if (!hasError && this.changedFiles.length > 0) {
@@ -215,8 +213,6 @@ export class Boost {
 
         historyItem.finished_at = new Date().toISOString();
         historyItem.state = hasError ? BoostHistoryItemState.FAILED : BoostHistoryItemState.SUCCEEDED;
-
-        this.log('Done.');
 
         listener.off(GIT_FILE_ADDED_EVENT, () => {});
     }

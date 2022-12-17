@@ -44,6 +44,8 @@ export class CodeBoost extends Mixin(HasLogger) {
 
         await boost.run(this.repository, args);
 
+        this.log('Done.');
+
         return boost;
     }
 

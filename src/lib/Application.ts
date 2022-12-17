@@ -6,7 +6,9 @@ import { Repository } from '@/lib/Repository';
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { userInfo } from 'os';
 import { BatchManager } from '@/lib/BatchManager';
+import Queue from 'better-queue';
 import chalk from 'chalk';
+import { Tools } from '@/lib/Tools';
 
 export class Application {
     public settings!: AppSettings;
@@ -88,7 +90,6 @@ export class Application {
         // Set historyFn to empty string if the file does not exist
         if (!existsSync(options.historyFn)) {
             writeFileSync(options.historyFn, JSON.stringify([]));
-            // options.historyFn = '';
         }
 
         const settings = await this.init(options);
@@ -99,11 +100,14 @@ export class Application {
         }
 
         const runCodeBoost = async (repoName: string) => {
+            if (!repoName) {
+                return;
+            }
             try {
                 const codeboost = await this.initCodeBoost(repoName, settings);
 
                 await codeboost.prepareRepository();
-                codeboost.runBoost(boostName, [ '8.2' ]);
+                await codeboost.runBoost(boostName, [ '8.2' ]);
             } catch (e: any) {
                 console.log(`${chalk.redBright('✗')} error: ${e.message}`);
             }
@@ -111,20 +115,45 @@ export class Application {
             this.historyManager.save();
         };
 
-        // If options.batch is not set, run codeboost on the provided repository
-        if (!options.batch) {
-            return await runCodeBoost(repoName);
+        const complete = { value: false };
+        const queue = this.createQueue(runCodeBoost, new Proxy(complete, {}));
+
+        await this.handleQueuedRepos({
+            queue, repoName, options, boostName, settings, complete 
+        });
+    }
+
+    async handleQueuedRepos({
+        queue, repoName, options, boostName, settings, complete 
+    }: any) {
+        if (options.batch) {
+            repoName = 'temp/temp';
         }
 
-        //set a temp repo name so no error is thrown when creating the Repository class
-        repoName = 'temp/temp';
-
-        // Otherwise, run codeboost on each item in the batch
         const codeboost = await this.initCodeBoost(repoName, settings);
         const batchMgr = new BatchManager(options.batch, codeboost);
+
+        if (!options.batch) {
+            batchMgr.insertBatch(repoName);
+            options.size = 1;
+        }
+
         const batch = batchMgr.getBatch(boostName, options.size);
 
-        await Promise.allSettled(batch.map(item => runCodeBoost(item.name)));
+        if (batch.length === 0) {
+            console.log(`${chalk.redBright('✗')} No repositories found in batch.`);
+            return;
+        }
+
+        batch.forEach(item => queue.push(item.name));
+
+        while (!complete.value) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            if (complete.value) {
+                break;
+            }
+        }
     }
 
     async executeInit(homePath: string | null = null) {
@@ -161,5 +190,36 @@ export class Application {
         }
 
         console.log(`${chalk.greenBright('✓')} codeboost initialized`);
+    }
+
+    public createQueue(runCodeBoost, complete) {
+        const queue = new Queue(
+            async (r, cb) => {
+                await runCodeBoost(r);
+                cb();
+            },
+            { concurrent: 2, maxRetries: 2, retryDelay: 1000 },
+        );
+
+        queue.on('task_finish', function (taskId, result) {
+            //console.log(`${chalk.greenBright('✓')} ${taskId} finished`);
+        });
+        queue.on('empty', () => {
+            //console.log('empty');
+        });
+        queue.on('drain', function () {
+            complete.value = true;
+        });
+        queue.on('task_queued', t => {
+            //console.log('task_queued', t);
+        });
+        queue.on('task_started', t => {
+            //console.log('task_started', t);
+        });
+        queue.on('task_failed', t => {
+            //console.log('task_accepted', t);
+        });
+
+        return queue;
     }
 }
