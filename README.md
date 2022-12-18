@@ -1,10 +1,8 @@
 <p align="center">
-    <img src="https://static-assets.permafrost.dev/images/projects/codeboost/logo.svg" width="100" height="100" alt="codeboost logo"/>
+    <img src="https://static-assets.permafrost.dev/images/projects/codeboost/logo.svg" width="100" height="100" alt="codeboost logo">
 </p>
 
 # codeboost
-
----
 
 <p align="center">
     <img src="https://github.com/permafrost-dev/codeboost/actions/workflows/run-tests.yml/badge.svg?a=1" alt="Run Tests">
@@ -24,9 +22,9 @@
     <br>
 </p>
 
-`codeboost` is a CLI tool and library that allows you to run "boosts" on repositories. Boosts are small scripts that can be used to automate common tasks such as updating dependencies, fixing linting errors, or updating workflows to use a new version of a library.
+`codeboost` is a CLI tool and library that enables developers to automate common repository tasks such as updating dependencies, fixing linting errors, modifying READMEs, or adding new workflows.
 
-`codeboost` makes it easy to run these tasks across multiple repositories at once, making maintenance of multiple repositories simple.
+Run these tasks across a single repository or multiple repositories at once with a single command.
 
 ## Quick Start
 
@@ -59,6 +57,33 @@ codeboost run --batch repositories.json --size 3 <boost>
 When running in batch mode, the `--size` option can be used to specify the number of repositories to process at once. The default is 1.
 The `--batch` option can be used to specify a JSON file containing an array of objects that have a `name` property that resolves to "owner/repo-name". The object can contain other attributes as well, but MUST contain the name property for batch mode to work correctly.
 
+Example of a batch JSON file (_repositories.json_):
+
+```json
+[
+    {
+        "id": 1,
+        "name": "spatie/url",
+        "description": "test",
+        "stars": 66,
+        "downloads": 14414,
+        "type": "package",
+        "language": "PHP",
+        "visible": 1
+    },
+    {
+        "id": 2,
+        "name": "spatie/once",
+        "description": "test",
+        "stars": 67,
+        "downloads": 14456,
+        "type": "package",
+        "language": "PHP",
+        "visible": 1
+    }
+]
+```
+
 ## Configuration
 
 To use the `codeboost` CLI, create a file named `boost.config.js` in your current working directory or run `codeboost init` to create a default configuration file.
@@ -76,7 +101,7 @@ export interface AppSettings {
 }
 ```
 
-## Development
+## Development Setup
 
 ```bash
 npm install
