@@ -54,7 +54,7 @@
         "build:cli": "node scripts/build.js",
         "build:lib": "node scripts/build-library.js",
         "build:dts": "dts-bundle-generator -o dist/codeboost.d.ts src/lib/CodeBoost.ts",
-        "build": "npm run build:cli && npm run build:lib && npm run build:dts && npm run build:api-docs",
+        "build": "npm run build:cli && npm run build:lib && npm run build:dts",
         "dev": "npm run build:cli && node dist/cli.js",
         "prepare": "husky install"
     },

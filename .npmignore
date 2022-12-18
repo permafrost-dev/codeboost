@@ -8,6 +8,7 @@
 /dist/storage
 /docs/*.png
 /docs/*.svg
+/examples
 /node_modules
 /scripts
 /src
@@ -22,3 +23,5 @@
 package-lock.json
 rome.json
 tsconfig.json
+*.log
+dist/*.json

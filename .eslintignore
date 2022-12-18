@@ -1,1 +1,2 @@
-dist/index.js
+bin/*
+dist/*
