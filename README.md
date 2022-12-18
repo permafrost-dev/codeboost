@@ -7,11 +7,21 @@
 ---
 
 <p align="center">
-    <img src="https://github.com/permafrost-dev/codeboost/actions/workflows/run-tests.yml/badge.svg?a=1" alt="Run Tests"> <img alt="Codecov" src="https://codecov.io/gh/permafrost-dev/codeboost/branch/main/graph/badge.svg?token=qYptYEWlm7&style=flat-square"> <img src="https://img.shields.io/github/license/permafrost-dev/codeboost?style=flat-square" alt="license">
-    <br/>
-    <img src="https://img.shields.io/codeclimate/tech-debt/permafrost-dev/codeboost?label=technical%20debt&amp;logo=codeclimate&amp;style=flat-square" alt="techdebt"> <img src="https://api.codeclimate.com/v1/badges/688e30d604cdcd93a262/maintainability" />
-    <br/>
-    <img alt="Depfu" src="https://img.shields.io/depfu/dependencies/github/permafrost-dev/codeboost?style=flat-square"> <img alt="npm downloads" src="https://img.shields.io/npm/dm/codeboost?style=flat-square">
+    <img src="https://github.com/permafrost-dev/codeboost/actions/workflows/run-tests.yml/badge.svg?a=1" alt="Run Tests">
+    <img alt="Codecov" src="https://img.shields.io/codecov/c/github/permafrost-dev/codeboost?color=%234c1&label=coverage&logo=codecov&logoColor=%23ef6f6f&style=flat-square&token=qYptYEWlm7" alt="codecov">
+    <!--
+    <img src="https://img.shields.io/github/license/permafrost-dev/codeboost?style=flat-square" alt="license">
+    <br>
+    <img src="https://img.shields.io/codeclimate/tech-debt/permafrost-dev/codeboost?label=tech%20debt&amp;logo=codeclimate&amp;style=flat-square" alt="techdebt">
+    <img src="https://api.codeclimate.com/v1/badges/688e30d604cdcd93a262/maintainability" />
+    <br>
+    <img src="https://shields.io/npm/v/codeboost?style=flat-square&logo=npm&logoColor=white" alt="npm version">
+    <img src="https://img.shields.io/npm/dt/codeboost.svg?style=flat-square&logo=npm&logoColor=white" alt="npm downloads">
+    <br>
+    <img alt="Depfu" src="https://img.shields.io/depfu/dependencies/github/permafrost-dev/codeboost?style=flat-square">
+    <img src="https://badgen.net/github/dependabot/permafrost-dev/codeboost?style=flat-square" alt="dependabot status">
+    -->
+    <br>
 </p>
 
 `codeboost` is a CLI tool and library that allows you to run "boosts" on repositories. Boosts are small scripts that can be used to automate common tasks such as updating dependencies, fixing linting errors, or updating workflows to use a new version of a library.
