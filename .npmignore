@@ -14,7 +14,7 @@
 /src
 /tests
 *.config.js
-*.js
+/*.js
 *ignore
 .editorconfig
 .eslintrc.js
