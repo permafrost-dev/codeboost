@@ -1,6 +1,6 @@
 {
     "name": "codeboost",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Automate changes to repositories",
     "author": "Patrick Organ <patrick@permafrost.dev>",
     "license": "MIT",
