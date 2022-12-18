@@ -9,7 +9,8 @@
     <img alt="Codecov" src="https://img.shields.io/codecov/c/github/permafrost-dev/codeboost?color=%234c1&label=coverage&logo=codecov&logoColor=%23ef6f6f&style=flat-square&token=qYptYEWlm7" alt="codecov">
     <img src="https://img.shields.io/github/license/permafrost-dev/codeboost?style=flat-square" alt="license">
     <br>
-    <img src="https://img.shields.io/codeclimate/tech-debt/permafrost-dev/codeboost?label=tech%20debt&amp;logo=codeclimate&amp;style=flat-square" alt="techdebt">
+    <!--img src="https://img.shields.io/codeclimate/tech-debt/permafrost-dev/codeboost?label=tech%20debt&amp;logo=codeclimate&amp;style=flat-square" alt="techdebt"-->
+    <img src="https://img.shields.io/scrutinizer/quality/g/permafrost-dev/codeboost/main?logo=scrutinizer&style=flat-square" alt="scrutinizer score" />
     <img src="https://api.codeclimate.com/v1/badges/688e30d604cdcd93a262/maintainability" />
     <!--
     <br>
