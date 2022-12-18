@@ -20,6 +20,8 @@
     <br>
     <img alt="Depfu" src="https://img.shields.io/depfu/dependencies/github/permafrost-dev/codeboost?style=flat-square&nocache=1">
     <img src="https://badgen.net/github/dependabot/permafrost-dev/codeboost?style=flat-square" alt="dependabot status">
+    <br>
+    <img src="https://img.shields.io/npm/v/codeboost?label=npm%20version&logo=npm&logoColor=%23f1f5f9&style=flat-square" alt="version">
 </p>
 
 `codeboost` is a CLI tool and library that enables developers to automate common repository tasks such as updating dependencies, fixing linting errors, modifying READMEs, or adding new workflows.
