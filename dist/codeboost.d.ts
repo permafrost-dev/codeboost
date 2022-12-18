@@ -3,189 +3,191 @@
 import { SimpleGit } from 'simple-git';
 import { Logger } from 'winston';
 
-export type LogTarget = 'console' | 'file';
+export type LogTarget = "console" | "file";
 declare class HasLogger {
-    logger: Logger;
-    createLogger(targets: LogTarget[], defaultMeta: Record<string, any>): void;
-    log(message: string, meta?: any[]): void;
+	logger: Logger;
+	createLogger(targets: LogTarget[], defaultMeta: Record<string, any>): void;
+	log(message: string, meta?: any[]): void;
 }
 export interface AppSettings {
-    github_token: string;
-    repository_storage_path: string;
-    boosts_path: string;
-    use_forks: boolean;
-    use_pull_requests: boolean;
-    log_target: LogTarget | LogTarget[];
-    dry_run?: boolean;
-    auto_merge_pull_requests?: boolean;
+	github_token: string;
+	repository_storage_path: string;
+	boosts_path: string;
+	use_forks: boolean;
+	use_pull_requests: boolean;
+	log_target: LogTarget | LogTarget[];
+	dry_run?: boolean;
+	auto_merge_pull_requests?: boolean;
 }
 export type BoostHistory = BoostHistoryItem[];
 declare enum BoostHistoryItemState {
-    SUCCEEDED = 'succeeded',
-    FAILED = 'failed',
-    RUNNING = 'running',
-    SKIPPED = 'skipped',
-    UNKNOWN = 'unknown',
+	SUCCEEDED = "succeeded",
+	FAILED = "failed",
+	RUNNING = "running",
+	SKIPPED = "skipped",
+	UNKNOWN = "unknown"
 }
 export interface BoostHistoryItem {
-    run_id: string;
-    boost: string;
-    version: string;
-    repository: string;
-    pull_request: number | null;
-    state: BoostHistoryItemState;
-    started_at: string;
-    finished_at: string | null;
-    [key: string]: any;
+	run_id: string;
+	boost: string;
+	version: string;
+	repository: string;
+	pull_request: number | null;
+	state: BoostHistoryItemState;
+	started_at: string;
+	finished_at: string | null;
+	[key: string]: any;
 }
 export interface RepositoryInfo {
-    owner: string;
-    name: string;
+	owner: string;
+	name: string;
 }
 declare class Repository {
-    name: string;
-    owner: string;
-    path: string;
-    gitInstance: SimpleGit;
-    get info(): RepositoryInfo;
-    get git(): SimpleGit;
-    initGitListeners(runId: string): void;
-    constructor(fullRepositoryName: string, repositoryStoragePath: string);
-    clone(): Promise<boolean>;
-    prepare(): Promise<void>;
-    localBranches(): Promise<import('simple-git').BranchSummary>;
-    currentBranch(): Promise<string>;
-    onBranch(branchName: string): Promise<boolean>;
-    checkout(branchName: string): Promise<void>;
-    defaultBranch(): Promise<string>;
-    createFork(): Promise<void>;
-    pushToFork(branchName: string): Promise<void>;
-    fullRepositoryName(): string;
+	name: string;
+	owner: string;
+	path: string;
+	gitInstance: SimpleGit;
+	get info(): RepositoryInfo;
+	get git(): SimpleGit;
+	initGitListeners(runId: string): void;
+	constructor(fullRepositoryName: string, repositoryStoragePath: string);
+	clone(): Promise<boolean>;
+	prepare(): Promise<void>;
+	localBranches(): Promise<import("simple-git").BranchSummary>;
+	currentBranch(): Promise<string>;
+	onBranch(branchName: string): Promise<boolean>;
+	checkout(branchName: string): Promise<void>;
+	defaultBranch(): Promise<string>;
+	createFork(): Promise<void>;
+	pushToFork(branchName: string): Promise<void>;
+	fullRepositoryName(): string;
 }
 export type OnFileCopiedCallback = (src: string, dest: string) => void;
 declare class Tools {
-    sleep(ms: number): Promise<unknown>;
-    fileexists(path: string): boolean;
-    readfile(path: string): string;
-    writefile(path: string, content: string): void;
-    copyfile(src: string, dest: string): string;
-    hashfile(path: string): string;
-    hashstring(str: string): string;
-    filesAreEqual(file1: string, file2: string): boolean;
-    readYaml(path: string): any;
-    writeYaml(path: string, data: any): void;
-    readJson(path: string): any;
-    writeJson(path: string, data: any): void;
-    exec(command: string, silent?: boolean): string;
-    recursiveDirectoryCopy(src: string, dest: string, onCopiedCallback?: OnFileCopiedCallback | null): string[];
-    protected handleDirectoriesForDirectoryCopy({ stats, srcFn, destFn, handler }: { stats: any; srcFn: any; destFn: any; handler: any }): void;
-    protected handleFilesForDirectoryCopy({
-        stats,
-        srcFn,
-        destFn,
-        files,
-        onCopiedCallback,
-    }: {
-        stats: any;
-        srcFn: any;
-        destFn: any;
-        files: any;
-        onCopiedCallback: any;
-    }): void;
+	sleep(ms: number): Promise<unknown>;
+	fileexists(path: string): boolean;
+	readfile(path: string): string;
+	writefile(path: string, content: string): void;
+	copyfile(src: string, dest: string): string;
+	hashfile(path: string): string;
+	hashstring(str: string): string;
+	filesAreEqual(file1: string, file2: string): boolean;
+	readYaml(path: string): any;
+	writeYaml(path: string, data: any): void;
+	readJson(path: string): any;
+	writeJson(path: string, data: any): void;
+	exec(command: string, silent?: boolean): string;
+	recursiveDirectoryCopy(src: string, dest: string, onCopiedCallback?: OnFileCopiedCallback | null): string[];
+	protected handleDirectoriesForDirectoryCopy({ stats, srcFn, destFn, handler }: {
+		stats: any;
+		srcFn: any;
+		destFn: any;
+		handler: any;
+	}): void;
+	protected handleFilesForDirectoryCopy({ stats, srcFn, destFn, files, onCopiedCallback }: {
+		stats: any;
+		srcFn: any;
+		destFn: any;
+		files: any;
+		onCopiedCallback: any;
+	}): void;
 }
 export interface BoostConfiguration {
-    id: string;
-    version: string;
-    repository_limits: {
-        max_runs_per_version: number;
-        minutes_between_runs: number;
-    };
-    pull_request: {
-        title: string;
-        body: string;
-        branch: string;
-    };
-    scripts: {
-        parallel: boolean;
-        files: string[];
-    };
+	id: string;
+	version: string;
+	repository_limits: {
+		max_runs_per_version: number;
+		minutes_between_runs: number;
+	};
+	pull_request: {
+		title: string;
+		body: string;
+		branch: string;
+	};
+	scripts: {
+		parallel: boolean;
+		files: string[];
+	};
 }
 export interface BoostScriptHandlerParameters {
-    args: any[];
-    boost: Boost;
-    currentRun: BoostHistoryItem;
-    git: SimpleGit;
-    libs: {
-        fs: typeof import('fs');
-        path: typeof import('path');
-        semver: typeof import('semver');
-    };
-    repository: Repository;
-    tools: Tools;
+	args: any[];
+	boost: Boost;
+	currentRun: BoostHistoryItem;
+	git: SimpleGit;
+	libs: {
+		fs: typeof import("fs");
+		path: typeof import("path");
+		semver: typeof import("semver");
+	};
+	repository: Repository;
+	tools: Tools;
 }
 declare class Boost {
-    protected codeBoost: CodeBoost;
-    protected repository: Repository | null;
-    config: BoostConfiguration;
-    path: string;
-    id: string;
-    version: string;
-    repositoryLimits: {
-        maxRunsPerVersion: number;
-        minutesBetweenRuns: number;
-    };
-    pullRequest: {
-        title: string;
-        body: string;
-        branch: string;
-    };
-    scripts: any[];
-    actions: any[];
-    state: Record<string, any>;
-    changedFiles: string[];
-    runId: string;
-    constructor(codeBoost: CodeBoost, boostPath: string);
-    init(boostPath: string): void;
-    get appSettings(): AppSettings;
-    get history(): BoostHistory;
-    log(message: any): void;
-    loadConfiguration(boostPath: string): BoostConfiguration;
-    loadPullRequest(pullRequest: Record<string, any>): {
-        title: any;
-        body: any;
-        branch: string;
-    };
-    loadScripts(scripts: string[]): any[];
-    run(repository: Repository, args?: any[]): Promise<false | undefined>;
-    handlePullRequestCreation({ repository, historyItem }: { repository: any; historyItem: any }): Promise<void>;
-    createScriptHandlerParameters(args: any[], historyItem: BoostHistoryItem): Promise<BoostScriptHandlerParameters>;
-    runInitializationScript(params: BoostScriptHandlerParameters): Promise<void>;
-    checkoutPullRequestBranch(): Promise<void>;
-    updatePullRequestBranchName(): Promise<boolean>;
-    runScripts(params: BoostScriptHandlerParameters): Promise<void>;
-    canRunOnRepository(repo: Repository | string): boolean;
-    protected isRunTimeRestricted(runs: BoostHistoryItem[]): boolean;
+	protected codeBoost: CodeBoost;
+	protected repository: Repository | null;
+	config: BoostConfiguration;
+	path: string;
+	id: string;
+	version: string;
+	repositoryLimits: {
+		maxRunsPerVersion: number;
+		minutesBetweenRuns: number;
+	};
+	pullRequest: {
+		title: string;
+		body: string;
+		branch: string;
+	};
+	scripts: any[];
+	actions: any[];
+	state: Record<string, any>;
+	changedFiles: string[];
+	runId: string;
+	constructor(codeBoost: CodeBoost, boostPath: string);
+	init(boostPath: string): void;
+	get appSettings(): AppSettings;
+	get history(): BoostHistory;
+	log(message: any): void;
+	loadConfiguration(boostPath: string): BoostConfiguration;
+	loadPullRequest(pullRequest: Record<string, any>): {
+		title: any;
+		body: any;
+		branch: string;
+	};
+	loadScripts(scripts: string[]): any[];
+	run(repository: Repository, args?: any[]): Promise<false | undefined>;
+	handlePullRequestCreation({ repository, historyItem }: {
+		repository: any;
+		historyItem: any;
+	}): Promise<void>;
+	createScriptHandlerParameters(args: any[], historyItem: BoostHistoryItem): Promise<BoostScriptHandlerParameters>;
+	runInitializationScript(params: BoostScriptHandlerParameters): Promise<void>;
+	checkoutPullRequestBranch(): Promise<void>;
+	updatePullRequestBranchName(): Promise<boolean>;
+	runScripts(params: BoostScriptHandlerParameters): Promise<void>;
+	canRunOnRepository(repo: Repository | string): boolean;
+	protected isRunTimeRestricted(runs: BoostHistoryItem[]): boolean;
 }
 declare class HistoryManager {
-    filename: string;
-    data: BoostHistory;
-    constructor(filename: string);
-    for(boostName: string): BoostHistory;
-    createEntry(item: BoostHistoryItem): BoostHistoryItem;
-    save(): void;
-    load(): void;
+	filename: string;
+	data: BoostHistory;
+	constructor(filename: string);
+	for(boostName: string): BoostHistory;
+	createEntry(item: BoostHistoryItem): BoostHistoryItem;
+	save(): void;
+	load(): void;
 }
-declare const CodeBoost_base: import('ts-mixer/dist/types/types').Class<any[], HasLogger, typeof HasLogger, false>;
+declare const CodeBoost_base: import("ts-mixer/dist/types/types").Class<any[], HasLogger, typeof HasLogger, false>;
 export declare class CodeBoost extends CodeBoost_base {
-    protected repository: Repository;
-    appSettings: AppSettings;
-    historyManager: HistoryManager;
-    repositoryPrepared: boolean;
-    constructor(appSettings: AppSettings, historyManager: HistoryManager);
-    init(repository: Repository, appSettings: AppSettings): Promise<void>;
-    prepareRepository(): Promise<void>;
-    runBoost(boost: string | Boost, args: string[]): Promise<Boost>;
-    getBoost(boostName: string): Boost;
+	protected repository: Repository;
+	appSettings: AppSettings;
+	historyManager: HistoryManager;
+	repositoryPrepared: boolean;
+	constructor(appSettings: AppSettings, historyManager: HistoryManager);
+	init(repository: Repository, appSettings: AppSettings): Promise<void>;
+	prepareRepository(): Promise<void>;
+	runBoost(boost: string | Boost, args: string[]): Promise<Boost>;
+	getBoost(boostName: string): Boost;
 }
 
 export {};
