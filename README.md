@@ -7,7 +7,7 @@
 <p align="center">
     <img src="https://github.com/permafrost-dev/codeboost/actions/workflows/run-tests.yml/badge.svg?a=1" alt="Run Tests">
     <img alt="Codecov" src="https://img.shields.io/codecov/c/github/permafrost-dev/codeboost?color=%234c1&label=coverage&logo=codecov&logoColor=%23ef6f6f&style=flat-square&token=qYptYEWlm7" alt="codecov">
-    <img src="https://img.shields.io/github/license/permafrost-dev/codeboost?style=flat-square" alt="license">
+    <img src="https://img.shields.io/github/license/permafrost-dev/codeboost?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="license">
     <br>
     <!--img src="https://img.shields.io/codeclimate/tech-debt/permafrost-dev/codeboost?label=tech%20debt&amp;logo=codeclimate&amp;style=flat-square" alt="techdebt"-->
     <img src="https://img.shields.io/scrutinizer/quality/g/permafrost-dev/codeboost/main?logo=scrutinizer&style=flat-square" alt="scrutinizer score" />
