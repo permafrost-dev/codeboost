@@ -54,7 +54,7 @@ codeboost run --batch repositories.json --size 3 <boost>
 ```
 
 When running in batch mode, the `--size` option can be used to specify the number of repositories to process at once. The default is 1.
-The `--batch` option can be used to specify a JSON file containing an array of objects that have a `name` property that resolves to "owner/repo-name". The object can contain other attributes as well, but MUST contain the name property for batch mode to work correctly.
+The `--batch` option can be used to specify a JSON file containing an array of objects that have a `name` property that resolves to "owner/repo-name". The object can contain other attributes as well, but MUST contain the `name` property for batch mode to work correctly.
 
 Example of a batch JSON file (_repositories.json_):
 
