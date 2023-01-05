@@ -102,6 +102,9 @@ module.exports.default = {
 };
 ```
 
+> Note that the `github_token` property can be set to a string value or an environment variable name prefixed with a '$'.
+> If the value is an environment variable name, the value of the environment variable will be used.
+
 ## Development Setup
 
 ```bash
