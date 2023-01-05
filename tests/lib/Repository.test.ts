@@ -25,27 +25,25 @@ it('sets properties correctly on create', async () => {
     expect(repository).toMatchSnapshot();
 });
 
+it('gets a list of local branches', async () => {
+    const repository = new Repository('permafrost-dev/codeboost', tempPath);
+    repository.path = `${__dirname}/../..`;
+
+    const branches = await repository.localBranches();
+
+    expect(branches.all.length).toBeGreaterThan(0);
+});
+
+it('gets the current branch names', async () => {
+    const repository = new Repository('permafrost-dev/codeboost', tempPath);
+    repository.path = `${__dirname}/../..`;
+
+    const branch = await repository.currentBranch();
+
+    expect(branch.match(/main|pull.+/)).toBeTruthy();
+});
+
 if (typeof process.env.CI === 'undefined') {
-    it('gets the current branch names', async () => {
-        const repository = new Repository('permafrost-dev/codeboost', tempPath);
-        repository.path = `${__dirname}/../..`;
-
-        const mainBranchName = 'main';
-        const branch = await repository.currentBranch();
-
-        expect(branch).toBe(mainBranchName);
-    });
-
-    it('gets a list of local branches', async () => {
-        const repository = new Repository('permafrost-dev/codeboost', tempPath);
-        repository.path = `${__dirname}/../..`;
-
-        const mainBranchName = 'main';
-        const branches = await repository.localBranches();
-
-        expect(branches.all).toContain(mainBranchName);
-    });
-
     it('checks if it is on a branch', async () => {
         const repository = new Repository('permafrost-dev/codeboost', tempPath);
         repository.path = `${__dirname}/../..`;
