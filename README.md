@@ -76,7 +76,7 @@ Example of a batch JSON file (_repositories.json_):
 
 To use the `codeboost` CLI, create a file named `boost.config.js` in your current working directory or run `codeboost init` to create a default configuration file.
 
-This file should export a configuration object with the following properties:
+This file should export a `default` configuration object with the following properties:
 
 ```typescript
 export interface AppSettings {
@@ -87,6 +87,19 @@ export interface AppSettings {
     use_pull_requests: boolean;
     log_target: 'console' | 'file';
 }
+```
+
+Example configuration file:
+
+```javascript
+module.exports.default = {
+    github_token: '$CODEBOOST_GITHUB_TOKEN',
+    repository_storage_path: `${__dirname}/repositories`,
+    boosts_path: `${__dirname}/boosts`,
+    use_forks: true,
+    use_pull_requests: true,
+    log_target: 'console',
+};
 ```
 
 ## Development Setup
