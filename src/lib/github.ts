@@ -114,6 +114,7 @@ export class Github {
         title: string,
         body: string,
         octokit: Octokit | null = null,
+        isForkPr = true,
     ) {
         octokit = octokit ?? createOctokit();
 
@@ -124,7 +125,7 @@ export class Github {
             repo: repository.name,
             title,
             body,
-            head: `${currentUsername}:${branchName}`,
+            head: `${isForkPr ? currentUsername + ':' : ''}${branchName}`,
             base: defaultBranchName,
         });
 
