@@ -253,7 +253,7 @@ var _Github = class {
     }
     return result.data;
   }
-  static async createPullRequest(repository, branchName, defaultBranchName, title, body, octokit = null) {
+  static async createPullRequest(repository, branchName, defaultBranchName, title, body, octokit = null, isForkPr = true) {
     octokit = octokit != null ? octokit : createOctokit();
     const currentUsername = (await _Github.currentUser(octokit)).login;
     const result = await octokit.request(`POST /repos/${repository.owner}/${repository.name}/pulls`, {
@@ -261,7 +261,7 @@ var _Github = class {
       repo: repository.name,
       title,
       body,
-      head: `${currentUsername}:${branchName}`,
+      head: `${isForkPr ? currentUsername + ":" : ""}${branchName}`,
       base: defaultBranchName
     });
     if (result.status !== 201) {
