@@ -6,18 +6,18 @@
 
 <p align="center">
     <img src="https://img.shields.io/github/actions/workflow/status/permafrost-dev/codeboost/run-tests.yml?style=flat-square&logo=github&label=tests" alt="Run Tests">
-    <img alt="Codecov" src="https://img.shields.io/codecov/c/github/permafrost-dev/codeboost?color=%234c1&label=coverage&logo=codecov&logoColor=%23ef6f6f&style=flat-square&token=qYptYEWlm7" alt="codecov">
+    <img src="https://img.shields.io/codecov/c/github/permafrost-dev/codeboost?color=%234c1&label=coverage&logo=codecov&logoColor=%23ef6f6f&style=flat-square&token=qYptYEWlm7" alt="codecov">
     <img src="https://img.shields.io/github/license/permafrost-dev/codeboost?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="license">
     <br>
     <img src="https://img.shields.io/codeclimate/tech-debt/permafrost-dev/codeboost?label=tech%20debt&amp;logo=codeclimate&amp;style=flat-square&nocache=1" alt="techdebt">
     <img src="https://img.shields.io/scrutinizer/quality/g/permafrost-dev/codeboost/main?logo=scrutinizer&style=flat-square" alt="scrutinizer score" />
-    <img src="https://api.codeclimate.com/v1/badges/688e30d604cdcd93a262/maintainability" />
+    <img src="https://api.codeclimate.com/v1/badges/688e30d604cdcd93a262/maintainability" alt="maintainability" />
     <!--br>
     <img src="https://shields.io/npm/v/codeboost?style=flat-square&logo=npm&logoColor=white" alt="npm version">
     <img src="https://img.shields.io/npm/dt/codeboost.svg?style=flat-square&logo=npm&logoColor=white" alt="npm downloads"-->
     <br><br>
     <img src="https://badgen.net/github/dependabot/permafrost-dev/codeboost?style=flat-square" alt="dependabot status">
-    <img alt="Depfu" src="https://img.shields.io/depfu/dependencies/github/permafrost-dev/codeboost?style=flat-square&nocache=1">
+    <img src="https://img.shields.io/depfu/dependencies/github/permafrost-dev/codeboost?style=flat-square&nocache=1" alt="Depfu">
     <!--img src="https://img.shields.io/npm/v/codeboost?label=npm%20version&logo=npm&logoColor=%23f1f5f9&style=flat-square" alt="version"-->
 </p>
 
@@ -44,13 +44,13 @@ codeboost init
 Run a boost:
 
 ```bash
-codeboost run -r <repository> <boost>
+codeboost run --repo <repository> <boost-name>
 ```
 
 Run a boost on a batch of repositories:
 
 ```bash
-codeboost run --batch repositories.json --size 3 <boost>
+codeboost run --batch repositories.json --size 3 <boost-name>
 ```
 
 When running in batch mode, the `--size` option can be used to specify the number of repositories to process at once. The default is 1.
@@ -72,9 +72,15 @@ Example of a batch JSON file (_repositories.json_):
 ]
 ```
 
+## Boosts
+
+Boosts are stored by default in `~/.codeboost/boosts`, and examples can be found in the `examples` directory of the repository. [Read the docs](docs/boosts.md).
+
 ## Configuration
 
-To use the `codeboost` CLI, create a file named `boost.config.js` in your current working directory or run `codeboost init` to create a default configuration file.
+To use the `codeboost` CLI, create a file named `codeboost.config.js` in your current working directory or run `codeboost init` to create a default configuration file.
+
+The default configuration file is stored in `~/.codeboost/codeboost.config.js`. This file assumes that you have an environment variable named `CODEBOOST_GITHUB_TOKEN` that contains a valid GitHub personal access token with the `repo` scope. You may edit this file to use a different token or to change the default storage paths.
 
 This file should export a `default` configuration object with the following properties:
 
