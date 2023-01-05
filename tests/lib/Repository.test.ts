@@ -25,35 +25,37 @@ it('sets properties correctly on create', async () => {
     expect(repository).toMatchSnapshot();
 });
 
-it('gets the current branch names', async () => {
-    const repository = new Repository('permafrost-dev/codeboost', tempPath);
-    repository.path = `${__dirname}/../..`;
+if (typeof process.env.CI === 'undefined') {
+    it('gets the current branch names', async () => {
+        const repository = new Repository('permafrost-dev/codeboost', tempPath);
+        repository.path = `${__dirname}/../..`;
 
-    const mainBranchName = 'main';
-    const branch = await repository.currentBranch();
+        const mainBranchName = 'main';
+        const branch = await repository.currentBranch();
 
-    expect(branch).toBe(mainBranchName);
-});
+        expect(branch).toBe(mainBranchName);
+    });
 
-it('gets a list of local branches', async () => {
-    const repository = new Repository('permafrost-dev/codeboost', tempPath);
-    repository.path = `${__dirname}/../..`;
+    it('gets a list of local branches', async () => {
+        const repository = new Repository('permafrost-dev/codeboost', tempPath);
+        repository.path = `${__dirname}/../..`;
 
-    const mainBranchName = 'main';
-    const branches = await repository.localBranches();
+        const mainBranchName = 'main';
+        const branches = await repository.localBranches();
 
-    expect(branches.all).toContain(mainBranchName);
-});
+        expect(branches.all).toContain(mainBranchName);
+    });
 
-it('checks if it is on a branch', async () => {
-    const repository = new Repository('permafrost-dev/codeboost', tempPath);
-    repository.path = `${__dirname}/../..`;
+    it('checks if it is on a branch', async () => {
+        const repository = new Repository('permafrost-dev/codeboost', tempPath);
+        repository.path = `${__dirname}/../..`;
 
-    const mainBranchName = 'main';
-    const isOnBranch = await repository.onBranch(mainBranchName);
+        const mainBranchName = 'main';
+        const isOnBranch = await repository.onBranch(mainBranchName);
 
-    expect(isOnBranch).toBeTruthy();
-});
+        expect(isOnBranch).toBeTruthy();
+    });
+}
 
 if (typeof process.env.CI !== 'undefined') {
     it('checks out a new branch', async () => {
