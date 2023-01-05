@@ -61,24 +61,13 @@ Example of a batch JSON file (_repositories.json_):
 ```json
 [
     {
-        "id": 1,
-        "name": "spatie/url",
-        "description": "test",
-        "stars": 66,
-        "downloads": 14414,
-        "type": "package",
-        "language": "PHP",
-        "visible": 1
+        "name": "permafrost-dev/node-ray"
     },
     {
-        "id": 2,
-        "name": "spatie/once",
-        "description": "test",
-        "stars": 67,
-        "downloads": 14456,
-        "type": "package",
-        "language": "PHP",
-        "visible": 1
+        "name": "permafrost-dev/vue-ray"
+    },
+    {
+        "name": "permafrost-dev/alpinejs-ray"
     }
 ]
 ```
