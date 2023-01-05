@@ -25,3 +25,4 @@ rome.json
 tsconfig.json
 *.log
 dist/*.json
+repositories.json
