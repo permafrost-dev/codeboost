@@ -5,18 +5,16 @@
 # codeboost
 
 <p align="center">
-    <img src="https://github.com/permafrost-dev/codeboost/actions/workflows/run-tests.yml/badge.svg?a=1" alt="Run Tests">
+    <img src="https://img.shields.io/github/actions/workflow/status/permafrost-dev/codeboost/run-tests.yml?style=flat-square&logo=github&label=tests" alt="Run Tests">
     <img alt="Codecov" src="https://img.shields.io/codecov/c/github/permafrost-dev/codeboost?color=%234c1&label=coverage&logo=codecov&logoColor=%23ef6f6f&style=flat-square&token=qYptYEWlm7" alt="codecov">
     <img src="https://img.shields.io/github/license/permafrost-dev/codeboost?style=flat-square&logo=opensourceinitiative&logoColor=white" alt="license">
     <br>
     <img src="https://img.shields.io/codeclimate/tech-debt/permafrost-dev/codeboost?label=tech%20debt&amp;logo=codeclimate&amp;style=flat-square&nocache=1" alt="techdebt">
     <img src="https://img.shields.io/scrutinizer/quality/g/permafrost-dev/codeboost/main?logo=scrutinizer&style=flat-square" alt="scrutinizer score" />
     <img src="https://api.codeclimate.com/v1/badges/688e30d604cdcd93a262/maintainability" />
-    <!--
-    <br>
+    <!--br>
     <img src="https://shields.io/npm/v/codeboost?style=flat-square&logo=npm&logoColor=white" alt="npm version">
-    <img src="https://img.shields.io/npm/dt/codeboost.svg?style=flat-square&logo=npm&logoColor=white" alt="npm downloads">
-    -->
+    <img src="https://img.shields.io/npm/dt/codeboost.svg?style=flat-square&logo=npm&logoColor=white" alt="npm downloads"-->
     <br><br>
     <img src="https://badgen.net/github/dependabot/permafrost-dev/codeboost?style=flat-square" alt="dependabot status">
     <img alt="Depfu" src="https://img.shields.io/depfu/dependencies/github/permafrost-dev/codeboost?style=flat-square&nocache=1">
