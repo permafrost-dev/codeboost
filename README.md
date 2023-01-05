@@ -78,18 +78,20 @@ Boosts are stored by default in `~/.codeboost/boosts`, and examples can be found
 
 ## Configuration
 
-To use the `codeboost` CLI, create a file named `codeboost.config.js` in your current working directory or run `codeboost init` to create a default configuration file.
+To use the [`codeboost` CLI](./docs/cli.md), create a file named `codeboost.config.js` in your current working directory or run `codeboost init` to create a default global configuration file.
 
 The default configuration file is stored in `~/.codeboost/codeboost.config.js`. This file assumes that you have an environment variable named `CODEBOOST_GITHUB_TOKEN` that contains a valid GitHub personal access token with the `repo` scope. You may edit this file to use a different token or to change the default storage paths.
 
-This file should export a `default` configuration object with the following properties:
+The configuration file should export a `default` configuration object with the following properties:
 
 ```typescript
 export interface AppSettings {
     github_token: string;
     repository_storage_path: string;
     boosts_path: string;
+    // create fork of each repository
     use_forks: boolean;
+    // create pull request for each repository
     use_pull_requests: boolean;
     log_target: 'console' | 'file';
 }
@@ -110,6 +112,10 @@ module.exports.default = {
 
 > Note that the `github_token` property can be set to a string value or an environment variable name prefixed with a '$'.
 > If the value is an environment variable name, the value of the environment variable will be used.
+
+If you are working on repositories that you have push access to and don't want to create forks or pull requests, you can set the `use_forks` and `use_pull_requests` properties to `false`. This will cause `codeboost` to commit directly to the main branch of the repository.
+
+If you disable `use_forks` but not `use_pull_requests`, a separate branch will be created on the repository and a pull request will be created for that branch. Enabling `use_forks` automatically enables `use_pull_requests`.
 
 ## Development Setup
 
