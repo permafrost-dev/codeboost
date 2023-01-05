@@ -8,7 +8,6 @@ import { userInfo } from 'os';
 import { BatchManager } from '@/lib/BatchManager';
 import Queue from 'better-queue';
 import chalk from 'chalk';
-import { Tools } from '@/lib/Tools';
 
 export class Application {
     public settings!: AppSettings;
@@ -119,7 +118,12 @@ export class Application {
         const queue = this.createQueue(runCodeBoost, new Proxy(complete, {}));
 
         await this.handleQueuedRepos({
-            queue, repoName, options, boostName, settings, complete 
+            queue,
+            repoName,
+            options,
+            boostName,
+            settings,
+            complete,
         });
     }
 
