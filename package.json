@@ -65,7 +65,7 @@
         "@octokit/plugin-throttling": "^4.3.2",
         "better-queue": "^3.8.12",
         "chalk": "^4.0",
-        "commander": "^9.4.1",
+        "commander": "^10.0.0",
         "dayjs": "^1.11.7",
         "deepmerge": "^4.2.2",
         "dotenv": "^16.0.3",
