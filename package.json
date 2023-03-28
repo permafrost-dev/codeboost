@@ -101,7 +101,7 @@
         "ts-jest": "^29.0.3",
         "typedoc": "^0.23.22",
         "typedoc-plugin-markdown": "^3.14.0",
-        "typescript": "^4.9.4"
+        "typescript": "^5.0.2"
     },
     "bin": "bin/codeboost.js",
     "engines": {
