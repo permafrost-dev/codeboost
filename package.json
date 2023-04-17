@@ -86,7 +86,7 @@
         "@types/node": "^18.11.16",
         "@typescript-eslint/eslint-plugin": "^5.46.1",
         "@typescript-eslint/parser": "^5.46.1",
-        "dts-bundle-generator": "^7.1.0",
+        "dts-bundle-generator": "^8.0.1",
         "esbuild": "^0.17.6",
         "eslint": "^8.30.0",
         "eslint-plugin-jest": "^27.1.7",
