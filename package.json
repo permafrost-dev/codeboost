@@ -99,7 +99,7 @@
         "prettier": "^2.8.1",
         "rome": "^11.0.0",
         "ts-jest": "^29.0.3",
-        "typedoc": "^0.23.22",
+        "typedoc": "^0.25.2",
         "typedoc-plugin-markdown": "^3.14.0",
         "typescript": "^5.0.4"
     },
