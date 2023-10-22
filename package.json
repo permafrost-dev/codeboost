@@ -62,7 +62,7 @@
     },
     "dependencies": {
         "@octokit/core": "^4.1.0",
-        "@octokit/plugin-throttling": "^4.3.2",
+        "@octokit/plugin-throttling": "^8.0.1",
         "better-queue": "^3.8.12",
         "chalk": "^4.0",
         "commander": "^10.0.0",
